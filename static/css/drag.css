@@ -1,0 +1,21 @@
+/*//drag.css*/
+/*//mrc*/
+*{
+	font-family: 'arial';
+}
+
+#drag,.drag{
+	width: 150px;
+	height: 150px;
+	background: #000;
+	color: #fff;
+	font-size: 12px;
+}
+
+.rotate-left{
+	-moz-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}

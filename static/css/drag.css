@@ -5,6 +5,7 @@
 }
 
 #drag,.drag{
+	position: relative;
 	width: 150px;
 	height: 150px;
 	background: #000;
@@ -12,7 +13,7 @@
 	font-size: 12px;
 }
 
-.rotate-left{
+.rotate-go-right{
 	-moz-transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
     -o-transform: rotate(45deg);

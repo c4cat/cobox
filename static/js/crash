@@ -1,0 +1,121 @@
+/**
+ * @Desc 重力碰撞拖拽运动 - Gravity Crash Drag Move(gcdMove)
+ * @Author GenialX
+ * @URL www.ihuxu.com
+ * @QQ 2252065614
+ * @Date 2013.06.22
+ */
+
+function gcdMove(obj, iSpeedX, iSpeedY) {
+
+	_this = this;//public identifier
+
+	//construct fun
+	var gcdMove;
+	//self defined fun
+	var start;
+	_this.startMove;
+	//other var
+	var iTimer;
+	var iLastX = 0;
+	var iLastY = 0;
+
+	//construct fun
+	start = function() {
+		clearInterval(iTimer);
+
+		iTimer = setInterval(function() {
+
+			iSpeedY += 3;
+
+			var l = obj.offsetLeft + iSpeedX;
+			var t = obj.offsetTop + iSpeedY;
+
+			if (t >= document.documentElement.clientHeight - obj.offsetHeight) {
+				iSpeedY *= -0.8;
+				iSpeedX *= 0.8;
+				t = document.documentElement.clientHeight - obj.offsetHeight;
+			} else if (t <= 0) {
+				iSpeedY *= -1;
+				iSpeedX *= 0.8;
+				t = 0;
+			}
+
+			if (l >= document.documentElement.clientWidth - obj.offsetWidth) {
+				iSpeedX *= -0.8;
+				l = document.documentElement.clientWidth - obj.offsetWidth;
+			} else if (l <= 0) {
+				iSpeedX *= -0.8;
+				l = 0;
+			}
+
+			if (Math.abs(iSpeedX) < 1) {
+				iSpeedX = 0;
+			}
+
+			if (iSpeedX == 0 && iSpeedY == 0 && t == document.documentElement.clientHeight - obj.offsetHeight) {
+				clearInterval(iTimer);
+			}
+
+			obj.style.left = l + 'px';
+			obj.style.top = t + 'px';
+
+		}, 30);
+	}
+
+	obj.onmousedown = function(ev) {
+
+		clearInterval(iTimer);
+
+		var oEvent = ev || event;
+
+		var disX = oEvent.clientX - obj.offsetLeft;
+		var disY = oEvent.clientY - obj.offsetTop;
+
+		document.onmousemove = function(ev) {
+			var oEvent = ev || event;
+
+			var l = oEvent.clientX - disX;
+			var t = oEvent.clientY - disY;
+
+			obj.style.left = l + 'px';
+			obj.style.top = t + 'px';
+
+			iSpeedX = l - iLastX;
+			iSpeedY = t - iLastY;
+
+			iLastX = l;
+			iLastY = t;
+
+		}
+	}
+
+	obj.onmouseup = function() {
+		document.onmousemove = null;
+		document.onmouseup = null;
+		start();
+	}
+	
+	_this.startMove = function(){
+		start();
+	}
+	
+	//CONSTRUCT AREA
+	var gcdMove = function() {
+
+		if (!iSpeedX) {
+			iSpeedX = 0;
+		}
+		if (!iSpeedY) {
+			iSpeedY = 0;
+		}
+	}
+	
+	gcdMove();
+}
+
+window.onload = function() {
+	var oDiv = document.getElementById('div1');
+	var o = new gcdMove(oDiv, 20,0);
+	o.startMove();
+}

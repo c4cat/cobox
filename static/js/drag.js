@@ -10,14 +10,12 @@ $(function(){
 		},
 		start:function(event,ui){
 			this.clientX_start = event.clientX;
+			this.clientY_start = event.clientY;
+			this.time_start = event.timeStamp;
 			$(this).addClass('rotate-go-right');
 			// console.log($(this));
 			console.log('start');
-
-			// $(this).mousedown(function(){
-				console.log('mousedown' + event.clientX);
-			// })
-			// console.log(event.clientX);
+			// console.log(event);
 		},
 		drag:function(event,ui){
 			//console.log(event);
@@ -31,22 +29,33 @@ $(function(){
 		 	}
 		},
 		stop:function(event,ui){
-			this.clientX_end = 
+			this.clientX_stop = event.clientX;
+			this.clientY_stop = event.clientY;
+			// this.time_stop = event.timeStamp;
+			
+			var obj = $('#drag'),
+				offsetX  = event.offsetX - this.offsetX,
+				offsetY  = event.offsetY - this.offsetY,
+				time_count = (event.timeStamp - this.time_start) / 1000; //seconds 
+
+				x_distance = Math.abs(this.clientX_stop - this.clientX_start),
+				y_distance = Math.abs(this.clientY_stop - this.clientY_start),
+				x_direction = (this.clientX_stop>this.clientX_start)? 'right':'left',
+				y_direction = (this.clientY_stop>this.clientY_start)? 'down':'up';
+			//commond
 			$(this).removeClass('rotate-go-right');
 			$(this).addClass('crashing');
-				var offsetX  = event.offsetX - this.offsetX;
-				var offsetY  = event.offsetY - this.offsetY;
 
-				console.log(event.clientX);
+			if(time_count > 0.5){
+				if()
+			}else{
+				//100 just a num
+				if(x_distance > 100) {};
+			}
 
-				var obj = $('#drag');
-
-				crash(event.clientX,event.clientY);
+			crash(event.clientX,event.clientY);
 		},
 	});
-
-	console.log(document.documentElement.clientHeight);
-	console.log($(window).width());
 
 	function crash(clientX,clientY){
 		var window_width = $(window).width(),

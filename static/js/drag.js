@@ -6,7 +6,7 @@
 $(function(){
 	$('.drag').draggable({
 		create:function(event,ui){
-
+			// console.log('create success');
 		},
 		start:function(event,ui){
 			this.clientX_start = event.clientX;
@@ -18,7 +18,7 @@ $(function(){
 			// console.log(event);
 		},
 		drag:function(event,ui){
-			//console.log(event);
+			// console.log(event);
 			//console.log(event.clientX);
 		 	this.offsetX = event.offsetX;
 		 	this.offsetY = event.offsetY;
@@ -42,20 +42,46 @@ $(function(){
 				y_distance = Math.abs(this.clientY_stop - this.clientY_start),
 				x_direction = (this.clientX_stop>this.clientX_start)? 'right':'left',
 				y_direction = (this.clientY_stop>this.clientY_start)? 'down':'up';
+			
+				var argv4Crash = {
+					dx : x_distance,
+					y : y_distance,
+					t : time_count,
+					clientX : event.clientX,
+					clientY :event.clientY
+
+				};
+
 			//commond
 			$(this).removeClass('rotate-go-right');
 			$(this).addClass('crashing');
+			console.log(x_distance);
+			
 
-			if(time_count > 0.5){
-				if()
+			// drag time 0.2 second
+			if(time_count > 0.2){
+
 			}else{
 				//100 just a num
 				if(x_distance > 100) {};
 			}
 
 			crash(event.clientX,event.clientY);
-		},
+			// demo(argv4Crash);
+		}
 	});
+	
+	function SlideDistance(argv){
+		// var 
+		if(x_distance > 200){
+
+		}
+
+	}
+
+	// function demo(argv){
+	// 	console.log(argv.distance);
+	// }
 
 	function crash(clientX,clientY){
 		var window_width = $(window).width(),
@@ -65,15 +91,21 @@ $(function(){
 			if(window_width - clientX){
 
 			}
-			// setInterval(function(){
-				clientX += 100;
-				// $('.crashing').css('left',clientX+'px');
-				  $('.crashing').animate({'left': window_width - 150 +'px','top':'150px'}, 200, function(){
-				  		$('.crashing').animate({'left': '500px'},100);
-				  })
-			// },50);
-			// setTimeout(crash,30);
+			clientX += 100;
+			// $('.crashing').css('left',clientX+'px');
+			$('.crashing').animate(
+				{
+					'left': window_width - 150 +'px',
+					'top':'150px'
+				}, 200, function(){
+			  		$('.crashing').animate(
+			  			{
+			  				'left': '500px'
+			  			},100,function(){
 
+			  			});
+			});
+			// setTimeout(crash,30);
 	};
 
 });

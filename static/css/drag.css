@@ -6,17 +6,40 @@
 
 #drag,.drag{
 	position: relative;
-	width: 150px;
-	height: 150px;
+	width: 101px;
+	height: 101px;
 	background: #000;
 	color: #fff;
 	font-size: 12px;
+	border-radius: 5px;
 }
 
-.rotate-go-right{
+/*.rotate-go-right{
 	-moz-transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
     -o-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}*/
+/*.rotate-go-right{
+	-moz-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}*/
+
+.dragRotateLeft{
+	-webkit-animation-name: dragRotateLeft;
+	-webkit-animation-duration: 20s;
+	-webkit-animation-iteration-count: infinite;
+	/*-webkit-animation-delay: 2s;*/
+	/*-webkit-animation-timing-function: ease-in-out;*/
 }
+
+@-webkit-keyframes dragRotateLeft{
+	 0%,20%,70%,90%{-webkit-transform:rotate(10deg);}
+	 40%{-webkit-transform:rotate(5deg);}
+	 10%,30%,50%,100%{-webkit-transform:rotate(-10deg);}
+}
+

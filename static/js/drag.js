@@ -5,6 +5,7 @@
 
 $(function(){
 	$('.drag').draggable({
+		containment: $('#region'),
 		create:function(event,ui){
 			// console.log('create success');
 		},
@@ -12,27 +13,24 @@ $(function(){
 			this.clientX_start = event.clientX;
 			this.clientY_start = event.clientY;
 			this.time_start = event.timeStamp;
-			$(this).addClass('rotate-go-right');
-			// console.log($(this));
+
+			$(this).addClass('dragRotateLeft');
 			console.log('start');
-			// console.log(event);
 		},
 		drag:function(event,ui){
-			// console.log(event);
-			//console.log(event.clientX);
 		 	this.offsetX = event.offsetX;
 		 	this.offsetY = event.offsetY;
 		 	// console.log(event);
-		 	// console.log(this.offsetX);
-		 	if(event.clientX + 10 > $(window).width()){
-		 		return false;
+		 	if(event.clientX + 50 > $(window).width() || event.clientY + 50 > $(window).height()){
+		 		console.log('edge stop');
+
+		 		// return false;
 		 	}
 		},
 		stop:function(event,ui){
 			this.clientX_stop = event.clientX;
 			this.clientY_stop = event.clientY;
 			// this.time_stop = event.timeStamp;
-			
 			var obj = $('#drag'),
 				offsetX  = event.offsetX - this.offsetX,
 				offsetY  = event.offsetY - this.offsetY,
@@ -45,17 +43,18 @@ $(function(){
 			
 				var argv4Crash = {
 					dx : x_distance,
-					y : y_distance,
+					dy : y_distance,
 					t : time_count,
 					clientX : event.clientX,
-					clientY :event.clientY
-
+					clientY :event.clientY,
+					left: $(this).css('left'),
+					top : $(this).css('top')
 				};
 
 			//commond
-			$(this).removeClass('rotate-go-right');
-			$(this).addClass('crashing');
-			console.log(x_distance);
+			$(this).removeClass('dragRotateLeft');
+			$(this).addClass('crashing revise');
+			// console.log(x_distance);
 			
 
 			// drag time 0.2 second
@@ -66,22 +65,33 @@ $(function(){
 				if(x_distance > 100) {};
 			}
 
-			crash(event.clientX,event.clientY);
-			// demo(argv4Crash);
+			revise(argv4Crash);
 		}
 	});
 	
-	function SlideDistance(argv){
-		// var 
-		if(x_distance > 200){
+	function revise(argv4Crash){
+		var boxWH = 101,
+			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(argv4Crash.left)) / boxWH),
+			numOfBoxFromTop = parseInt(Math.ceil(parseInt(argv4Crash.top)) / boxWH),
+			leftOffect =  Math.ceil(parseInt(argv4Crash.left)) / boxWH - numOfBoxFromLeft,
+			topOffect =  Math.ceil(parseInt(argv4Crash.top)) / boxWH - numOfBoxFromTop,
+			x_direction = leftOffect<0.5? 'left':'right',
+			y_direction = topOffect<0.5? 'left':'right',
+			x_distance =  numOfBoxFromLeft * 101,
+			y_distance =  numOfBoxFromTop * 101,
+			i;
 
-		}
+			if(x_direction == 'left'){
 
+			}
+
+			$('.revise').animate({
+				'left': x_distance,
+				'top': y_distance},
+				100, function() {
+					$(this).removeClass("revise");
+			});
 	}
-
-	// function demo(argv){
-	// 	console.log(argv.distance);
-	// }
 
 	function crash(clientX,clientY){
 		var window_width = $(window).width(),
@@ -92,7 +102,6 @@ $(function(){
 
 			}
 			clientX += 100;
-			// $('.crashing').css('left',clientX+'px');
 			$('.crashing').animate(
 				{
 					'left': window_width - 150 +'px',
@@ -105,7 +114,6 @@ $(function(){
 
 			  			});
 			});
-			// setTimeout(crash,30);
 	};
 
 });

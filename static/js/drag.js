@@ -14,7 +14,7 @@ $(function(){
 			this.clientY_start = event.clientY;
 			this.time_start = event.timeStamp;
 
-			$(this).addClass('dragRotateLeft');
+			$(this).addClass('dragRotateLeft').removeClass('stopShake');
 			console.log('start');
 		},
 		drag:function(event,ui){
@@ -66,9 +66,10 @@ $(function(){
 			}
 
 			revise(argv4Crash);
+			exist();
 		}
 	});
-	
+
 	function revise(argv4Crash){
 		var boxWH = 101,
 			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(argv4Crash.left)) / boxWH),
@@ -76,45 +77,53 @@ $(function(){
 			leftOffect =  Math.ceil(parseInt(argv4Crash.left)) / boxWH - numOfBoxFromLeft,
 			topOffect =  Math.ceil(parseInt(argv4Crash.top)) / boxWH - numOfBoxFromTop,
 			x_direction = leftOffect<0.5? 'left':'right',
-			y_direction = topOffect<0.5? 'left':'right',
-			x_distance =  numOfBoxFromLeft * 101,
-			y_distance =  numOfBoxFromTop * 101,
+			y_direction = topOffect<0.5? 'top':'bottom',
+			x_distance,
+			y_distance,
 			i;
 
 			if(x_direction == 'left'){
+				x_distance =  numOfBoxFromLeft * 101;
+			}else{
+				x_distance =  (numOfBoxFromLeft + 1) * 101;
+			}
 
+			if(y_direction == 'top'){
+				y_distance =  numOfBoxFromTop * 101;
+			}else{
+				y_distance =  (numOfBoxFromTop + 1) * 101;
 			}
 
 			$('.revise').animate({
-				'left': x_distance,
-				'top': y_distance},
-				100, function() {
-					$(this).removeClass("revise");
-			});
-	}
-
-	function crash(clientX,clientY){
-		var window_width = $(window).width(),
-			window_height = $(window).height(),
-			i;
-
-			if(window_width - clientX){
-
-			}
-			clientX += 100;
-			$('.crashing').animate(
-				{
-					'left': window_width - 150 +'px',
-					'top':'150px'
-				}, 200, function(){
-			  		$('.crashing').animate(
-			  			{
-			  				'left': '500px'
-			  			},100,function(){
-
-			  			});
+				'left' : x_distance,
+				'top' : y_distance},
+				100,
+				"easeInQuad",
+				function() {
+					$(this).removeClass("revise").addClass('stopShake');
 			});
 	};
+
+	function exist(){
+		var i=1;
+		$('.drag').each(function(){
+			$(this).css('left')
+		});
+	}
+
+	// crash
+	// function crash(clientX,clientY){
+	// 	var window_width = $(window).width(),
+	// 		window_height = $(window).height(),
+	// 		i;
+	// 		clientX += 100;
+	// 		$('.crashing').animate({
+	// 				'left': window_width - 150 +'px',
+	// 				'top':'150px'
+	// 			}, 200, function(){
+	// 		  		$('.crashing').animate({'left': '500px'},100);
+	// 		});
+	// };
 
 });
 

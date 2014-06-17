@@ -5,7 +5,7 @@
 }
 
 #drag,.drag{
-	position: relative;
+	position: absolute;
 	width: 101px;
 	height: 101px;
 	background: #000;
@@ -41,5 +41,16 @@
 	 0%,20%,70%,90%{-webkit-transform:rotate(10deg);}
 	 40%{-webkit-transform:rotate(5deg);}
 	 10%,30%,50%,100%{-webkit-transform:rotate(-10deg);}
+}
+
+.stopShake{
+	-webkit-animation-name: stopShake;
+	-webkit-animation-duration: .2s;
+	-webkit-animation-iteration-count: 1;
+}
+@-webkit-keyframes stopShake{
+	 0%{margin-top: -5px;margin-left: -5px;-webkit-transform:rotate(1deg);}
+	 /*50%{margin-top: -2px;margin-left: -2px;-webkit-transform:rotate(0deg);}*/
+	 100%{margin-top: 0px;margin-left: 0px;-webkit-transform:rotate(0deg);}
 }
 

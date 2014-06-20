@@ -8,15 +8,43 @@
 <body>
 
 	<div id='region'>
-		<div class="drag">hello world!</div>
-		<div class="drag">hello world2!</div>
+		<div class="drag" id="box1">hello world!</div>
+		<div class="drag" id="box2">hello world2!</div>
+		<div class="drag" id="box3">hello world3!</div>
 		<!-- <div id="drag">test</div> -->
 	</div>
 	<div id="bg">
 		<div id="bg_sp"></div>
 	</div>
+
+	<div id="about">
+		<div class="drop" data-x="1" data-y="1"></div>
+		<div class="drop" data-x="1" data-y="2"></div>
+		<div class="drop" data-x="1" data-y="3"></div>
+		<div class="drop" data-x="2" data-y="1"></div>
+		<div class="drop" data-x="2" data-y="2"></div>
+		<div class="drop" data-x="2" data-y="3"></div>
+		<div class="drop" data-x="3" data-y="1"></div>
+		<div class="drop" data-x="3" data-y="2"></div>
+		<div class="drop" data-x="3" data-y="3"></div>
+	</div>
+	<div class="about-hidden">
+		<img src="static/img/gc.jpg" alt="">
+	</div>	
+
+	<!-- template -->
+	<script type='text/template' id='dropbox-item-demo'>
+		<div id="about">123</div>
+	</script>
+	<script type='text/template' id='dropbox-item'>
+	<div id="about">	
+	<div>
+	</script>
+	<!-- template -->
 </body>
 	<script type='text/javascript' src='static/js/jquery.min.js'></script>
+	<script type='text/javascript' src='static/js/underscore.js'></script>
+	<script type='text/javascript' src='static/js/backbone.min.js'></script>
 	<script type='text/javascript' src='static/js/jquery.ui.min.js'></script>
 	<script type='text/javascript' src='static/js/jquery.easing.min.js'></script>
 	<script type='text/javascript' src='static/js/main.js'></script>

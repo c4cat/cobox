@@ -12,22 +12,12 @@
 	color: #fff;
 	font-size: 12px;
 	border-radius: 5px;
+	z-index: 2;
 }
 
-/*.rotate-go-right{
-	-moz-transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}*/
-/*.rotate-go-right{
-	-moz-transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}*/
+.drag.ui-draggable-dragging{
+	z-index: 999;
+}
 
 .dragRotateLeft{
 	-webkit-animation-name: dragRotateLeft;
@@ -47,6 +37,7 @@
 	-webkit-animation-name: stopShake;
 	-webkit-animation-duration: .2s;
 	-webkit-animation-iteration-count: 1;
+	-webkit-animation-timing-function:ease-out;
 }
 @-webkit-keyframes stopShake{
 	 0%{margin-top: -5px;margin-left: -5px;-webkit-transform:rotate(1deg);}
@@ -54,3 +45,33 @@
 	 100%{margin-top: 0px;margin-left: 0px;-webkit-transform:rotate(0deg);}
 }
 
+#about{
+	position: absolute;
+	top:0;
+	left:303px;
+	width: 303px;
+}
+
+.drop{
+	position: relative;
+	width:100px;
+	height:100px;
+	border-right:1px solid #000;
+	border-top:1px solid #000;
+	background: #000;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 5px;
+	z-index: 2;
+	float: left;
+	overflow: hidden;
+}
+.about-hidden{
+	position: relative;
+	width: 400px;
+	height: 380px;
+}
+.about-hidden img{
+	width: 400px;
+	height: 380px;
+}

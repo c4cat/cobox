@@ -65,7 +65,7 @@ $(function(){
 			this.clientY_start = event.clientY;
 			this.time_start = event.timeStamp;
 
-			$(this).addClass('dragRotateLeft').removeClass('stopShake');
+			$(this).addClass('whenDragging animated').removeClass('stopShake');
 			console.log('start');
 		},
 		drag:function(event,ui){
@@ -104,7 +104,7 @@ $(function(){
 					top : $(this).css('top')
 				};
 
-			$(this).removeClass('dragRotateLeft').addClass('crashing revise').css("zIndex",2);
+			$(this).removeClass('whenDragging animated').addClass('crashing revise').css("zIndex",2);
 
 			revise(argv4Crash);
 			$('.drag').css('opacity',1);
@@ -194,13 +194,39 @@ $(function(){
 	// 		});
 	// };
 
-	$('.about-hidden').clone().prependTo('.drop');
+	//clone drop about
+	function createDropDown(){
+		//clone first
+		$('.about-hidden').clone().prependTo('.drop');
 
-	for(var ii=1;ii<4;ii++){
-		for(var jj=1;jj<4;jj++){
-			$('.drop[data-x='+ii+'][data-y='+jj+']').find('.about-hidden').css({'top': (ii-1)*-101+'px','left':(jj-1)*-101+'px'});
+		for(var ii=1;ii<4;ii++){
+			for(var jj=1;jj<4;jj++){
+				$('.drop[data-x='+ii+'][data-y='+jj+']').find('.about-hidden').css({'top': (ii-1)*-101+'px','left':(jj-1)*-101+'px'});
+			}
 		}
+		$('.drop').each(function(){
+			var random = Math.random()*10;
+			// $(this).delay(random*1000).addClass('hinge animated');
+			console.log(random);
+			$(this).delay(random*50).animate({'opacity':1},function(){
+				if(parseInt(random) % 2 == 0){
+					console.log('left');
+					$(this).addClass('dragDownLeft animated');
+				}else{
+					console.log('right');
+					$(this).addClass('dragDownRight animated');
+				}
+			});
+		});
 	}
+
+
+	createDropDown();
+
+
+
+
+
 	// var angle_arr = randomAngle();
  	// 	var count = 0;
 	// for(var ii=1;ii<4;ii++){

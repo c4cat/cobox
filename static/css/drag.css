@@ -3,22 +3,6 @@
 *{
 	font-family: 'arial';
 }
-
-#drag,.drag{
-	position: absolute;
-	width: 101px;
-	height: 101px;
-	background: #000;
-	color: #fff;
-	font-size: 12px;
-	border-radius: 5px;
-	z-index: 2;
-}
-
-.drag.ui-draggable-dragging{
-	z-index: 999;
-}
-
 .dragRotateLeft{
 	-webkit-animation-name: dragRotateLeft;
 	-webkit-animation-duration: 20s;
@@ -26,52 +10,85 @@
 	/*-webkit-animation-delay: 2s;*/
 	/*-webkit-animation-timing-function: ease-in-out;*/
 }
-
 @-webkit-keyframes dragRotateLeft{
 	 0%,20%,70%,90%{-webkit-transform:rotate(10deg);}
 	 40%{-webkit-transform:rotate(5deg);}
 	 10%,30%,50%,100%{-webkit-transform:rotate(-10deg);}
 }
-
 .stopShake{
 	-webkit-animation-name: stopShake;
-	-webkit-animation-duration: .2s;
+	-webkit-animation-duration: .5s;
 	-webkit-animation-iteration-count: 1;
 	-webkit-animation-timing-function:ease-out;
 }
-@-webkit-keyframes stopShake{
+/* ver 3.0 */
+@-webkit-keyframes stopShake {
+	20%, 40%, 60%, 80%, 100% { -webkit-transform-origin: center center; }
+	20% { -webkit-transform: rotate(15deg); }	
+	40% { -webkit-transform: rotate(-10deg); }
+	60% { -webkit-transform: rotate(5deg); }	
+	80% { -webkit-transform: rotate(-5deg); }	
+	100% { -webkit-transform: rotate(0deg); }
+}
+/* ver 2.0 */
+/*@-webkit-keyframes stopShake {
+	0%, 100% {-webkit-transform: translateX(0) translateX(0) rotate(0deg);-webkit-transform-origin: center center;}
+	50%{-webkit-transform: translateX(-5px) translateY(-5px) rotate(0deg);-webkit-transform-origin: center center;}
+	30%, 70% {-webkit-transform: translateX(3px) translateY(1px) rotate(0deg);-webkit-transform-origin: center center;}
+}*/
+/* ver 1.0 */
+/*@-webkit-keyframes stopShake{
 	 0%{margin-top: -5px;margin-left: -5px;-webkit-transform:rotate(1deg);}
-	 /*50%{margin-top: -2px;margin-left: -2px;-webkit-transform:rotate(0deg);}*/
+	 50%{margin-top: -2px;margin-left: -2px;-webkit-transform:rotate(0deg);}
 	 100%{margin-top: 0px;margin-left: 0px;-webkit-transform:rotate(0deg);}
+}*/
+.whenDragging{
+	-webkit-animation-name: whenDragging;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+	/*-webkit-animation-delay: 2s;*/
+	/*-webkit-animation-timing-function: ease-in-out;*/
+}
+/*ver 2.0 just like tada in animate.css */
+@-webkit-keyframes whenDragging {
+	0% {-webkit-transform: scale(1);}	
+	10%, 20% {-webkit-transform: scale(0.9) rotate(-3deg);}
+	30%, 50%, 70%, 90% {-webkit-transform: scale(1.1) rotate(3deg);}
+	40%, 60%, 80% {-webkit-transform: scale(1.1) rotate(-3deg);}
+	100% {-webkit-transform: scale(1) rotate(0);}
+}
+/*ver 1.0*/
+/*@-webkit-keyframes whenDragging {
+	20%, 40%, 60%, 80%, 100% { -webkit-transform-origin: center center; }
+	20% { -webkit-transform: rotate(15deg); }	
+	40% { -webkit-transform: rotate(-10deg); }
+	60% { -webkit-transform: rotate(5deg); }	
+	80% { -webkit-transform: rotate(-5deg); }	
+	100% { -webkit-transform: rotate(0deg); }
+}*/
+.dragDownLeft{
+	-webkit-animation-name: dragDownLeft;
+	-webkit-animation-duration: .2s;
+	/*-webkit-animation-iteration-count: 1;*/
+	/*-webkit-animation-delay: 2s;*/
+	-webkit-animation-timing-function: ease-in;
 }
 
-#about{
-	position: absolute;
-	top:0;
-	left:303px;
-	width: 303px;
+@-webkit-keyframes dragDownLeft {
+	0% { -webkit-transform: rotate(0); -webkit-transform-origin: top left; }	
+	20% { -webkit-transform: rotate(20deg) translateY(10px); opacity: 1; -webkit-transform-origin: top left; }	
+	25%,100% { -webkit-transform: translateY(1000px); opacity: 0; }
+}
+.dragDownRight{
+	-webkit-animation-name: dragDownRight;
+	-webkit-animation-duration: .2s;
+	/*-webkit-animation-iteration-count: 1;*/
+	/*-webkit-animation-delay: 2s;*/
+	-webkit-animation-timing-function: ease-in;
+}
+@-webkit-keyframes dragDownRight {
+	0% { -webkit-transform: rotate(0); -webkit-transform-origin: top right; }	
+	20% { -webkit-transform: rotate(-20deg) translateY(10px); opacity: 1; -webkit-transform-origin: top right; }	
+	25%,100% { -webkit-transform: translateY(1000px); opacity: 0; }
 }
 
-.drop{
-	position: relative;
-	width:100px;
-	height:100px;
-	border-right:1px solid #000;
-	border-top:1px solid #000;
-	background: #000;
-	color: #fff;
-	font-size: 12px;
-	border-radius: 5px;
-	z-index: 2;
-	float: left;
-	overflow: hidden;
-}
-.about-hidden{
-	position: relative;
-	width: 400px;
-	height: 380px;
-}
-.about-hidden img{
-	width: 400px;
-	height: 380px;
-}

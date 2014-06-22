@@ -20,7 +20,8 @@ function creartBg(){
 		height_count = Math.ceil(getWH().h/101), 
 		offect = (width_count-1) * 101; //offect form the left
 
-	$('#bg,#region').css({'height':getWH().h,'width':getWH().w}); //set the width
+	$('#bg,#region,#bg-img>img').css({'height':getWH().h,'width':getWH().w}); //set the width
+	$('#bg-img>img').css({'height':'auto','width':getWH().w}); //set the width
 	$('#bg_sp').css('left',offect); //set the offect
 
 	//loop append the box
@@ -32,7 +33,7 @@ function creartBg(){
 	}	
 	//speical box on the right
 	for(var j=0;j<height_count;j++){
-		var el_sp = "<div class='box_sp'></div>";
+		var el_sp = "<div class='box_sp box'></div>";
 		$('#bg_sp').append(el_sp);
 	}
 
@@ -45,7 +46,15 @@ creartBg();
 $(window).resize(function(){
 	$('.box').remove();
 	$('#region').css({'height':getWH().h,'width':getWH().w});
+	$('#bg-img>img').css({'height':'auto','width':getWH().w});
 	creartBg();
+});
+
+$('.box').hover(function(){
+	$(this).stop(true,true)
+	$(this).animate({opacity:0.6},200);
+},function(){
+	$(this).animate({opacity:0.4},1000);
 });
 
 });

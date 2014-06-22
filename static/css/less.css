@@ -5,12 +5,13 @@ body{
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	background: url(../img/bp13.jpg) repeat;
+	/*background: url(../img/bp13.jpg) repeat;*/
 	/*background: #f1f1f1;*/
 }
 #bg{
 	overflow: hidden;
 }
+
 #jb{
 	position: absolute;
 	width: 100%;
@@ -25,11 +26,19 @@ body{
 	height: 100%;
 	opacity: 0.3;
 }
+#bg-img{
+	position: absolute;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
 #bg{
 	position: absolute;
 	top:0px;
 	left:0px;
-	z-index: -1;
+	/*z-index: -1;*/
 }
 #bg .box,#bg .box_sp{
 	width:100px;
@@ -39,10 +48,11 @@ body{
 	border-radius:5px;
 	float:left;
 	/*margin: 0 1px 1px 0;*/
-	/*background: url(../img/bg2.png) repeat;*/
-	background:#272822; 
+	background: url(../img/bg4.gif) repeat;
+	/*background:#272822; */
+
 	z-index:-1;
-	opacity: 0.8;
+	opacity: 0.4;
 	/*overflow: hidden;*/
 }
 #bg_sp{
@@ -56,5 +66,52 @@ body{
 
 }
 #box3{
-	background: red;
+	background: pink;
+}
+
+#drag,.drag{
+	position: absolute;
+	width: 101px;
+	height: 101px;
+	background: #000;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 5px;
+	z-index: 2;
+}
+
+.drag.ui-draggable-dragging{
+	z-index: 999;
+}
+
+
+#about{
+	position: absolute;
+	top:0;
+	left:303px;
+	width: 303px;
+}
+
+.drop{
+	position: relative;
+	width:100px;
+	height:100px;
+	border-right:1px solid #000;
+	border-top:1px solid #000;
+	background: #000;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 5px;
+	z-index: 2;
+	float: left;
+	overflow: hidden;
+}
+.about-hidden{
+	position: relative;
+	width: 400px;
+	height: 380px;
+}
+.about-hidden img{
+	width: 400px;
+	height: 380px;
 }

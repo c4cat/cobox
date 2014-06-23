@@ -195,7 +195,7 @@ $(function(){
 	// };
 
 	//clone drop about
-	function createDropDown(){
+	function dropDown(){
 		//clone first
 		$('.about-hidden').clone().prependTo('.drop');
 
@@ -220,11 +220,34 @@ $(function(){
 		});
 	}
 
+	dropDown();
 
-	createDropDown();
+	function createDropDown(){
 
+	}
 
+	function setPosition(){
+		$('.drag').each(function(){
+			var x = $(this).data('x')*101+'px',
+				y = $(this).data('y')*101+'px';
+			$(this).css({'left':x,'top':y});
+				
+		})
+	}
 
+	setPosition();
+
+	function arr2xy(arr){
+		var x = arr[0] * 101 + 'px',
+			y = arr[1] * 101 + 'px';
+	}
+
+	$('.drag').click(function(){
+		$('#region').append('<div class="drag" id="box3" data-x="7" data-y="2">hello world3!</div>');
+		$('#region').append('<div class="drag" id="box3" data-x="9" data-y="2">hello world3!</div>');
+		$('#region').append('<div class="drag" id="box3" data-x="7" data-y="1">hello world3!</div>');
+		setPosition();
+	});
 
 
 	// var angle_arr = randomAngle();

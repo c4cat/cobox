@@ -40,6 +40,7 @@ body{
 /*	-webkit-filter:brightness(.5);
 	-webkit-filter:blur(3px);
 	-webkit-filter:grayscale(.7);*/
+	/*min-height:700px;*/
 }
 
 #bg{

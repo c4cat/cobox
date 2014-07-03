@@ -16,35 +16,41 @@ function get_wh(){
 	return re;
 }
 //set 
-function set_wh(arg){
-	$(arg).css({'width':get_wh().w,'height':get_wh().h});
-}
+// function set_wh(arg){
+// 	$(arg).css({'width':get_wh().w,'height':get_wh().h});
+// }
 
-function set_img_wh(arg){
-	$(arg).css({'width':get_wh().w,'height':'auto'});
-}
-//function
+// function set_img_wh(arg){
+// 	$(arg).css({'width':get_wh().w,'min-height':get_wh().h});
+// }
+
+// jquery 
 $(function(){
 
-var Bg = Backbone.Model.extend({
-	initialize:function(){
-
-	},
-	defaults:{
-		bgImage : ['../img/bg1.jpg','../img/bg1.jpg','../img/bg1.jpg']
-	}
-});
+//start bg view
 
 var BgView = Backbone.View.extend({
 	// 
-	model:Bg,
-	el:'#bg',
+	model : BgBox,
+	el : '#bg',
+	// defaults:{
+	// },
 	initialize:function(){
-		console.log('bg view work');
+		var t = this;
+		$(window).on("resize",whenResize);
+			//function 
+			function whenResize(){
+				t.removee();
+				t.create();
+				}
+
 		this.create();
-		console.log(this);
-		this.listenTo(this.el,'change',this.create);
+		this.setBgImage();
 	},
+
+	test:function(){
+		alert('test!!!');
+	}, 
 	create:function(){
 		var w_count = Math.ceil(get_wh().w/101),
 			h_count = Math.ceil(get_wh().h/101),
@@ -55,7 +61,7 @@ var BgView = Backbone.View.extend({
 		// for normal box
 		for(var i=0;i<w_count;i++){ 
 			for(var j=0;j<h_count;j++){ 
-				$(this.el).append(tem);
+				$('#bg-nm').append(tem);
 			}
 		}	
 		// for sp
@@ -64,12 +70,48 @@ var BgView = Backbone.View.extend({
 		}
 
 		$('#bg-sp').css('left',offect);
+		$('#bg-img>img').css({'width':get_wh().w,'min-height':get_wh().h});
 	},
-		whichImage:function(){
-
-		}
+	removee:function(){
+		$('#bg-nm,#bg-sp').empty();
+	},
+	setBgImage:function(){
+		var arr = ['./static/img/b1.jpg','./static/img/b2.jpg','./static/img/b3.jpg','./static/img/b4.jpg','./static/img/b5.jpg','./static/img/b6.jpg','./static/img/b7.jpg','./static/img/b8.jpg','./static/img/b9.jpg','./static/img/b10.jpg','./static/img/b11.jpg'],
+			random = _.random(0,10);
+		$('#bg-img>img').attr('src',arr[random]);	  
+		// $('#bg-img>img').attr('src','./static/img/b2.jpg');	  
+	}
 	});
 
+//  end Bgview;
+
+// .box model
+var Box = Backbone.Model.extend({
+	initialize:function(){
+		this.add();
+		console.log(123);
+	},
+	addOne:fnction(){
+		$('#region').append("<div class='box'></div>");
+	},
+	add:function(){
+
+	},
+	test:function(){
+		alert('have a test');
+	}
+});
+
+// .box collection 
+// var BgBoxList = Backbone.Collection.extend({
+// 	model: Bgbox,
+// 	initialize:function(){
+
+// 	},
+// 	comparator: 'order'
+// });
+
 var app = new BgView();
+
 
 });

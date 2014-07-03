@@ -33,12 +33,21 @@ body{
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
+	z-index: -2;
+
 }
+#bg-img>img{
+/*	-webkit-filter:brightness(.5);
+	-webkit-filter:blur(3px);
+	-webkit-filter:grayscale(.7);*/
+	/*min-height:700px;*/
+}
+
 #bg{
 	position: absolute;
 	top:0px;
 	left:0px;
-	/*z-index: -1;*/
+	z-index: -1;
 }
 #bg .box,#bg .box-sp{
 	width:100px;

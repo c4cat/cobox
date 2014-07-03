@@ -70,6 +70,6 @@ var BgView = Backbone.View.extend({
 		}
 	});
 
-var app = new BgView;
+var app = new BgView();
 
 });

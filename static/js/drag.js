@@ -3,55 +3,6 @@
 // 2014年6月13日16:33:17
 // drag.js
 
-//backbone
-var Dropbox = Backbone.Model.extend({
-	initialize:function(){
-		console.log('dropbox create');
-	},
-	defaults:{
-
-	}
-});
-
-var DropboxList = Backbone.Collection.extend({
-	model:Dropbox,
-	comparator: 'order'
-});
-
-var Dropboxs =  new DropboxList;
-
-// var DropboxView = Backbone.View.extend({
-// 	// tagname : "div",
-// 	template : _.template($('#dropbox-item').html())
-// });
-
-var AppView = Backbone.View.extend({
-	el:'body',
-	events:{
-
-	},
-	initialize:function(){
-		console.log('message');
-	},
-	render:function(){
-		var template = _.template($('#dropbox-item').html());
-		
-			$(this.el).append(template);
-	},
-	addOne:function(){
-		console.log(123);
-	},
-	addAll:function(){
-
-	},
-	breakdown:function(){
-
-	}
-});
-
-var demo = new AppView;
-demo.render();
-
 //jquery
 $(function(){
 	$('.drag').draggable({

@@ -47,7 +47,7 @@ body{
 	position: absolute;
 	top:0px;
 	left:0px;
-	z-index: -1;
+	z-index: 1;
 }
 #bg .box,#bg .box-sp{
 	width:100px;
@@ -59,8 +59,7 @@ body{
 	/*margin: 0 1px 1px 0;*/
 	background: url(../img/bg4.gif) repeat;
 	/*background:#272822; */
-
-	z-index:-1;
+	z-index:1;
 	opacity: 0.4;
 	/*overflow: hidden;*/
 }

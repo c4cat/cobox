@@ -131,20 +131,6 @@ $(function(){
 		});
 	}
 
-	// crash
-	// function crash(clientX,clientY){
-	// 	var window_width = $(window).width(),
-	// 		window_height = $(window).height(),
-	// 		i;
-	// 		clientX += 100;
-	// 		$('.crashing').animate({
-	// 				'left': window_width - 150 +'px',
-	// 				'top':'150px'
-	// 			}, 200, function(){
-	// 		  		$('.crashing').animate({'left': '500px'},100);
-	// 		});
-	// };
-
 	//clone drop about
 	function dropDown(){
 		//clone first
@@ -170,60 +156,8 @@ $(function(){
 			});
 		});
 	}
+	// dropDown();
 
-	dropDown();
-
-	function createDropDown(){
-
-	}
-
-	function setPosition(){
-		$('.drag').each(function(){
-			var x = $(this).data('x')*101+'px',
-				y = $(this).data('y')*101+'px';
-			$(this).css({'left':x,'top':y});
-				
-		})
-	}
-
-	setPosition();
-
-	function arr2xy(arr){
-		var x = arr[0] * 101 + 'px',
-			y = arr[1] * 101 + 'px';
-	}
-
-	$('.drag').click(function(){
-		$('#region').append('<div class="drag" id="box3" data-x="7" data-y="2">hello world3!</div>');
-		$('#region').append('<div class="drag" id="box3" data-x="9" data-y="2">hello world3!</div>');
-		$('#region').append('<div class="drag" id="box3" data-x="7" data-y="1">hello world3!</div>');
-		setPosition();
-	});
-
-
-	// var angle_arr = randomAngle();
- 	// 	var count = 0;
-	// for(var ii=1;ii<4;ii++){
-	// 	for(var jj=1;jj<4;jj++){
-	// 		$('.drop[data-x='+ii+'][data-y='+jj+']').animate({
-	// 			'zIndex':-1
-	// 		},{step:function(){
-	// 			$(this).css('transform','rotate('+angle_arr[count]+'deg)'); 
-	// 			console.log(count);
-	// 		}, duration:'slow'},'linear');
-	// 		count++;
-	// 	}
-	// }
-	// function randomAngle(){
-	// 		var	arr = [];
-	// 	for(var i=0;i<18;i++){	
-	// 		var random = Math.ceil(Math.random()*10),
-	// 			angle = random * 18;
-	// 		arr.push(angle);
-	// 	}
-	// 	console.log(arr);
-	// 	return arr;
-	// }
 
 });
 

@@ -31,7 +31,6 @@ $(function(){
 
 var BgView = Backbone.View.extend({
 	// 
-	model : BgBox,
 	el : '#bg',
 	// defaults:{
 	// },
@@ -91,7 +90,7 @@ var Box = Backbone.Model.extend({
 		this.add();
 		console.log(123);
 	},
-	addOne:fnction(){
+	addOne:function(){
 		$('#region').append("<div class='box'></div>");
 	},
 	add:function(){

@@ -157,7 +157,5 @@ $(function(){
 		});
 	}
 	// dropDown();
-
-
 });
 

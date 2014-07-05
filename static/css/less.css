@@ -61,7 +61,7 @@ body{
 	/*background:#272822; */
 	z-index:1;
 	opacity: 0.4;
-	/*overflow: hidden;*/
+	overflow: hidden;
 }
 #bg-sp{
 	position: absolute;
@@ -71,10 +71,7 @@ body{
 }
 
 #region{
-
-}
-#box3{
-	background: pink;
+	overflow: hidden;	
 }
 
 #drag,.drag{
@@ -90,14 +87,6 @@ body{
 
 .drag.ui-draggable-dragging{
 	z-index: 999;
-}
-
-
-#about{
-	position: absolute;
-	top:0;
-	left:303px;
-	width: 303px;
 }
 
 .drop{

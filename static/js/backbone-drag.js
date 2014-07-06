@@ -124,13 +124,9 @@ var DragBoxView = Backbone.View.extend({
 
 		for(var i=0;i<drag_count*2;i++){
 			var random = this.createRandomArr();
-			for(var j=0;j<arr.length;j++){
- 				if(random.toString() == arr[j].toString()){
- 					break;
- 				}
- 				// arr.push(random);
+			if(!this.inOrNot(random,arr)){
+					arr.push(random);
 			}
-			arr.push(random);
 		}
 
 		console.log(arr);
@@ -139,6 +135,8 @@ var DragBoxView = Backbone.View.extend({
 			$(this).css({'left':arr[count][0]*101+'px','top':arr[count][1]*101+'px'});
 			count++;
 		});
+		
+		return;
 	},
 	createRandomArr:function(){
 		var w_count = Math.ceil(get_wh().w/101),
@@ -147,6 +145,14 @@ var DragBoxView = Backbone.View.extend({
 			h_random = _.random(0,h_count-2);
 
 		return([w_random,h_random]);
+	},
+	inOrNot:function(obj,arr){
+		for(var i=0;i<arr.length;i++){
+ 			if(obj.toString() == arr[i].toString()){
+ 					return true;
+ 				}
+			}
+		return false;	
 	},
 	test:function(){
 		alert('test');		

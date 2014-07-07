@@ -14,20 +14,17 @@ $(function(){
 		start:function(event,ui){
 			this.clientX_start = event.clientX;
 			this.clientY_start = event.clientY;
-			this.time_start = event.timeStamp;
 
-			$(this).addClass('whenDragging animated').removeClass('stopShake');
+			// $(this).addClass('whenDragging animated').removeClass('stopShake');
 			console.log('start');
 		},
 		drag:function(event,ui){
 		 	this.offsetX = event.offsetX;
 		 	this.offsetY = event.offsetY;
-		 	// console.log(event);
-		 	if(event.clientX + 50 > $(window).width() || event.clientY + 50 > $(window).height()){
-		 		// console.log('edge stop');
-		 		// return false;
-		 	}
+
 		 	$(this).css("zIndex",999);
+
+
 
 			draggingOpacity();
 		},
@@ -61,6 +58,8 @@ $(function(){
 			$('.drag').css('opacity',1);
 		}
 	});
+	
+	function drag
 
 	function revise(argv4Crash){
 		var boxWH = 101,
@@ -93,7 +92,6 @@ $(function(){
 				"easeInQuad",
 				function() {
 					$(this).removeClass("revise").addClass('stopShake');
-
 					// overlap or not?
 					overlap($(this),x_distance,y_distance);
 			});
@@ -131,6 +129,7 @@ $(function(){
 		});
 	}
 
+	//
 	//clone drop about
 	function dropDown(){
 		//clone first

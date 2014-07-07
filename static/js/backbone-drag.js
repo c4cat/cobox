@@ -100,10 +100,10 @@ var DragBoxView = Backbone.View.extend({
 	initialize:function(){
 		var t = this;
 		this.createTem();
-		this.$el.css({'width':get_wh().w,'min-height':get_wh().h});
+		this.$el.css({'width':get_wh().w,'height':get_wh().h});
 		$(window).on("resize",function(){
 			t.setPosition();
-			t.$el.css({'width':get_wh().w,'min-height':get_wh().h});
+			t.$el.css({'width':get_wh().w,'height':get_wh().h});
 		});
 	},
 	createTem:function(){

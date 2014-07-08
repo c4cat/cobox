@@ -1,5 +1,4 @@
-// An example Backbone application contributed by
-// [Jérôme Gravel-Niquet](http://jgn.me/). This demo uses a simple
+﻿// An example Backbone application contributed by
 // [LocalStorage adapter](backbone-localstorage.html)
 // to persist Backbone models within your browser.
 

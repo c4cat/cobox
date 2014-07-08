@@ -74,7 +74,7 @@ body{
 	overflow: hidden;	
 }
 
-#drag,.drag{
+#drag,.drag,.testBox{
 	position: absolute;
 	width: 101px;
 	height: 101px;

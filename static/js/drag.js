@@ -5,28 +5,71 @@
 
 //jquery
 $(function(){
-	$('.drag').draggable({
+	$('.testBox').draggable({
 		containment: $('#region'),
 		zIndex: 999,
-		create:function(event,ui){
+		create:function(e){
 			// console.log('create success');
 		},
-		start:function(event,ui){
+		start:function(e){
 			this.clientX_start = event.clientX;
 			this.clientY_start = event.clientY;
-
 			// $(this).addClass('whenDragging animated').removeClass('stopShake');
+
+			// **bouncejs
+			this.dragStartPos = {
+    		  x: e.clientX,
+    		  y: e.clientY
+    		};
+    		this.boxStartPos = {
+    		  x: $(this).offset().left + $(this).width() / 2,
+    		  y: $(this).offset().top + $(this).height() / 2
+    		};
+    		this.grabOffset = {
+    		  x: e.offsetX - $(this).width() / 2,
+    		  y: e.offsetY - $(this).height() / 2
+    		};
+    		this.grabDistance = Math.sqrt(Math.pow(this.grabOffset.x, 2) + Math.pow(this.grabOffset.y, 2));
+    		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px");
+    		this.dragOffset = null;
+
 			console.log('start');
 		},
-		drag:function(event,ui){
+		drag:function(e){
 		 	this.offsetX = event.offsetX;
 		 	this.offsetY = event.offsetY;
-
 		 	$(this).css("zIndex",999);
-
+		 	$(this)
 			draggingOpacity();
+			// **bouncejs
+			var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
+    		delta = {
+      			x: e.clientX - this.dragStartPos.x,
+      			y: e.clientY - this.dragStartPos.y
+    		};
+    		distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
+    		dampenedDistance = 250 * (1 - Math.pow(Math.E, -0.002 * distance));
+    		angle = Math.atan2(delta.y, delta.x);
+    		if (this.grabDistance > 10) {
+    		  centerDelta = {
+    		    x: e.clientX - this.boxStartPos.x,
+    		    y: e.clientY - this.boxStartPos.y
+    		  };
+    		  centerDistance = Math.sqrt(Math.pow(centerDelta.x, 2) + Math.pow(centerDelta.y, 2));
+    		  dotProduct = centerDelta.x * this.grabOffset.x + centerDelta.y * this.grabOffset.y;
+    		  determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
+    		  this.dragAngle = -Math.atan2(determinant, dotProduct);
+    		} else {
+    		  this.dragAngle = 0;
+    		}
+    		this.dragOffset = {
+    		  x: Math.round(Math.cos(angle) * dampenedDistance),
+    		  y: Math.round(Math.sin(angle) * dampenedDistance)
+    		};
+
+    		$(this).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
 		},
-		stop:function(event,ui){
+		stop:function(e){
 			this.clientX_stop = event.clientX;
 			this.clientY_stop = event.clientY;
 			// this.time_stop = event.timeStamp;
@@ -45,7 +88,7 @@ $(function(){
 					dy : y_distance,
 					t : time_count,
 					clientX : event.clientX,
-					clientY :event.clientY,
+					clientY : event.clientY,
 					left: $(this).css('left'),
 					top : $(this).css('top')
 				};
@@ -57,10 +100,6 @@ $(function(){
 		}
 	});
 	
-	function drag(){
-
-	};
-
 	function revise(argv4Crash){
 		var boxWH = 101,
 			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(argv4Crash.left)) / boxWH),

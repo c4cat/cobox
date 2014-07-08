@@ -24,8 +24,6 @@ $(function(){
 
 		 	$(this).css("zIndex",999);
 
-
-
 			draggingOpacity();
 		},
 		stop:function(event,ui){
@@ -59,7 +57,9 @@ $(function(){
 		}
 	});
 	
-	function drag
+	function drag(){
+
+	};
 
 	function revise(argv4Crash){
 		var boxWH = 101,

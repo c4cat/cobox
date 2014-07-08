@@ -7,7 +7,7 @@ BoxView = (function(_super) {
     return BoxView.__super__.constructor.apply(this, arguments);
   }
 
-  BoxView.prototype.el = "#result .box";
+  BoxView.prototype.el = "#box3";
 
   BoxView.prototype.events = {
     "mousedown": "startDrag"

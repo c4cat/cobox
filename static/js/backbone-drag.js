@@ -130,10 +130,10 @@ var DragBoxView = Backbone.View.extend({
     	this.grabDistance = Math.sqrt(Math.pow(this.grabOffset.x, 2) + Math.pow(this.grabOffset.y, 2));
     	ele.css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px");
     	this.dragOffset = null;
-    	// $(ele).on({
-    	//   "mousemove.drag": this.drag,
-    	//   "mouseup.drag": this.stopDrag
-    	// });
+    	$(ele).on({
+    	  "mousemove.drag": this.drag,
+    	  "mouseup.drag": this.stopDrag
+    	});
     	return $("body").addClass("dragging");
 	},
 	drag:function(e){

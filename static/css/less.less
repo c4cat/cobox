@@ -1,3 +1,7 @@
+*{
+	margin: 0;
+	padding: 0;
+}
 html{
 	overflow: hidden;
 }
@@ -47,7 +51,7 @@ body{
 	position: absolute;
 	top:0px;
 	left:0px;
-	z-index: -1;
+	z-index: 1;
 }
 #bg .box,#bg .box-sp{
 	width:100px;
@@ -59,10 +63,9 @@ body{
 	/*margin: 0 1px 1px 0;*/
 	background: url(../img/bg4.gif) repeat;
 	/*background:#272822; */
-
-	z-index:-1;
+	z-index:1;
 	opacity: 0.4;
-	/*overflow: hidden;*/
+	overflow: hidden;
 }
 #bg-sp{
 	position: absolute;
@@ -71,14 +74,16 @@ body{
 	width: 105px;
 }
 
-#region{
-
-}
 #box3{
-	background: pink;
+	left:300px;
+	top:300px;
 }
 
-#drag,.drag{
+#region{
+	overflow: hidden;	
+}
+
+#drag,.drag,.testBox{
 	position: absolute;
 	width: 101px;
 	height: 101px;
@@ -87,20 +92,13 @@ body{
 	font-size: 12px;
 	border-radius: 5px;
 	z-index: 2;
+	// cursor:pointer;
 }
 
 .drag.ui-draggable-dragging{
 	z-index: 999;
 }
 
-
-#about{
-	position: absolute;
-	top:0;
-	left:303px;
-	width: 303px;
-}
-a
 .drop{
 	position: relative;
 	width:100px;

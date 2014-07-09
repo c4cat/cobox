@@ -99,22 +99,28 @@ var DragBoxView = Backbone.View.extend({
 	model:dragBox,
 	initialize:function(){
 		var t = this;
+		var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 		this.createTem();
 		this.$el.css({'width':get_wh().w,'height':get_wh().h});
 		$(window).on("resize",function(){
 			t.setPosition();
 			t.$el.css({'width':get_wh().w,'height':get_wh().h});
 		});
+		this.drag = __bind(this.drag, this);
+		this.stopDrag = __bind(this.stopDrag, this);
 	},
 	events:{
 		"mousedown .drag": "startDrag"
 	},
 	startDrag:function(e){
-		// console.log($(e.currentTarget));
-		if (this.isDragging){return;}
     	// ele.removeClass("animate spin");
+    	if (this.isDragging) {
+    	  return;
+    	}
     	var ele = $(e.currentTarget);
+    	// this.$el.removeClass("animate spin");
     	this.isDragging = true;
+    	this.ele = ele;
     	this.dragStartPos = {
     	  x: e.clientX,
     	  y: e.clientY
@@ -130,21 +136,21 @@ var DragBoxView = Backbone.View.extend({
     	this.grabDistance = Math.sqrt(Math.pow(this.grabOffset.x, 2) + Math.pow(this.grabOffset.y, 2));
     	ele.css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px");
     	this.dragOffset = null;
-    	// $(ele).on({
-    	//   "mousemove.drag": this.drag,
-    	//   "mouseup.drag": this.stopDrag
-    	// });
+    	$(document).on({
+    	  "mousemove.drag": this.drag,
+    	  "mouseup.drag": this.stopDrag
+    	});
     	return $("body").addClass("dragging");
 	},
 	drag:function(e){
+		console.log(e);
 		var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
-		console.log(this);
     	delta = {
     	  x: e.clientX - this.dragStartPos.x,
     	  y: e.clientY - this.dragStartPos.y
     	};
     	distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
-    	dampenedDistance = 250 * (1 - Math.pow(Math.E, -0.002 * distance));
+    	dampenedDistance = 500 * (1 - Math.pow(Math.E, -0.002 * distance));
     	angle = Math.atan2(delta.y, delta.x);
     	if (this.grabDistance > 10) {
     	  centerDelta = {
@@ -162,13 +168,41 @@ var DragBoxView = Backbone.View.extend({
     	  x: Math.round(Math.cos(angle) * dampenedDistance),
     	  y: Math.round(Math.sin(angle) * dampenedDistance)
     	};
-    	return $(e.currentTarget).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+
+    	return $(this.ele).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+	},
+	stopDrag:function(e){
+    var bounce, correction, cos, deg, sin;
+    var __modulo = function(a, b) { return (a % b + +b) % b; };
+    if (!this.isDragging) {return;}
+    this.isDragging = false;
+    if (this.dragOffset) {
+      cos = Math.cos(this.dragAngle);
+      sin = Math.sin(this.dragAngle);
+      correction = {
+        x: this.grabOffset.x - (this.grabOffset.x * cos - this.grabOffset.y * sin),
+        y: this.grabOffset.y - (this.grabOffset.x * sin + this.grabOffset.y * cos)
+      };
+      this.ele.css({"transform-origin":"","transform":""});
+      // this.ele.css("transform", "translate(" + (this.dragOffset.x + correction.x) + "px, " + (this.dragOffset.y + correction.y) + "px)\nrotate(" + this.dragAngle + "rad)");
+      // this.ele.css({"left":e.clientX,"top":e.clientY});
+
+      deg = this.dragAngle / Math.PI * 180;
+
+      if (__modulo(deg, 90) > 45) {
+        deg += 90 - __modulo(deg, 90);
+      } else {
+        deg -= __modulo(deg, 90);
+      }
+    }
+    $(document).off(".drag");
+    return $("body").removeClass("dragging");
 	},
 	createTem:function(){
 		var list = this.model.get('list'),
 			tmp = '';
 		for(var i=0;i<list.length;i++){
-			tmp += '<div class="drag" id="' + list[i].toLowerCase() + '">'+ list[i] +'</div>'
+			tmp += '<div class="drag" id="' + list[i].toLowerCase() + '">'+ list[i] +'</div>';
 		}
 		this.$el.append(tmp);
 		this.setPosition();

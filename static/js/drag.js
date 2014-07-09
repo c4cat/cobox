@@ -5,7 +5,7 @@
 
 //jquery
 $(function(){
-	$('.testBox').draggable({
+	$('.drag').draggable({
 		containment: $('#region'),
 		zIndex: 999,
 		create:function(e){
@@ -39,7 +39,7 @@ $(function(){
 		 	this.offsetX = event.offsetX;
 		 	this.offsetY = event.offsetY;
 		 	$(this).css("zIndex",999);
-		 	$(this)
+		 	$(this).css({'left':'300px','top':'300px'});
 			draggingOpacity();
 			// **bouncejs
 			var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
@@ -48,9 +48,9 @@ $(function(){
       			y: e.clientY - this.dragStartPos.y
     		};
     		distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
-    		dampenedDistance = 250 * (1 - Math.pow(Math.E, -0.002 * distance));
+    		dampenedDistance = 25 * (1 - Math.pow(Math.E, -0.002 * distance));
     		angle = Math.atan2(delta.y, delta.x);
-    		if (this.grabDistance > 10) {
+    		// if (this.grabDistance > 0) {
     		  centerDelta = {
     		    x: e.clientX - this.boxStartPos.x,
     		    y: e.clientY - this.boxStartPos.y
@@ -59,9 +59,9 @@ $(function(){
     		  dotProduct = centerDelta.x * this.grabOffset.x + centerDelta.y * this.grabOffset.y;
     		  determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
     		  this.dragAngle = -Math.atan2(determinant, dotProduct);
-    		} else {
-    		  this.dragAngle = 0;
-    		}
+    		// } else {
+    		//   this.dragAngle = 0;
+    		// }
     		this.dragOffset = {
     		  x: Math.round(Math.cos(angle) * dampenedDistance),
     		  y: Math.round(Math.sin(angle) * dampenedDistance)
@@ -93,7 +93,9 @@ $(function(){
 					top : $(this).css('top')
 				};
 
-			$(this).removeClass('whenDragging animated').addClass('crashing revise').css("zIndex",2);
+				//class crashing
+			$(this).removeClass('whenDragging animated').addClass('revise').css("zIndex",2);
+			// $(this).css({"transform-origin":"","transform":""});
 
 			revise(argv4Crash);
 			$('.drag').css('opacity',1);
@@ -124,13 +126,16 @@ $(function(){
 				y_distance =  (numOfBoxFromTop + 1) * 101;
 			}
 
+
 			$('.revise').animate({
 				'left' : x_distance,
-				'top' : y_distance},
-				100,
+				'top' : y_distance
+				},
+				150,
 				"easeInQuad",
 				function() {
 					$(this).removeClass("revise").addClass('stopShake');
+					$(this).css({"transform-origin":"","transform":""});
 					// overlap or not?
 					overlap($(this),x_distance,y_distance);
 			});

@@ -9,7 +9,7 @@ $(function(){
 		containment: $('#region'),
 		zIndex: 999,
 		create:function(e){
-			// console.log('create success');
+			console.log('create success');
 		},
 		start:function(e){
 			this.clientX_start = event.clientX;
@@ -48,7 +48,7 @@ $(function(){
       			y: e.clientY - this.dragStartPos.y
     		};
     		distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
-    		dampenedDistance = 25 * (1 - Math.pow(Math.E, -0.002 * distance));
+    		dampenedDistance = 2.5 * (1 - Math.pow(Math.E, -0.002 * distance));
     		angle = Math.atan2(delta.y, delta.x);
     		// if (this.grabDistance > 0) {
     		  centerDelta = {
@@ -67,52 +67,104 @@ $(function(){
     		  y: Math.round(Math.sin(angle) * dampenedDistance)
     		};
 
-    		$(this).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+    		// $(this).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+    		$(this).css("transform", "rotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
 		},
 		stop:function(e){
 			this.clientX_stop = event.clientX;
 			this.clientY_stop = event.clientY;
-			// this.time_stop = event.timeStamp;
 			var obj = $('#drag'),
 				offsetX  = event.offsetX - this.offsetX,
 				offsetY  = event.offsetY - this.offsetY,
-				time_count = (event.timeStamp - this.time_start) / 1000; //seconds 
 
 				x_distance = Math.abs(this.clientX_stop - this.clientX_start),
 				y_distance = Math.abs(this.clientY_stop - this.clientY_start),
 				x_direction = (this.clientX_stop>this.clientX_start)? 'right':'left',
 				y_direction = (this.clientY_stop>this.clientY_start)? 'down':'up';
 			
-				var argv4Crash = {
+				var arg = {
 					dx : x_distance,
 					dy : y_distance,
-					t : time_count,
 					clientX : event.clientX,
 					clientY : event.clientY,
 					left: $(this).css('left'),
-					top : $(this).css('top')
+					top : $(this).css('top'),
+					angle : this.dragAngle.toPrecision(2)
 				};
 
 				//class crashing
 			$(this).removeClass('whenDragging animated').addClass('revise').css("zIndex",2);
-			// $(this).css({"transform-origin":"","transform":""});
 
-			revise(argv4Crash);
-			$('.drag').css('opacity',1);
+			// revise(arg);
+			//bounce.js app 
+			var bounce, correction, cos, deg, sin;
+			var __modulo = function(a, b) { return (a % b + +b) % b; };
+
+    		cos = Math.cos(this.dragAngle);
+    		sin = Math.sin(this.dragAngle);
+    		correction = {
+    		  x: this.grabOffset.x - (this.grabOffset.x * cos - this.grabOffset.y * sin),
+    		  y: this.grabOffset.y - (this.grabOffset.x * sin + this.grabOffset.y * cos)
+    		};
+    		$(this).css("transform-origin", "");
+    		$(this).css("transform", "translate(" + (this.dragOffset.x + correction.x) + "px, " + (this.dragOffset.y + correction.y) + "px)\nrotate(" + this.dragAngle + "rad)");
+    		deg = this.dragAngle / Math.PI * 180;
+    		if (__modulo(deg, 90) > 45) {
+    		  deg += 90 - __modulo(deg, 90);
+    		} else {
+    		  deg -= __modulo(deg, 90);
+    		}
+
+			bounce = new Bounce();
+			bounce.translate({
+    	    	stiffness: 1.5,
+    	    	from: {
+    			      x: this.dragOffset.x + correction.x,
+    			      y: this.dragOffset.y + correction.y
+    			    },
+    			    to: {
+    			      x: 0,
+    			      y: 0
+    			    }
+    			}).rotate({
+    			    stiffness: 0.5,
+    			    from: this.dragAngle / Math.PI * 180,
+    			    to: deg
+    		});
+
+    		playAnimation({
+    			    bounceObject: bounce,
+    			    duration: 600
+    		});
+    		function playAnimation(options) {
+  				var bounce, css, duration, properties;
+  				bounce = options.bounceObject;
+  				duration = options.duration ;
+  				properties = [];
+  				properties.push("animation-duration: " + duration + "ms");
+  				css = ".drag.animate {\n  " + (properties.join(";\n  ")) + ";\n}\n" + (bounce.getKeyframeCSS({
+  				  name: "animation"
+  				}));
+  				// this.$style.text(PrefixFree.prefixCSS(css, true));
+  				$(this).removeClass("animate");
+  				$(this).offsetWidth;
+  				$(this).addClass("animate");
+  			};	
 		}
 	});
-	
-	function revise(argv4Crash){
+
+	function revise(arg){
 		var boxWH = 101,
-			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(argv4Crash.left)) / boxWH),
-			numOfBoxFromTop = parseInt(Math.ceil(parseInt(argv4Crash.top)) / boxWH),
-			leftOffect =  Math.ceil(parseInt(argv4Crash.left)) / boxWH - numOfBoxFromLeft,
-			topOffect =  Math.ceil(parseInt(argv4Crash.top)) / boxWH - numOfBoxFromTop,
+			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left)) / boxWH),
+			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top)) / boxWH),
+			leftOffect =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
+			topOffect =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
 			x_direction = leftOffect<0.5? 'left':'right',
 			y_direction = topOffect<0.5? 'top':'bottom',
 			x_distance,
 			y_distance,
-			i;
+			i,
+			angle = arg.angle;
 
 			if(x_direction == 'left'){
 				x_distance =  numOfBoxFromLeft * 101;
@@ -125,21 +177,30 @@ $(function(){
 			}else{
 				y_distance =  (numOfBoxFromTop + 1) * 101;
 			}
-
-
+			rotate(angle);
 			$('.revise').animate({
 				'left' : x_distance,
-				'top' : y_distance
+				'top' : y_distance,
+				'transform' : 'rotate(0)'
+				},
+				{
+					duration:50,
+					step: function(now,fx){
+						console.log(now);
+						$(this).css({"transform":"rotate("+ now +")"});
+					}
 				},
 				150,
 				"easeInQuad",
 				function() {
-					$(this).removeClass("revise").addClass('stopShake');
-					$(this).css({"transform-origin":"","transform":""});
+					$(this).removeClass("revise");
+					// $(this).css({"transform-origin":"","transform":""});
+					// $(this).css({"transform-origin":""});
+
 					// overlap or not?
 					overlap($(this),x_distance,y_distance);
 			});
-
+			$('.drag').css('opacity',1);
 	};
 
 	function overlap(_this,x_distance,y_distance){

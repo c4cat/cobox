@@ -92,15 +92,3 @@
 	25%,100% { -webkit-transform: translateY(1000px); opacity: 0; }
 }
 
-.defalut{
-	-webkit-animation-name: defalut;
-	-webkit-animation-duration: .5s;
-	-webkit-animation-iteration-count: 1;
-	-webkit-animation-timing-function: ease-in;
-}
-@-webkit-keyframes defalut {
-	0% { -webkit-transform: rotate(0); -webkit-transform-origin: top right; }	
-	20% { -webkit-transform: rotate(-20deg) translateY(10px); opacity: 1; -webkit-transform-origin: top right; }	
-	25%,100% { -webkit-transform: translateY(1000px); opacity: 0; }
-}
-

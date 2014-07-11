@@ -33,7 +33,7 @@ var BgView = Backbone.View.extend({
 		});
 		this.create();
 		this.bgBoxHover();
-		this.setBgImage();
+		// this.setBgImage();
 	},
 	test:function(){
 		alert('test!!!');

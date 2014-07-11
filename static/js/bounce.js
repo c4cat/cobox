@@ -10,20 +10,8 @@
     this.components = [];
   }
 
-  Bounce.prototype.scale = function(options) {
-    return this.addComponent(new ComponentClasses["scale"](options));
-  };
-
-  Bounce.prototype.rotate = function(options) {
-    return this.addComponent(new ComponentClasses["rotate"](options));
-  };
-
   Bounce.prototype.translate = function(options) {
     return this.addComponent(new ComponentClasses["translate"](options));
-  };
-
-  Bounce.prototype.skew = function(options) {
-    return this.addComponent(new ComponentClasses["skew"](options));
   };
 
   Bounce.prototype.addComponent = function(component) {

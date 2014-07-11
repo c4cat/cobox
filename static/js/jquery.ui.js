@@ -5818,7 +5818,6 @@ $.widget("ui.draggable", $.ui.mouse, {
 		stop: null
 	},
 	_create: function() {
-
 		if (this.options.helper === "original" && !(/^(?:r|a|f)/).test(this.element.css("position"))) {
 			this.element[0].style.position = "relative";
 		}
@@ -5996,8 +5995,8 @@ $.widget("ui.draggable", $.ui.mouse, {
 			this.position = ui.position;
 		}
 
-		this.helper[ 0 ].style.left = this.position.left + "px";
-		this.helper[ 0 ].style.top = this.position.top + "px";
+		// this.helper[ 0 ].style.left = this.position.left + "px";
+		// this.helper[ 0 ].style.top = this.position.top + "px";
 
 		if ($.ui.ddmanager) {
 			$.ui.ddmanager.drag(this, event);

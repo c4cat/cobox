@@ -9086,7 +9086,7 @@ label {
 	z-index: 9999
 }
 
-.modal.in {
+.modal-in {
 	display: block;
 	-webkit-animation: modal-in .65s linear both;
 	-webkit-animation: modal-in .65s linear both

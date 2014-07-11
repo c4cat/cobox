@@ -30,7 +30,7 @@ $(function(){
     		  y: e.offsetY - $(this).height() / 2
     		};
     		this.grabDistance = Math.sqrt(Math.pow(this.grabOffset.x, 2) + Math.pow(this.grabOffset.y, 2));
-    		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px");
+    		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px").removeClass('re');
     		this.dragOffset = null;
 
 			console.log('start');
@@ -48,7 +48,7 @@ $(function(){
       			y: e.clientY - this.dragStartPos.y
     		};
     		distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
-    		dampenedDistance = 2.5 * (1 - Math.pow(Math.E, -0.002 * distance));
+    		dampenedDistance = 500 * (1 - Math.pow(Math.E, -0.002 * distance));
     		angle = Math.atan2(delta.y, delta.x);
     		// if (this.grabDistance > 0) {
     		  centerDelta = {
@@ -67,8 +67,11 @@ $(function(){
     		  y: Math.round(Math.sin(angle) * dampenedDistance)
     		};
 
-    		// $(this).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
-    		$(this).css("transform", "rotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+    		this.translateX = Math.round(this.dragOffset.x);
+    		this.translateY = Math.round(this.dragOffset.y);
+
+    		$(this).css({"transform":"translate(" + (this.translateX) + "px, " + (this.translateY) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)","left":this.clientX_start-50,"top":this.clientY_start-50});
+    		// $(this).css("transform", "rotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
 		},
 		stop:function(e){
 			this.clientX_stop = event.clientX;
@@ -77,11 +80,12 @@ $(function(){
 				offsetX  = event.offsetX - this.offsetX,
 				offsetY  = event.offsetY - this.offsetY,
 
-				x_distance = Math.abs(this.clientX_stop - this.clientX_start),
-				y_distance = Math.abs(this.clientY_stop - this.clientY_start),
+				x_distance = Math.abs(this.clientX_stop - this.clientX_start - this.translateX),
+				y_distance = Math.abs(this.clientY_stop - this.clientY_start - this.translateY),
 				x_direction = (this.clientX_stop>this.clientX_start)? 'right':'left',
 				y_direction = (this.clientY_stop>this.clientY_start)? 'down':'up';
-			
+				
+				console.log(x_distance,y_distance);
 				var arg = {
 					dx : x_distance,
 					dy : y_distance,
@@ -91,72 +95,17 @@ $(function(){
 					top : $(this).css('top'),
 					angle : this.dragAngle.toPrecision(2)
 				};
-
-				//class crashing
 			$(this).removeClass('whenDragging animated').addClass('revise').css("zIndex",2);
 
-			// revise(arg);
-			//bounce.js app 
-			var bounce, correction, cos, deg, sin;
-			var __modulo = function(a, b) { return (a % b + +b) % b; };
-
-    		cos = Math.cos(this.dragAngle);
-    		sin = Math.sin(this.dragAngle);
-    		correction = {
-    		  x: this.grabOffset.x - (this.grabOffset.x * cos - this.grabOffset.y * sin),
-    		  y: this.grabOffset.y - (this.grabOffset.x * sin + this.grabOffset.y * cos)
-    		};
-    		$(this).css("transform-origin", "");
-    		$(this).css("transform", "translate(" + (this.dragOffset.x + correction.x) + "px, " + (this.dragOffset.y + correction.y) + "px)\nrotate(" + this.dragAngle + "rad)");
-    		deg = this.dragAngle / Math.PI * 180;
-    		if (__modulo(deg, 90) > 45) {
-    		  deg += 90 - __modulo(deg, 90);
-    		} else {
-    		  deg -= __modulo(deg, 90);
-    		}
-
-			bounce = new Bounce();
-			bounce.translate({
-    	    	stiffness: 1.5,
-    	    	from: {
-    			      x: this.dragOffset.x + correction.x,
-    			      y: this.dragOffset.y + correction.y
-    			    },
-    			    to: {
-    			      x: 0,
-    			      y: 0
-    			    }
-    			}).rotate({
-    			    stiffness: 0.5,
-    			    from: this.dragAngle / Math.PI * 180,
-    			    to: deg
-    		});
-
-    		playAnimation({
-    			    bounceObject: bounce,
-    			    duration: 600
-    		});
-    		function playAnimation(options) {
-  				var bounce, css, duration, properties;
-  				bounce = options.bounceObject;
-  				duration = options.duration ;
-  				properties = [];
-  				properties.push("animation-duration: " + duration + "ms");
-  				css = ".drag.animate {\n  " + (properties.join(";\n  ")) + ";\n}\n" + (bounce.getKeyframeCSS({
-  				  name: "animation"
-  				}));
-  				// this.$style.text(PrefixFree.prefixCSS(css, true));
-  				$(this).removeClass("animate");
-  				$(this).offsetWidth;
-  				$(this).addClass("animate");
-  			};	
+			revise(arg);
+			//============================================================================//
 		}
 	});
 
 	function revise(arg){
 		var boxWH = 101,
-			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left)) / boxWH),
-			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top)) / boxWH),
+			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left + this.translateX)) / boxWH),
+			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top + this.translateY)) / boxWH),
 			leftOffect =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
 			topOffect =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
 			x_direction = leftOffect<0.5? 'left':'right',
@@ -177,26 +126,38 @@ $(function(){
 			}else{
 				y_distance =  (numOfBoxFromTop + 1) * 101;
 			}
-			rotate(angle);
+
+			//animate css 4 append
+		var css = '';
+			css += '.re{';
+			css += '-webkit-animation-name: re;';
+			css += '-webkit-animation-duration: 0.2s;';
+			css += '-webkit-animation-iteration-count: 1;'; //infinite
+			css += '-webkit-animation-delay: 0s;';
+			css += '-webkit-animation-timing-function: ease-in-out;';
+			css += '}';
+			css += '@-webkit-keyframes re {';
+			css += '20%, 40%, 60%, 80%, 100% { -webkit-transform-origin: center center; }';
+			css += '20% { -webkit-transform: rotate('+ angle +'); }';
+			// css += '40% { -webkit-transform: rotate(-10deg); }';
+			// css += '60% { -webkit-transform: rotate(5deg); }';	
+			css += '80% { -webkit-transform: translate(1px 1px); }';	
+			css += '100% { -webkit-transform: rotate(0);translate(0 0);}';
+			css += '}';
+
+		$('body').append('<style>'+ css +'</style>');
+
+			$('.revise').addClass('re');
+
 			$('.revise').animate({
 				'left' : x_distance,
 				'top' : y_distance,
-				'transform' : 'rotate(0)'
-				},
-				{
-					duration:50,
-					step: function(now,fx){
-						console.log(now);
-						$(this).css({"transform":"rotate("+ now +")"});
-					}
 				},
 				150,
 				"easeInQuad",
 				function() {
 					$(this).removeClass("revise");
-					// $(this).css({"transform-origin":"","transform":""});
-					// $(this).css({"transform-origin":""});
-
+					$(this).css('transform','');
 					// overlap or not?
 					overlap($(this),x_distance,y_distance);
 			});

@@ -265,6 +265,7 @@ var AroundModelList = Backbone.Collection.extend({
 
 var AroundView = new Backbone.View.extend({
 	el:$('#around-container'),
+	template: _.template($('#around-template').html()),
 	events:{
 
 	},
@@ -284,10 +285,10 @@ var AroundView = new Backbone.View.extend({
 				}
 		});
 	},
-
 	render:function(){
+		var temp = ''
+	},
 
-	}
 
 });
 

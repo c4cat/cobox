@@ -3,19 +3,17 @@
 // 2014年6月13日16:33:17
 // drag.js
 
-//jquery
+// jquery.ui
 $(function(){
 	$('.drag').draggable({
 		containment: $('#region'),
 		zIndex: 999,
 		create:function(e){
-			console.log('create success');
+			console.log('nav create success');
 		},
 		start:function(e){
 			this.clientX_start = event.clientX;
 			this.clientY_start = event.clientY;
-			// $(this).addClass('whenDragging animated').removeClass('stopShake');
-
 			// **bouncejs
 			this.dragStartPos = {
     		  x: e.clientX,
@@ -33,7 +31,7 @@ $(function(){
     		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px").removeClass('re');
     		this.dragOffset = null;
 
-			console.log('start');
+			console.log('drag start');
 		},
 		drag:function(e){
 		 	this.offsetX = event.offsetX;
@@ -50,18 +48,16 @@ $(function(){
     		distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
     		dampenedDistance = 500 * (1 - Math.pow(Math.E, -0.002 * distance));
     		angle = Math.atan2(delta.y, delta.x);
-    		// if (this.grabDistance > 0) {
-    		  centerDelta = {
-    		    x: e.clientX - this.boxStartPos.x,
-    		    y: e.clientY - this.boxStartPos.y
-    		  };
-    		  centerDistance = Math.sqrt(Math.pow(centerDelta.x, 2) + Math.pow(centerDelta.y, 2));
-    		  dotProduct = centerDelta.x * this.grabOffset.x + centerDelta.y * this.grabOffset.y;
-    		  determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
-    		  this.dragAngle = -Math.atan2(determinant, dotProduct);
-    		// } else {
-    		//   this.dragAngle = 0;
-    		// }
+
+    		centerDelta = {
+    		  x: e.clientX - this.boxStartPos.x,
+    		  y: e.clientY - this.boxStartPos.y
+    		};
+    		centerDistance = Math.sqrt(Math.pow(centerDelta.x, 2) + Math.pow(centerDelta.y, 2));
+    		dotProduct = centerDelta.x * this.grabOffset.x + centerDelta.y * this.grabOffset.y;
+    		determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
+    		this.dragAngle = -Math.atan2(determinant, dotProduct);
+
     		this.dragOffset = {
     		  x: Math.round(Math.cos(angle) * dampenedDistance),
     		  y: Math.round(Math.sin(angle) * dampenedDistance)
@@ -71,7 +67,6 @@ $(function(){
     		this.translateY = Math.round(this.dragOffset.y);
 
     		$(this).css({"transform":"translate(" + (this.translateX) + "px, " + (this.translateY) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)","left":this.clientX_start-50,"top":this.clientY_start-50});
-    		// $(this).css("transform", "rotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
 		},
 		stop:function(e){
 			this.clientX_stop = event.clientX;
@@ -80,32 +75,34 @@ $(function(){
 				offsetX  = event.offsetX - this.offsetX,
 				offsetY  = event.offsetY - this.offsetY,
 
-				x_distance = Math.abs(this.clientX_stop - this.clientX_start - this.translateX),
-				y_distance = Math.abs(this.clientY_stop - this.clientY_start - this.translateY),
+				x_distance = Math.abs(this.clientX_stop - this.clientX_start),
+				y_distance = Math.abs(this.clientY_stop - this.clientY_start),
 				x_direction = (this.clientX_stop>this.clientX_start)? 'right':'left',
 				y_direction = (this.clientY_stop>this.clientY_start)? 'down':'up';
 				
-				console.log(x_distance,y_distance);
 				var arg = {
 					dx : x_distance,
 					dy : y_distance,
 					clientX : event.clientX,
 					clientY : event.clientY,
-					left: $(this).css('left'),
-					top : $(this).css('top'),
-					angle : this.dragAngle.toPrecision(2)
+					left: parseInt($(this).css('left')),
+					top : parseInt($(this).css('top')),
+					angle : this.dragAngle.toPrecision(2),
+					translateX:parseInt(this.translateX),
+					translateY:parseInt(this.translateY)
 				};
-			$(this).removeClass('whenDragging animated').addClass('revise').css("zIndex",2);
+			$(this).removeClass('animated').addClass('revise').css("zIndex",2);
 
 			revise(arg);
 			//============================================================================//
+			console.log('drag stop');
 		}
 	});
 
 	function revise(arg){
 		var boxWH = 101,
-			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left + this.translateX)) / boxWH),
-			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top + this.translateY)) / boxWH),
+			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left + arg.translateX )) / boxWH),
+			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top + arg.translateY)) / boxWH),
 			leftOffect =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
 			topOffect =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
 			x_direction = leftOffect<0.5? 'left':'right',
@@ -114,6 +111,8 @@ $(function(){
 			y_distance,
 			i,
 			angle = arg.angle;
+
+			console.log(arg.translateX+arg.left);
 
 			if(x_direction == 'left'){
 				x_distance =  numOfBoxFromLeft * 101;
@@ -137,23 +136,21 @@ $(function(){
 			css += '-webkit-animation-timing-function: ease-in-out;';
 			css += '}';
 			css += '@-webkit-keyframes re {';
-			css += '20%, 40%, 60%, 80%, 100% { -webkit-transform-origin: center center; }';
-			css += '20% { -webkit-transform: rotate('+ angle +'); }';
-			// css += '40% { -webkit-transform: rotate(-10deg); }';
-			// css += '60% { -webkit-transform: rotate(5deg); }';	
-			css += '80% { -webkit-transform: translate(1px 1px); }';	
-			css += '100% { -webkit-transform: rotate(0);translate(0 0);}';
+			css += '10%, 20%, 60%, 80%, 90%,100% { -webkit-transform-origin: center center; }';
+			css += '10% { -webkit-transform: rotate('+ angle +'); }';
+			css += '20% { -webkit-transform: translate(1px 1px); }';	
+			css += '30% { -webkit-transform: translate(-1px -1px); }';	
+			css += '100% { -webkit-transform: rotate(0); translate(0 0);}';
 			css += '}';
 
-		$('body').append('<style>'+ css +'</style>');
-
+			$('#style').html('').append(css);
 			$('.revise').addClass('re');
 
 			$('.revise').animate({
-				'left' : x_distance,
-				'top' : y_distance,
+				'left' : x_distance+'px',
+				'top' : y_distance+'px',
 				},
-				150,
+				100,
 				"easeInQuad",
 				function() {
 					$(this).removeClass("revise");
@@ -182,7 +179,7 @@ $(function(){
 				100,
 				"easeInQuad",
 				function() {
-					$(this).addClass('stopShake');
+					// $(this).addClass('stopShake');
 					// overlap or not?
 					// overlap($(this),x_distance,y_distance);
 			});

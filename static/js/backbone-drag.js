@@ -209,7 +209,6 @@ var DragBoxView = Backbone.View.extend({
 		//return tmp;
 	},
 	setPosition:function(){
-
 		var drag_count = $('.drag').length,
 			count = 0,
 			arr = [];
@@ -248,7 +247,51 @@ var DragBoxView = Backbone.View.extend({
 		alert('test');		
 	}
 });
+// ================= //
+// ===links model=== //
+// ================= //
+var AroundModel = Backbone.Model.extend({
+	defaults: function(){},
+	initialize: function(){
+		console.log('AroundModel create!');
+	}
+});
 
+var AroundModelList = Backbone.Collection.extend({
+	model:AroundModel,
+	url:'links.json'
+});
+
+
+var AroundView = new Backbone.View.extend({
+	el:$('#around-container'),
+	events:{
+
+	},
+	initialize:function(){
+		var links = new AroundModelList();
+		links.fetch({
+			success:function(collection,res){
+				collection.each(function(links){
+					console.log(links.get('name'));
+				})
+				this.co = collection;
+			},
+			error:function(collection, response){
+					console.log(collection);
+					console.log(response);
+					alert('get json error');
+				}
+		});
+	},
+
+	render:function(){
+
+	}
+
+});
+
+// links.bind('reset', function () { console.log(123); });
 
 var app = new BgView();
 var app2 = new DragBoxView();

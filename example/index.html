@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+        <script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+        <script>
+
+            $(function() {
+                var Profile = Backbone.Model.extend();
+
+                var ProfileList = Backbone.Collection.extend({
+                    model: Profile,
+                    url: 'profiles.json'
+                });   
+
+                var ProfileView = Backbone.View.extend({
+                    el: "#profiles",
+                    template: _.template($('#profileTemplate').html()),
+                    render: function(eventName) {
+                        _.each(this.model.models, function(profile){
+                            var profileTemplate = this.template(profile.toJSON());
+                            $(this.el).append(profileTemplate);
+                        }, this);
+
+                        return this;
+                    }
+                });
+
+                var profiles = new ProfileList();    
+                var profilesView = new ProfileView({model: profiles});
+                profiles.fetch();
+                profiles.bind('reset', function () {
+                    profilesView.render();
+                });
+
+            });
+        </script>
+        <title>Fortified Studio</title>
+    </head>
+    <body>
+        <div id="profiles"></div>
+
+
+        <script id="profileTemplate" type="text/template">
+            <div class="profile">
+                <div class="info">
+                    <div class="name">
+                        <%= name %>
+                    </div>
+                    <div class="title">
+                        <%= title %>
+                    </div>
+                    <div class="background">
+                        <%= background %>
+                    </div>
+                </div>
+            </div>
+
+        </script>
+    </body>
+</html>

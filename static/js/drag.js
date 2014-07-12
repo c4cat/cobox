@@ -3,19 +3,17 @@
 // 2014年6月13日16:33:17
 // drag.js
 
-//jquery
+// jquery.ui
 $(function(){
-	$('.testBox').draggable({
+	$('.drag').draggable({
 		containment: $('#region'),
 		zIndex: 999,
 		create:function(e){
-			// console.log('create success');
+			console.log('nav create success');
 		},
 		start:function(e){
 			this.clientX_start = event.clientX;
 			this.clientY_start = event.clientY;
-			// $(this).addClass('whenDragging animated').removeClass('stopShake');
-
 			// **bouncejs
 			this.dragStartPos = {
     		  x: e.clientX,
@@ -30,16 +28,16 @@ $(function(){
     		  y: e.offsetY - $(this).height() / 2
     		};
     		this.grabDistance = Math.sqrt(Math.pow(this.grabOffset.x, 2) + Math.pow(this.grabOffset.y, 2));
-    		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px");
+    		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px").removeClass('re');
     		this.dragOffset = null;
 
-			console.log('start');
+			console.log('drag start');
 		},
 		drag:function(e){
 		 	this.offsetX = event.offsetX;
 		 	this.offsetY = event.offsetY;
 		 	$(this).css("zIndex",999);
-		 	$(this)
+		 	$(this).css({'left':'300px','top':'300px'});
 			draggingOpacity();
 			// **bouncejs
 			var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
@@ -48,69 +46,73 @@ $(function(){
       			y: e.clientY - this.dragStartPos.y
     		};
     		distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
-    		dampenedDistance = 250 * (1 - Math.pow(Math.E, -0.002 * distance));
+    		dampenedDistance = 500 * (1 - Math.pow(Math.E, -0.002 * distance));
     		angle = Math.atan2(delta.y, delta.x);
-    		if (this.grabDistance > 10) {
-    		  centerDelta = {
-    		    x: e.clientX - this.boxStartPos.x,
-    		    y: e.clientY - this.boxStartPos.y
-    		  };
-    		  centerDistance = Math.sqrt(Math.pow(centerDelta.x, 2) + Math.pow(centerDelta.y, 2));
-    		  dotProduct = centerDelta.x * this.grabOffset.x + centerDelta.y * this.grabOffset.y;
-    		  determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
-    		  this.dragAngle = -Math.atan2(determinant, dotProduct);
-    		} else {
-    		  this.dragAngle = 0;
-    		}
+
+    		centerDelta = {
+    		  x: e.clientX - this.boxStartPos.x,
+    		  y: e.clientY - this.boxStartPos.y
+    		};
+    		centerDistance = Math.sqrt(Math.pow(centerDelta.x, 2) + Math.pow(centerDelta.y, 2));
+    		dotProduct = centerDelta.x * this.grabOffset.x + centerDelta.y * this.grabOffset.y;
+    		determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
+    		this.dragAngle = -Math.atan2(determinant, dotProduct);
+
     		this.dragOffset = {
     		  x: Math.round(Math.cos(angle) * dampenedDistance),
     		  y: Math.round(Math.sin(angle) * dampenedDistance)
     		};
 
-    		$(this).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+    		this.translateX = Math.round(this.dragOffset.x);
+    		this.translateY = Math.round(this.dragOffset.y);
+
+    		$(this).css({"transform":"translate(" + (this.translateX) + "px, " + (this.translateY) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)","left":this.clientX_start-50,"top":this.clientY_start-50});
 		},
 		stop:function(e){
 			this.clientX_stop = event.clientX;
 			this.clientY_stop = event.clientY;
-			// this.time_stop = event.timeStamp;
 			var obj = $('#drag'),
 				offsetX  = event.offsetX - this.offsetX,
 				offsetY  = event.offsetY - this.offsetY,
-				time_count = (event.timeStamp - this.time_start) / 1000; //seconds 
 
 				x_distance = Math.abs(this.clientX_stop - this.clientX_start),
 				y_distance = Math.abs(this.clientY_stop - this.clientY_start),
 				x_direction = (this.clientX_stop>this.clientX_start)? 'right':'left',
 				y_direction = (this.clientY_stop>this.clientY_start)? 'down':'up';
-			
-				var argv4Crash = {
+				
+				var arg = {
 					dx : x_distance,
 					dy : y_distance,
-					t : time_count,
 					clientX : event.clientX,
 					clientY : event.clientY,
-					left: $(this).css('left'),
-					top : $(this).css('top')
+					left: parseInt($(this).css('left')),
+					top : parseInt($(this).css('top')),
+					angle : this.dragAngle.toPrecision(2),
+					translateX:parseInt(this.translateX),
+					translateY:parseInt(this.translateY)
 				};
+			$(this).removeClass('animated').addClass('revise').css("zIndex",2);
 
-			$(this).removeClass('whenDragging animated').addClass('crashing revise').css("zIndex",2);
-
-			revise(argv4Crash);
-			$('.drag').css('opacity',1);
+			revise(arg);
+			//============================================================================//
+			console.log('drag stop');
 		}
 	});
-	
-	function revise(argv4Crash){
+
+	function revise(arg){
 		var boxWH = 101,
-			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(argv4Crash.left)) / boxWH),
-			numOfBoxFromTop = parseInt(Math.ceil(parseInt(argv4Crash.top)) / boxWH),
-			leftOffect =  Math.ceil(parseInt(argv4Crash.left)) / boxWH - numOfBoxFromLeft,
-			topOffect =  Math.ceil(parseInt(argv4Crash.top)) / boxWH - numOfBoxFromTop,
+			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left + arg.translateX )) / boxWH),
+			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top + arg.translateY)) / boxWH),
+			leftOffect =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
+			topOffect =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
 			x_direction = leftOffect<0.5? 'left':'right',
 			y_direction = topOffect<0.5? 'top':'bottom',
 			x_distance,
 			y_distance,
-			i;
+			i,
+			angle = arg.angle;
+
+			console.log(arg.translateX+arg.left);
 
 			if(x_direction == 'left'){
 				x_distance =  numOfBoxFromLeft * 101;
@@ -124,17 +126,39 @@ $(function(){
 				y_distance =  (numOfBoxFromTop + 1) * 101;
 			}
 
+			//animate css 4 append
+		var css = '';
+			css += '.re{';
+			css += '-webkit-animation-name: re;';
+			css += '-webkit-animation-duration: 0.2s;';
+			css += '-webkit-animation-iteration-count: 1;'; //infinite
+			css += '-webkit-animation-delay: 0s;';
+			css += '-webkit-animation-timing-function: ease-in-out;';
+			css += '}';
+			css += '@-webkit-keyframes re {';
+			css += '10%, 20%, 60%, 80%, 90%,100% { -webkit-transform-origin: center center; }';
+			css += '10% { -webkit-transform: rotate('+ angle +'); }';
+			css += '20% { -webkit-transform: translate(1px 1px); }';	
+			css += '30% { -webkit-transform: translate(-1px -1px); }';	
+			css += '100% { -webkit-transform: rotate(0); translate(0 0);}';
+			css += '}';
+
+			$('#style').html('').append(css);
+			$('.revise').addClass('re');
+
 			$('.revise').animate({
-				'left' : x_distance,
-				'top' : y_distance},
+				'left' : x_distance+'px',
+				'top' : y_distance+'px',
+				},
 				100,
 				"easeInQuad",
 				function() {
-					$(this).removeClass("revise").addClass('stopShake');
+					$(this).removeClass("revise");
+					$(this).css('transform','');
 					// overlap or not?
 					overlap($(this),x_distance,y_distance);
 			});
-
+			$('.drag').css('opacity',1);
 	};
 
 	function overlap(_this,x_distance,y_distance){
@@ -155,7 +179,7 @@ $(function(){
 				100,
 				"easeInQuad",
 				function() {
-					$(this).addClass('stopShake');
+					// $(this).addClass('stopShake');
 					// overlap or not?
 					// overlap($(this),x_distance,y_distance);
 			});

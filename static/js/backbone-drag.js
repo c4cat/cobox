@@ -33,7 +33,7 @@ var BgView = Backbone.View.extend({
 		});
 		this.create();
 		this.bgBoxHover();
-		this.setBgImage();
+		// this.setBgImage();
 	},
 	test:function(){
 		alert('test!!!');
@@ -110,14 +110,22 @@ var DragBoxView = Backbone.View.extend({
 		this.stopDrag = __bind(this.stopDrag, this);
 	},
 	events:{
-		"mousedown .drag": "startDrag"
+		// "mousedown .drag": "startDrag"
 	},
 	startDrag:function(e){
+<<<<<<< HEAD
 		// console.log($(e.currentTarget));
 		// if (this.isDragging){return;}
+=======
+>>>>>>> f08db5e879a65224af0c40b6ded869f56d3bfe8e
     	// ele.removeClass("animate spin");
+    	if (this.isDragging) {
+    	  return;
+    	}
     	var ele = $(e.currentTarget);
+    	// this.$el.removeClass("animate spin");
     	this.isDragging = true;
+    	this.ele = ele;
     	this.dragStartPos = {
     	  x: e.clientX,
     	  y: e.clientY
@@ -133,10 +141,17 @@ var DragBoxView = Backbone.View.extend({
     	this.grabDistance = Math.sqrt(Math.pow(this.grabOffset.x, 2) + Math.pow(this.grabOffset.y, 2));
     	ele.css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px");
     	this.dragOffset = null;
+<<<<<<< HEAD
     	$(ele).on({
     	  "mousemove.drag": this.drag,
     	  "mouseup.drag": this.stopDrag
     	});
+=======
+    	// $(document).on({
+    	//   "mousemove.drag": this.drag,
+    	//   "mouseup.drag": this.stopDrag
+    	// });
+>>>>>>> f08db5e879a65224af0c40b6ded869f56d3bfe8e
     	return $("body").addClass("dragging");
 	},
 	stopDrag:function(e){
@@ -198,14 +213,18 @@ var DragBoxView = Backbone.View.extend({
     return $("body")
 	},
 	drag:function(e){
+		console.log(e);
 		var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
+<<<<<<< HEAD
 		// console.log(this);
+=======
+>>>>>>> f08db5e879a65224af0c40b6ded869f56d3bfe8e
     	delta = {
     	  x: e.clientX - this.dragStartPos.x,
     	  y: e.clientY - this.dragStartPos.y
     	};
     	distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
-    	dampenedDistance = 250 * (1 - Math.pow(Math.E, -0.002 * distance));
+    	dampenedDistance = 500 * (1 - Math.pow(Math.E, -0.002 * distance));
     	angle = Math.atan2(delta.y, delta.x);
     	if (this.grabDistance > 10) {
     	  centerDelta = {
@@ -223,21 +242,52 @@ var DragBoxView = Backbone.View.extend({
     	  x: Math.round(Math.cos(angle) * dampenedDistance),
     	  y: Math.round(Math.sin(angle) * dampenedDistance)
     	};
+<<<<<<< HEAD
     	// console.log(delta);
     	return $(e.currentTarget).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+=======
+
+    	return $(this.ele).css("transform", "translate(" + (Math.round(this.dragOffset.x)) + "px, " + (Math.round(this.dragOffset.y)) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)");
+	},
+	stopDrag:function(e){
+    var bounce, correction, cos, deg, sin;
+    var __modulo = function(a, b) { return (a % b + +b) % b; };
+    if (!this.isDragging) {return;}
+    this.isDragging = false;
+    if (this.dragOffset) {
+      cos = Math.cos(this.dragAngle);
+      sin = Math.sin(this.dragAngle);
+      correction = {
+        x: this.grabOffset.x - (this.grabOffset.x * cos - this.grabOffset.y * sin),
+        y: this.grabOffset.y - (this.grabOffset.x * sin + this.grabOffset.y * cos)
+      };
+      this.ele.css({"transform-origin":"","transform":""});
+      // this.ele.css("transform", "translate(" + (this.dragOffset.x + correction.x) + "px, " + (this.dragOffset.y + correction.y) + "px)\nrotate(" + this.dragAngle + "rad)");
+      // this.ele.css({"left":e.clientX,"top":e.clientY});
+
+      deg = this.dragAngle / Math.PI * 180;
+
+      if (__modulo(deg, 90) > 45) {
+        deg += 90 - __modulo(deg, 90);
+      } else {
+        deg -= __modulo(deg, 90);
+      }
+    }
+    $(document).off(".drag");
+    return $("body").removeClass("dragging");
+>>>>>>> f08db5e879a65224af0c40b6ded869f56d3bfe8e
 	},
 	createTem:function(){
 		var list = this.model.get('list'),
 			tmp = '';
 		for(var i=0;i<list.length;i++){
-			tmp += '<div class="drag" id="' + list[i].toLowerCase() + '">'+ list[i] +'</div>'
+			tmp += '<div class="drag" id="' + list[i].toLowerCase() + '">'+ list[i] +'</div>';
 		}
 		this.$el.append(tmp);
 		this.setPosition();
 		//return tmp;
 	},
 	setPosition:function(){
-
 		var drag_count = $('.drag').length,
 			count = 0,
 			arr = [];
@@ -276,7 +326,52 @@ var DragBoxView = Backbone.View.extend({
 		alert('test');		
 	}
 });
+// ================= //
+// ===links model=== //
+// ================= //
+var AroundModel = Backbone.Model.extend({
+	defaults: function(){},
+	initialize: function(){
+		console.log('AroundModel create!');
+	}
+});
 
+var AroundModelList = Backbone.Collection.extend({
+	model:AroundModel,
+	url:'links.json'
+});
+
+
+var AroundView = new Backbone.View.extend({
+	el:$('#around-container'),
+	template: _.template($('#around-template').html()),
+	events:{
+
+	},
+	initialize:function(){
+		var links = new AroundModelList();
+		links.fetch({
+			success:function(collection,res){
+				collection.each(function(links){
+					console.log(links.get('name'));
+				})
+				this.co = collection;
+			},
+			error:function(collection, response){
+					console.log(collection);
+					console.log(response);
+					alert('get json error');
+				}
+		});
+	},
+	render:function(){
+		var temp = ''
+	},
+
+
+});
+
+// links.bind('reset', function () { console.log(123); });
 
 var app = new BgView();
 var app2 = new DragBoxView();

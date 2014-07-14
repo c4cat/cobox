@@ -221,7 +221,7 @@ var DragBoxView = Backbone.View.extend({
 		}
 
 		$('.drag').each(function(){
-			$(this).css({'left':arr[count][0]*101+'px','top':arr[count][1]*101+'px'});
+			$(this).data({'x':arr[count][0],'y':arr[count][1]}).css({'left':arr[count][0]*101+'px','top':arr[count][1]*101+'px'});
 			count++;
 		});
 		
@@ -273,7 +273,7 @@ var AroundView = Backbone.View.extend({
 	el:$('#around-container'),
 	template: _.template($('#around-template').html()),
 	events:{
-		''
+		'click #links' : "aroundShow"
 	},
 	initialize:function(){
 		var t = this;
@@ -292,16 +292,36 @@ var AroundView = Backbone.View.extend({
 					alert('aroung view get json error,please check the json file');
 				}
 		});
+
 		this.list = new AroundModelList();
+		//event listen on
+		$('#links').on("click",this.aroundFun);
 	},
 	render:function(args){
 		console.log(args);
 		this.$el.append(this.template(args));
 	},
 	test:function(){
-		alert(123);
-	}
+		alert('test');
+	},
+	aroundFun:function(e){
+		console.log(e);
+		// var numOfBoxFromLeft = Math.ceil(parseInt($(this).css('left'))/101),
+		// 	   numOfBoxFromTop = Math.ceil(parseInt($(this).css('top'))/101);
+		var numOfBoxFromLeft = $(this).data('x'),
+			numOfBoxFromTop = $(this).data('y'),
+			count = 3;
+		this.aroundPosition();	
+			
+	},
+	aroundPosition:function(args){
+		for(var i=0;i<args.count;i++){
+			
+		}
+	},
+	aroundSet:function(args){
 
+	}
 });
 
 // links.bind('reset', function () { console.log(123); });

@@ -308,21 +308,146 @@ var AroundView = Backbone.View.extend({
 		console.log(e);
 		// var numOfBoxFromLeft = Math.ceil(parseInt($(this).css('left'))/101),
 		// 	   numOfBoxFromTop = Math.ceil(parseInt($(this).css('top'))/101);
-		var numOfBoxFromLeft = $(this).data('x'),
-			numOfBoxFromTop = $(this).data('y'),
+		var numLeft = $(this).data('x'),
+			numTop = $(this).data('y'),
 			count = 3;
+
 		this.aroundPosition();	
-			
-	},
-	aroundPosition:function(args){
-		for(var i=0;i<args.count;i++){
-			
-		}
 	},
 	aroundSet:function(args){
 
-	}
+	},
+	createArr:function(args){
+		var arr = [],
+			x_random = _.random(0,args.count),
+			y_random = _.random(0,h_count-2);
+
+		if(args.count < 5){
+			for(var i=0;i<args.count;i++){
+				for(var j=0;j<5;j++){
+					var xyz_x = args. 
+
+				}
+			}
+		}		
+
+		return([w_random,h_random]);
+	},
+	baseArr:function(){
+		
+	},
+	inOrNot:function(obj,arr){
+		for(var i=0;i<arr.length;i++){
+ 			if(obj.toString() == arr[i].toString()){
+ 					return true;
+ 				}
+			}
+		return false;	
+	},
 });
+
+
+	/**
+     * 生成矩阵
+     * @param h 高
+     * @param w 宽
+     * @returns {Array}
+     */
+    function getMap(h, w) {
+        var max = h * w,
+            map = [],
+            row = [],
+            t,
+            l,
+            i,
+            dir = 'r';
+        for (t = 1; t <= h; t++) {
+            row = [];
+            for (l = 1; l <= w; l++) {
+                row.push(null);
+            }
+            map.push(row);
+        }
+        ~function (n, t, l) {
+            var next,
+                next_t,
+                next_l;
+            map[t][l] = n;
+            switch (dir) {
+                case 'r':
+                    next = map[t] === undefined ? undefined : map[t][l + 1];
+                    next_t = t;
+                    next_l = l + 1;
+                    break;
+                case 'b':
+                    next = map[t + 1] === undefined ? undefined : map[t + 1][l];
+                    next_t = t + 1;
+                    next_l = l;
+                    break;
+                case 'l':
+                    next = map[t] === undefined ? undefined : map[t][l - 1];
+                    next_t = t;
+                    next_l = l - 1;
+                    break;
+                case 't':
+                    next = map[t - 1] === undefined ? undefined : map[t - 1][l];
+                    next_t = t - 1;
+                    next_l = l;
+                    break;
+            }
+            if (next !== null) {
+                switch (dir) {
+                    case 'r':
+                        dir = 'b';
+                        next = map[t + 1][l];
+                        next_t = t + 1;
+                        next_l = l;
+                        break;
+                    case 'b':
+                        dir = 'l';
+                        next = map[t][l - 1];
+                        next_t = t;
+                        next_l = l - 1;
+                        break;
+                    case 'l':
+                        dir = 't';
+                        next = map[t - 1][l];
+                        next_t = t -1;
+                        next_l = l;
+                        break;
+                    case 't':
+                        dir = 'r';
+                        next = map[t][l + 1];
+                        next_t = t;
+                        next_l = l + 1;
+                        break;
+                }
+            }
+            if (n - 1 > 0) {
+                arguments.callee(n - 1, next_t, next_l);
+            }
+        }(max, 0 ,0);
+        return map;
+    }
+
+    /**
+     *       输出
+     * @param map
+     */
+    function showMap(map) {
+        var htmlSt = '<table>';
+        for (var i = 0, len = map.length; i < len; i++) {
+            var trSt = '<tr>'
+            for (var j = 0, rowlen = map[i].length; j<rowlen; j++) {
+                htmlSt += '<td>' + map[i][j] + '</td>';
+            }
+            trSt += '</tr>';
+            htmlSt += trSt;
+        }
+        document.write(htmlSt);
+    }
+    var a = getMap(4, 4);
+    // showMap(a);
 
 // links.bind('reset', function () { console.log(123); });
 

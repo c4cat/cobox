@@ -257,6 +257,7 @@ var AroundModel = Backbone.Model.extend({
 		img : ''
 	},
 	initialize: function(){
+		var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };		
 		console.log('AroundModel create!');
 	}
 });
@@ -280,7 +281,7 @@ var AroundView = Backbone.View.extend({
 		links.fetch({
 			success:function(collection,response){
 				collection.each(function(links){
-					console.log(links.get('name'));
+					// console.log(links.get('name'));
 					t.render(links.attributes);
 				});
 				// console.log(this.co);
@@ -298,21 +299,52 @@ var AroundView = Backbone.View.extend({
 		$('#links').on("click",this.aroundFun);
 	},
 	render:function(args){
-		console.log(args);
 		this.$el.append(this.template(args));
 	},
 	test:function(){
 		alert('test');
 	},
 	aroundFun:function(e){
-		console.log(e);
+		// console.log(e);
 		// var numOfBoxFromLeft = Math.ceil(parseInt($(this).css('left'))/101),
 		// 	   numOfBoxFromTop = Math.ceil(parseInt($(this).css('top'))/101);
 		var numLeft = $(this).data('x'),
 			numTop = $(this).data('y'),
-			count = 3;
+			numOf = 3;
 
-		this.aroundPosition();	
+		baseArr(numOf);	
+
+		function baseArr(arg){
+			var arr = [],
+				count = Math.ceil(Math.sqrt(arg)),
+				offect = '';
+			
+			if(arg<5){
+				var top = [numLeft,numTop-1],
+					left = [numLeft-1,numTop],
+					right = [numLeft+1,numTop],
+					bottom = [numLeft,numTop+1],
+					arrFour = [top,left,right,bottom];
+
+				for(var i=0;i<arg;i++){
+					arr.push(abs(arrFour[i]));
+				}
+			}	
+
+			// for(var i=0;i<count+1;i++){
+			// 	for(var j=0;j<count+1;j++){
+			// 		arr.push([i,j]);
+			// 	}
+			// };
+			console.log(arr);
+		};
+
+		function abs(arr){
+			var x,y;
+			arr[0]<0 ? x = Math.abs(arr[0]) + 1 : x = arr[0];
+			arr[1]<0 ? y = Math.abs(arr[1]) + 1 : y = arr[1];
+			return [x,y]
+		};
 	},
 	aroundSet:function(args){
 
@@ -325,16 +357,13 @@ var AroundView = Backbone.View.extend({
 		if(args.count < 5){
 			for(var i=0;i<args.count;i++){
 				for(var j=0;j<5;j++){
-					var xyz_x = args. 
+					// var xyz_x = args. 
 
 				}
 			}
 		}		
 
 		return([w_random,h_random]);
-	},
-	baseArr:function(){
-		
 	},
 	inOrNot:function(obj,arr){
 		for(var i=0;i<arr.length;i++){

@@ -118,12 +118,15 @@ $(function(){
 				x_distance =  numOfBoxFromLeft * 101;
 			}else{
 				x_distance =  (numOfBoxFromLeft + 1) * 101;
+				numOfBoxFromLeft = numOfBoxFromLeft + 1;
 			}
 
 			if(y_direction == 'top'){
 				y_distance =  numOfBoxFromTop * 101;
 			}else{
 				y_distance =  (numOfBoxFromTop + 1) * 101;
+				numOfBoxFromTop = numOfBoxFromTop + 1;
+
 			}
 
 			//animate css 4 append
@@ -144,7 +147,7 @@ $(function(){
 			css += '}';
 
 			$('#style').html('').append(css);
-			$('.revise').addClass('re');
+			$('.revise').attr({'x':numOfBoxFromLeft,'y':numOfBoxFromTop}).addClass('re');
 
 			$('.revise').animate({
 				'left' : x_distance+'px',

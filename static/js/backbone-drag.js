@@ -221,7 +221,7 @@ var DragBoxView = Backbone.View.extend({
 		}
 
 		$('.drag').each(function(){
-			$(this).data({'x':arr[count][0],'y':arr[count][1]}).css({'left':arr[count][0]*101+'px','top':arr[count][1]*101+'px'});
+			$(this).attr({'x':arr[count][0],'y':arr[count][1]}).css({'left':arr[count][0]*101+'px','top':arr[count][1]*101+'px'});
 			count++;
 		});
 		
@@ -271,13 +271,16 @@ var links = new AroundModelList();
 
 
 var AroundView = Backbone.View.extend({
-	el:$('#around-container'),
+	el:$('body'),
+	id:$('#around-container'),
 	template: _.template($('#around-template').html()),
 	events:{
-		'click #links' : "aroundShow"
+		'click #links' : 'aroundFun',
 	},
 	initialize:function(){
 		var t = this;
+		console.log(t.events);
+
 		links.fetch({
 			success:function(collection,response){
 				collection.each(function(links){
@@ -296,74 +299,71 @@ var AroundView = Backbone.View.extend({
 
 		this.list = new AroundModelList();
 		//event listen on
-		$('#links').on("click",this.aroundFun);
+		// $('#links').on("click",this.aroundFun);
 	},
 	render:function(args){
-		this.$el.append(this.template(args));
+		this.id.append(this.template(args));
 	},
 	test:function(){
 		alert('test');
 	},
 	aroundFun:function(e){
-		// console.log(e);
-		// var numOfBoxFromLeft = Math.ceil(parseInt($(this).css('left'))/101),
-		// 	   numOfBoxFromTop = Math.ceil(parseInt($(this).css('top'))/101);
-		var numLeft = $(this).data('x'),
-			numTop = $(this).data('y'),
-			numOf = 3;
 
-		baseArr(numOf);	
-
-		function baseArr(arg){
-			var arr = [],
-				count = Math.ceil(Math.sqrt(arg)),
-				offect = '';
+		var args = {
+				numLeft : parseInt($(e.currentTarget).attr('x')),
+				numTop : parseInt($(e.currentTarget).attr('y')),
+				numOf : 3
+			}
+		// alert(numLeft);	
 			
-			if(arg<5){
-				var top = [numLeft,numTop-1],
-					left = [numLeft-1,numTop],
-					right = [numLeft+1,numTop],
-					bottom = [numLeft,numTop+1],
-					arrFour = [top,left,right,bottom];
-
-				for(var i=0;i<arg;i++){
-					arr.push(abs(arrFour[i]));
-				}
-			}	
-
-			// for(var i=0;i<count+1;i++){
-			// 	for(var j=0;j<count+1;j++){
-			// 		arr.push([i,j]);
-			// 	}
-			// };
-			console.log(arr);
-		};
+		this.aroundSet(this.baseArr(args));	
 
 		function abs(arr){
 			var x,y;
 			arr[0]<0 ? x = Math.abs(arr[0]) + 1 : x = arr[0];
 			arr[1]<0 ? y = Math.abs(arr[1]) + 1 : y = arr[1];
+
 			return [x,y]
 		};
 	},
-	aroundSet:function(args){
-
-	},
-	createArr:function(args){
+	baseArr:function(args){
 		var arr = [],
-			x_random = _.random(0,args.count),
-			y_random = _.random(0,h_count-2);
+			count = Math.ceil(Math.sqrt(args.numOf+1)), //center cnter is use to close
+			// not less than 3
+			w_count = Math.ceil(get_wh().w/101),
+			h_count = Math.ceil(get_wh().h/101),
+			offect = [Math.ceil(count/2)-1,Math.floor(count/2)];
+		
+		count<3 ? count=3 : count=count,
+		//array	
+		var helix_arr = showMap(getMap(count,count));	
 
-		if(args.count < 5){
-			for(var i=0;i<args.count;i++){
-				for(var j=0;j<5;j++){
-					// var xyz_x = args. 
+		if(count == 3){
+			var top = [args.numLeft,args.numTop-1],
+				left = [args.numLeft-1,args.numTop],
+				right = [args.numLeft+1,args.numTop],
+				bottom = [args.numLeft,args.numTop+1],
 
-				}
+				arrFour = [left,right,bottom,top];
+
+
+			for(var i=0;i<helix_arr.length*helix_arr.length;i++){
+				arr.push(abs(arrFour[i]));
+				// arr.push(arrFour[i])
+				
 			}
-		}		
+		}else{
+			
 
-		return([w_random,h_random]);
+		}	
+		return arr;
+	},
+	aroundSet:function(arr){
+		var i = 0;
+		$('.around-box').each(function(){
+			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'});
+			i++;
+		});
 	},
 	inOrNot:function(obj,arr){
 		for(var i=0;i<arr.length;i++){
@@ -374,109 +374,102 @@ var AroundView = Backbone.View.extend({
 		return false;	
 	},
 });
-
-
-	/**
-     * 生成矩阵
-     * @param h 高
-     * @param w 宽
-     * @returns {Array}
-     */
-    function getMap(h, w) {
-        var max = h * w,
-            map = [],
-            row = [],
-            t,
-            l,
-            i,
-            dir = 'r';
-        for (t = 1; t <= h; t++) {
-            row = [];
-            for (l = 1; l <= w; l++) {
-                row.push(null);
-            }
-            map.push(row);
+/**
+ * 生成矩阵
+ * @param h 高
+ * @param w 宽
+ * @returns {Array}
+ */
+function getMap(h, w) {
+    var max = h * w,
+        map = [],
+        row = [],
+        t,
+        l,
+        i,
+        dir = 'r';
+    for (t = 1; t <= h; t++) {
+        row = [];
+        for (l = 1; l <= w; l++) {
+            row.push(null);
         }
-        ~function (n, t, l) {
-            var next,
-                next_t,
-                next_l;
-            map[t][l] = n;
-            switch (dir) {
-                case 'r':
-                    next = map[t] === undefined ? undefined : map[t][l + 1];
-                    next_t = t;
+        map.push(row);
+    }
+    ~function (n, t, l) {
+        var next,
+            next_t,
+            next_l;
+        map[t][l] = n;
+        switch (dir) {
+            case 'r':
+                next = map[t] === undefined ? undefined : map[t][l + 1];
+                next_t = t;
                     next_l = l + 1;
                     break;
-                case 'b':
-                    next = map[t + 1] === undefined ? undefined : map[t + 1][l];
+            case 'b':
+                next = map[t + 1] === undefined ? undefined : map[t + 1][l];
+                next_t = t + 1;
+                next_l = l;
+                break;
+            case 'l':
+                next = map[t] === undefined ? undefined : map[t][l - 1];
+                next_t = t;
+                next_l = l - 1;
+                break;
+            case 't':
+                next = map[t - 1] === undefined ? undefined : map[t - 1][l];
+                next_t = t - 1;
+                next_l = l;
+                break;
+        }
+        if (next !== null) {
+            switch (dir) {
+                case 'r':
+                    dir = 'b';
+                    next = map[t + 1][l];
                     next_t = t + 1;
                     next_l = l;
                     break;
-                case 'l':
-                    next = map[t] === undefined ? undefined : map[t][l - 1];
+                case 'b':
+                    dir = 'l';
+                    next = map[t][l - 1];
                     next_t = t;
                     next_l = l - 1;
                     break;
-                case 't':
-                    next = map[t - 1] === undefined ? undefined : map[t - 1][l];
-                    next_t = t - 1;
+                case 'l':
+                    dir = 't';
+                    next = map[t - 1][l];
+                    next_t = t -1;
                     next_l = l;
                     break;
+                case 't':
+                    dir = 'r';
+                    next = map[t][l + 1];
+                    next_t = t;
+                    next_l = l + 1;
+                    break;
             }
-            if (next !== null) {
-                switch (dir) {
-                    case 'r':
-                        dir = 'b';
-                        next = map[t + 1][l];
-                        next_t = t + 1;
-                        next_l = l;
-                        break;
-                    case 'b':
-                        dir = 'l';
-                        next = map[t][l - 1];
-                        next_t = t;
-                        next_l = l - 1;
-                        break;
-                    case 'l':
-                        dir = 't';
-                        next = map[t - 1][l];
-                        next_t = t -1;
-                        next_l = l;
-                        break;
-                    case 't':
-                        dir = 'r';
-                        next = map[t][l + 1];
-                        next_t = t;
-                        next_l = l + 1;
-                        break;
-                }
-            }
-            if (n - 1 > 0) {
-                arguments.callee(n - 1, next_t, next_l);
+        }
+        if (n - 1 > 0) {
+            arguments.callee(n - 1, next_t, next_l);
             }
         }(max, 0 ,0);
         return map;
-    }
-
-    /**
-     *       输出
-     * @param map
-     */
-    function showMap(map) {
-        var htmlSt = '<table>';
-        for (var i = 0, len = map.length; i < len; i++) {
-            var trSt = '<tr>'
-            for (var j = 0, rowlen = map[i].length; j<rowlen; j++) {
-                htmlSt += '<td>' + map[i][j] + '</td>';
-            }
-            trSt += '</tr>';
-            htmlSt += trSt;
+}
+/**
+ *       输出
+ * @param map
+ */
+function showMap(map) {
+    var arr = [];
+    for (var i = 0, len = map.length; i < len; i++) {
+        for (var j = 0, rowlen = map[i].length; j<rowlen; j++) {
+            arr.push(map[i][j]);
         }
-        document.write(htmlSt);
     }
-    var a = getMap(4, 4);
-    // showMap(a);
+    console.log(arr);
+    return arr;
+}
 
 // links.bind('reset', function () { console.log(123); });
 

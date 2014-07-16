@@ -18,7 +18,6 @@ function get_wh(){
 
 // jquery 
 $(document).ready(function(){
-
 //start bg view
 var BgView = Backbone.View.extend({
 	// 
@@ -328,15 +327,22 @@ var AroundView = Backbone.View.extend({
 	},
 	baseArr:function(args){
 		var arr = [],
+			arr_start_x,
+			arr_start_y,
 			count = Math.ceil(Math.sqrt(args.numOf+1)), //center cnter is use to close
 			// not less than 3
-			w_count = Math.ceil(get_wh().w/101),
-			h_count = Math.ceil(get_wh().h/101),
+			w_count = Math.floor(get_wh().w/101),
+			h_count = Math.floor(get_wh().h/101),
 			offect = [Math.ceil(count/2)-1,Math.floor(count/2)];
 		
-		count<3 ? count=3 : count=count,
-		//array	
+		count<3 ? count=3 : count=count;
+		// helix array	
 		var helix_arr = showMap(getMap(count,count));	
+
+		//deal with the situation : the click box near the edge
+		count-offect[0]<0 ? arr_start_x = 0 : arr_start_x = args.numLef-offect;
+		var a = args.numLef+(count-offect[0])-w_count;
+		// a>0 ? arr_start_x = 
 
 		if(count == 3){
 			var top = [args.numLeft,args.numTop-1],

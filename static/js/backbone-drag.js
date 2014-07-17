@@ -313,51 +313,47 @@ var AroundView = Backbone.View.extend({
 				numTop : parseInt($(e.currentTarget).attr('y')),
 				numOf : 3
 			}
-		// alert(numLeft);	
+		// alert(args.numLeft);	
 			
 		this.aroundSet(this.baseArr(args));	
-
-		function abs(arr){
-			var x,y;
-			arr[0]<0 ? x = Math.abs(arr[0]) + 1 : x = arr[0];
-			arr[1]<0 ? y = Math.abs(arr[1]) + 1 : y = arr[1];
-
-			return [x,y]
-		};
 	},
 	baseArr:function(args){
 		var arr = [],
+			base_arr = [],
 			arr_start_x,
 			arr_start_y,
-			count = Math.ceil(Math.sqrt(args.numOf+1)), //center cnter is use to close
+			count = Math.ceil(Math.sqrt(args.numOf)), //center cnter is use to close
 			// not less than 3
 			w_count = Math.floor(get_wh().w/101),
 			h_count = Math.floor(get_wh().h/101),
-			offect = [Math.ceil(count/2)-1,Math.floor(count/2)];
-		
+			// offset = parseInt([Math.ceil(count/2)-1,Math.floor(count/2)]);
+			offset = [Math.ceil(count/2)-1,Math.floor(count/2)];
+			// console.log(offset);	
+
 		count<3 ? count=3 : count=count;
 		// helix array	
 		var helix_arr = showMap(getMap(count,count));	
 
 		//deal with the situation : the click box near the edge
-		count-offect[0]<0 ? arr_start_x = 0 : arr_start_x = args.numLef-offect;
-		var a = args.numLef+(count-offect[0])-w_count;
-		// a>0 ? arr_start_x = 
+		//the left situation 
+		//count-offset[0]<0 ? arr_start_x = 0 : arr_start_x = args.numLeft-offset[0];
+		//the right situation
+		//args.numLeft+(count-offset[0])-w_count>0 ? arr_start_x = w_count-count : arr_start_x = args.numLeft-offset[0];
+		//the top situation
+		//count-offset[1]<0 ? arr_start_y = 0 : arr_start_y = args.numTop-offset[1];
+		//the bottom situation
+		//args.numTop +(count-offset[1]-h_count)>0 ? arr_start_y = h_count-count : arr_start_y = args.numTop-offset[1];  
 
 		if(count == 3){
-			var top = [args.numLeft,args.numTop-1],
-				left = [args.numLeft-1,args.numTop],
-				right = [args.numLeft+1,args.numTop],
-				bottom = [args.numLeft,args.numTop+1],
 
-				arrFour = [left,right,bottom,top];
-
-
-			for(var i=0;i<helix_arr.length*helix_arr.length;i++){
-				arr.push(abs(arrFour[i]));
-				// arr.push(arrFour[i])
-				
+		for(var i=0;i<3;i++){
+			for(var j=0;j<3;j++){
+				base_arr.push([args.numLeft-offset[0]+j,args.numTop-offset[1]]);
 			}
+			arr_start_y += i;
+		}
+
+			console.log(base_arr);
 		}else{
 			
 

@@ -17,4 +17,4 @@ body{margin:0;padding:0;overflow:hidden;}
 .about-hidden{position:relative;width:400px;height:380px;}
 .about-hidden img{width:400px;height:380px;}
 #around-container{position:absolute;top:0;left:0;}
-.around-box{position:absolute;width:101px;height:101px;background:#bababa;overflow:hidden;font-size:12px;z-index:2;}
+.around-box{position:absolute;width:101px;height:101px;background:#bababa;overflow:hidden;font-size:12px;z-index:2;display: none;}

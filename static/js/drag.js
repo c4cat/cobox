@@ -66,7 +66,8 @@ $(function(){
     		this.translateX = Math.round(this.dragOffset.x);
     		this.translateY = Math.round(this.dragOffset.y);
 
-    		$(this).css({"transform":"translate(" + (this.translateX) + "px, " + (this.translateY) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)","left":this.clientX_start-50,"top":this.clientY_start-50});
+    		// $(this).css({"transform":"translate(" + (this.translateX) + "px, " + (this.translateY) + "px)\nrotate(" + (this.dragAngle.toPrecision(2)) + "rad)","left":this.clientX_start-50,"top":this.clientY_start-50});
+    		$(this).css({"transform":"rotate(" + (this.dragAngle.toPrecision(2)) + "rad)","left":this.clientX_start-50,"top":this.clientY_start-50});
 		},
 		stop:function(e){
 			this.clientX_stop = event.clientX;

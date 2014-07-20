@@ -82,6 +82,7 @@ $(function(){
                 arguments.callee(n - 1, next_t, next_l);
             }
         }(max, 0 ,0);
+        console.log(map);
         return map;
     }
     /**
@@ -89,18 +90,33 @@ $(function(){
      * @param map
      */
     function showMap(map) {
-        console.log(map);
         var htmlSt = '<table>';
         for (var i = 0, len = map.length; i < len; i++) {
             var trSt = '<tr>'
             for (var j = 0, rowlen = map[i].length; j<rowlen; j++) {
-                htmlSt += '<td x="'+i+'"" y="'+j+'">' + map[i][j] + '</td>';
+                htmlSt += '<td class="td" x="'+i+'"" y="'+j+'">' + map[i][j] + '</td>';
             }
             trSt += '</tr>';
             htmlSt += trSt;
         }
         document.write(htmlSt);
     }
-    var a = getMap(3, 3);
+    var a = getMap(6, 6);
     showMap(a);
+
+   	var arr = [];
+
+    $('.td').each(function(){
+    	var x = $(this).attr('x');
+    	var y = $(this).attr('y');
+    	var v = $(this).html();
+    	var i = 0;
+    	arr.push([v,[x,y]]);
+    })
+
+    arr.sort(function(x,y){
+    	return x[0]-y[0];
+    });
+
+    // console.log(arr);
 });

@@ -16,7 +16,7 @@ module.exports=function(grunt){
         connect:{
             server:{
                 options:{
-                    port:517,
+                    port:5177,
                     //base:'html/', //use "html"
                     base:'./',
                     hostname:'*' //default,localhost

@@ -14,7 +14,7 @@ function get_wh(){
 		h : window_height
 	}
 	return re;
-}
+};
 
 // jquery 
 $(document).ready(function(){
@@ -59,7 +59,7 @@ var BgView = Backbone.View.extend({
 
 		$('#bg-sp').css('left',offect);
 		$('#bg-img>img').css({'width':get_wh().w,'min-height':get_wh().h});
-		$('#bg').css({'width':get_wh().w,'height':get_wh().h});
+		$('#bg,#around-container').css({'width':get_wh().w,'height':get_wh().h});
 	},
 	removee:function(){
 		$('#bg-nm,#bg-sp').empty();
@@ -215,7 +215,7 @@ var DragBoxView = Backbone.View.extend({
 		for(var i=0;i<drag_count*2;i++){
 			var random = this.createRandomArr();
 			if(!this.inOrNot(random,arr)){
-					arr.push(random);
+				arr.push(random);
 			}
 		}
 
@@ -278,13 +278,12 @@ var AroundView = Backbone.View.extend({
 	},
 	initialize:function(){
 		var t = this;
-		console.log(t.events);
-
+		// console.log(t.events);
 		links.fetch({
 			success:function(collection,response){
 				collection.each(function(links){
 					// console.log(links.get('name'));
-					t.render(links.attributes);
+					// t.render(links.attributes);
 				});
 				// console.log(this.co);
 				return collection;
@@ -309,63 +308,93 @@ var AroundView = Backbone.View.extend({
 	aroundFun:function(e){
 
 		var args = {
+				w : Math.floor(get_wh().w/101), //w_count
+				h : Math.floor(get_wh().h/101), //h_count
 				numLeft : parseInt($(e.currentTarget).attr('x')),
 				numTop : parseInt($(e.currentTarget).attr('y')),
-				numOf : 3
-			}
-		// alert(args.numLeft);	
-			
-		this.aroundSet(this.baseArr(args));	
+				numOf : 5,
+			},
+			arr = [];
+		// depend on numOf		
+		if(args.numOf<9){	
+			arr = this.spec5(args);
+		}else{
+
+		}
+		// this.simpleArr(args);
 	},
-	baseArr:function(args){
-		var arr = [],
-			base_arr = [],
-			arr_start_x,
-			arr_start_y,
-			count = Math.ceil(Math.sqrt(args.numOf)), //center cnter is use to close
-			// not less than 3
-			w_count = Math.floor(get_wh().w/101),
-			h_count = Math.floor(get_wh().h/101),
-			// offset = parseInt([Math.ceil(count/2)-1,Math.floor(count/2)]);
-			offset = [Math.ceil(count/2)-1,Math.floor(count/2)];
-			// console.log(offset);	
+	spec5:function(args){
+		var i = 0,
+			j = 0,
+			target_arr = [],
+			// 0~4 is udlr
+			arr = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1],[-2,-1],[-2,0],[-2,1],[2,1],[2,0],[2,-1],[-1,-2],[0,-2],[1,-2],[0,2],[1,2],[-1,2]],
+			start = [args.numLeft,args.numTop];
+			
+			for(j;j<arr.length;j++){
+				var tem = this.arr_plus(arr[j],start);
+				console.log(tem);
+				if(i>=args.numOf) break;
+				if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
+					target_arr.push(tem);
+					i++;
+					}
+				}
 
-		count<3 ? count=3 : count=count;
-		// helix array	
-		var helix_arr = showMap(getMap(count,count));	
-
-		//deal with the situation : the click box near the edge
-		//the left situation 
-		//count-offset[0]<0 ? arr_start_x = 0 : arr_start_x = args.numLeft-offset[0];
-		//the right situation
-		//args.numLeft+(count-offset[0])-w_count>0 ? arr_start_x = w_count-count : arr_start_x = args.numLeft-offset[0];
-		//the top situation
-		//count-offset[1]<0 ? arr_start_y = 0 : arr_start_y = args.numTop-offset[1];
-		//the bottom situation
-		//args.numTop +(count-offset[1]-h_count)>0 ? arr_start_y = h_count-count : arr_start_y = args.numTop-offset[1];  
-
-		if(count == 3){
-
+			if(args.numOf > target_arr.length){
+				var arr_add = [[]]
+				
+			}
+			console.log(target_arr);
+	},
+	simpleArr:function(args){
+		var n = Math.ceil(Math.sqrt(args.numOf));
+			n<3 ? n=3:n=n;
+		var	arr = [],
+			offset = n-2,
+			x = args.numLeft-offset, //start
+			y = args.numTop-offset; //start
+		// 3x3	
 		for(var i=0;i<3;i++){
 			for(var j=0;j<3;j++){
-				base_arr.push([args.numLeft-offset[0]+j,args.numTop-offset[1]]);
+				arr.push([x,y]);
+				x++;
 			}
-			arr_start_y += i;
+			y++;
 		}
-
-			console.log(base_arr);
-		}else{
-			
-
-		}	
+		console.log(arr);
 		return arr;
 	},
-	aroundSet:function(arr){
+ 	inArr:function(){
+
+ 	},
+ 	outArr:function(){
+
+ 	},
+	setIn:function(arr){
 		var i = 0;
 		$('.around-box').each(function(){
-			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'});
+			$(this).css({'left':arr[i][1][1]*101+'px','top':arr[i][1][0]*101+'px'});
+			alert(i);
 			i++;
 		});
+	},
+	setOut:function(arr){
+
+	},
+	plusOrNot:function(arr){
+		if(arr[0]>=0 && arr[1]>=0){
+			return true;
+		}else{
+			return false;
+		}
+	},
+	overOrNot:function(arr,args){
+		if(args.w>=arr[0]&&args.h>=arr[1]){
+			return true;
+		}else{
+			return false;
+		}
 	},
 	inOrNot:function(obj,arr){
 		for(var i=0;i<arr.length;i++){
@@ -375,104 +404,11 @@ var AroundView = Backbone.View.extend({
 			}
 		return false;	
 	},
+	arr_plus:function(arr1,arr2){
+		var arr3 = [arr1[0]+arr2[0],arr1[1]+arr2[1]];
+		return arr3;
+	}
 });
-/**
- * 生成矩阵
- * @param h 高
- * @param w 宽
- * @returns {Array}
- */
-function getMap(h, w) {
-    var max = h * w,
-        map = [],
-        row = [],
-        t,
-        l,
-        i,
-        dir = 'r';
-    for (t = 1; t <= h; t++) {
-        row = [];
-        for (l = 1; l <= w; l++) {
-            row.push(null);
-        }
-        map.push(row);
-    }
-    ~function (n, t, l) {
-        var next,
-            next_t,
-            next_l;
-        map[t][l] = n;
-        switch (dir) {
-            case 'r':
-                next = map[t] === undefined ? undefined : map[t][l + 1];
-                next_t = t;
-                    next_l = l + 1;
-                    break;
-            case 'b':
-                next = map[t + 1] === undefined ? undefined : map[t + 1][l];
-                next_t = t + 1;
-                next_l = l;
-                break;
-            case 'l':
-                next = map[t] === undefined ? undefined : map[t][l - 1];
-                next_t = t;
-                next_l = l - 1;
-                break;
-            case 't':
-                next = map[t - 1] === undefined ? undefined : map[t - 1][l];
-                next_t = t - 1;
-                next_l = l;
-                break;
-        }
-        if (next !== null) {
-            switch (dir) {
-                case 'r':
-                    dir = 'b';
-                    next = map[t + 1][l];
-                    next_t = t + 1;
-                    next_l = l;
-                    break;
-                case 'b':
-                    dir = 'l';
-                    next = map[t][l - 1];
-                    next_t = t;
-                    next_l = l - 1;
-                    break;
-                case 'l':
-                    dir = 't';
-                    next = map[t - 1][l];
-                    next_t = t -1;
-                    next_l = l;
-                    break;
-                case 't':
-                    dir = 'r';
-                    next = map[t][l + 1];
-                    next_t = t;
-                    next_l = l + 1;
-                    break;
-            }
-        }
-        if (n - 1 > 0) {
-            arguments.callee(n - 1, next_t, next_l);
-            }
-        }(max, 0 ,0);
-        return map;
-}
-/**
- *       输出
- * @param map
- */
-function showMap(map) {
-    var arr = [];
-    for (var i = 0, len = map.length; i < len; i++) {
-        for (var j = 0, rowlen = map[i].length; j<rowlen; j++) {
-            arr.push(map[i][j]);
-        }
-    }
-    console.log(arr);
-    return arr;
-}
-
 // links.bind('reset', function () { console.log(123); });
 
 var app = new BgView();

@@ -315,20 +315,21 @@ var AroundView = Backbone.View.extend({
 				numOf : 5,
 			},
 			arr = [];
-		// depend on numOf		
-		if(args.numOf<9){	
-			arr = this.spec5(args);
-		}else{
+		
 
-		}
-		// this.simpleArr(args);
+		console.log(arr);
 	},
-	spec5:function(args){
+	spec:function(args){ // when num less than 
 		var i = 0,
 			j = 0,
+			k = 0,
 			target_arr = [],
-			// 0~4 is udlr
-			arr = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1],[-2,-1],[-2,0],[-2,1],[2,1],[2,0],[2,-1],[-1,-2],[0,-2],[1,-2],[0,2],[1,2],[-1,2]],
+			arr = [],
+			arr_spec = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
+			arr_normal = this.simpleArr(args);
+			// two situations
+			args.numOf<9 ? arr = arr_spec : arr = arr_normal;
+
 			start = [args.numLeft,args.numTop];
 			
 			for(j;j<arr.length;j++){
@@ -341,11 +342,31 @@ var AroundView = Backbone.View.extend({
 					}
 				}
 
+			//	
 			if(args.numOf > target_arr.length){
-				var arr_add = [[]]
-				
+				var arr_add = this.add,
+					numOfadd = args.numOf - target_arr.length;
+
+				for(k;k<numOfadd;j++){
+					var tem = this.arr_plus(arr_add[k],start);
+					if(target_arr.length>=args.numOf) break;
+					if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
+						target_arr.push(tem);
+						i++;
+						}
+					}	
 			}
 			console.log(target_arr);
+	},
+	add:function(){
+
+	},
+	minus:function(){
+		this.simpleArr(args);
+		_.difference();
+	},
+	specArr:function(args){
+
 	},
 	simpleArr:function(args){
 		var n = Math.ceil(Math.sqrt(args.numOf));
@@ -355,8 +376,8 @@ var AroundView = Backbone.View.extend({
 			x = args.numLeft-offset, //start
 			y = args.numTop-offset; //start
 		// 3x3	
-		for(var i=0;i<3;i++){
-			for(var j=0;j<3;j++){
+		for(var i=0;i<n;i++){
+			for(var j=0;j<n;j++){
 				arr.push([x,y]);
 				x++;
 			}

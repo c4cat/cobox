@@ -279,21 +279,21 @@ var AroundView = Backbone.View.extend({
 	initialize:function(){
 		var t = this;
 		// console.log(t.events);
-		links.fetch({
-			success:function(collection,response){
-				collection.each(function(links){
-					// console.log(links.get('name'));
-					// t.render(links.attributes);
-				});
-				// console.log(this.co);
-				return collection;
-			},
-			error:function(collection, response){
-					console.log(collection);
-					console.log(response);
-					alert('aroung view get json error,please check the json file');
-				}
-		});
+		// links.fetch({
+		// 	success:function(collection,response){
+		// 		collection.each(function(links){
+		// 			// console.log(links.get('name'));
+		// 			t.render(links.attributes);
+		// 		});
+		// 		// console.log(this.co);
+		// 		return collection;
+		// 	},
+		// 	error:function(collection, response){
+		// 			console.log(collection);
+		// 			console.log(response);
+		// 			alert('aroung view get json error,please check the json file');
+		// 		}
+		// });
 
 		this.list = new AroundModelList();
 		//event listen on
@@ -312,12 +312,26 @@ var AroundView = Backbone.View.extend({
 				h : Math.floor(get_wh().h/101), //h_count
 				numLeft : parseInt($(e.currentTarget).attr('x')),
 				numTop : parseInt($(e.currentTarget).attr('y')),
-				numOf : 5,
+				numOf : ''
 			},
-			arr = [];
+			t=this;
+			links.fetch({
+				success:function(collection,response){
+					collection.each(function(links){
+						// console.log(links.get('name'));
+						t.render(links.attributes);
+					});
+					args.numOf = collection.length;
+					t.spec(args);
+					return collection;
+				},
+				error:function(collection, response){
+					console.log(collection);
+					console.log(response);
+					alert('aroung view get json error,please check the json file');
+				}
+			});
 		
-
-		console.log(arr);
 	},
 	spec:function(args){ // when num less than 
 		var i = 0,
@@ -334,74 +348,68 @@ var AroundView = Backbone.View.extend({
 			
 			for(j;j<arr.length;j++){
 				var tem = this.arr_plus(arr[j],start);
-				console.log(tem);
+				// console.log(tem);
 				if(i>=args.numOf) break;
 				if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
 					target_arr.push(tem);
 					i++;
 					}
 				}
-
+			//here	
 			//	
 			if(args.numOf > target_arr.length){
-				var arr_add = this.add,
+				var arr_add = this.minus(args),
 					numOfadd = args.numOf - target_arr.length;
 
-				for(k;k<numOfadd;j++){
-					var tem = this.arr_plus(arr_add[k],start);
-					if(target_arr.length>=args.numOf) break;
+				for(k;k<numOfadd;k++){
+					var tem = arr_add[k];
+					// if(target_arr.length>=args.numOf) break;
 					if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
 						target_arr.push(tem);
-						i++;
-						}
-					}	
+					}
+				}
+				console.log('append arr');		
+			}else{
+				console.log('no append arr');
 			}
-			console.log(target_arr);
+			this.set(target_arr);
 	},
-	add:function(){
+	minus:function(args){ // out - in = append
+		var arr_lt = this.simpleArr(args),
+			args2 = args;
 
-	},
-	minus:function(){
-		this.simpleArr(args);
-		_.difference();
-	},
-	specArr:function(args){
+			args2.numOf = args.numOf + 1;
+		var arr_gt = this.simpleArr(args2);	
 
+		var append_arr =  _.difference(arr_lt,arr_gt); //underscore
+		console.log(append_arr);
+		return append_arr;
 	},
 	simpleArr:function(args){
 		var n = Math.ceil(Math.sqrt(args.numOf));
 			n<3 ? n=3:n=n;
 		var	arr = [],
 			offset = n-2,
-			x = args.numLeft-offset, //start
 			y = args.numTop-offset; //start
 		// 3x3	
 		for(var i=0;i<n;i++){
+			var x = args.numLeft-offset; //start
 			for(var j=0;j<n;j++){
 				arr.push([x,y]);
 				x++;
 			}
 			y++;
 		}
-		console.log(arr);
+		// console.log(arr);
 		return arr;
 	},
- 	inArr:function(){
-
- 	},
- 	outArr:function(){
-
- 	},
-	setIn:function(arr){
+	set:function(arr){
 		var i = 0;
+		console.log(arr);
 		$('.around-box').each(function(){
-			$(this).css({'left':arr[i][1][1]*101+'px','top':arr[i][1][0]*101+'px'});
-			alert(i);
+			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'});
 			i++;
 		});
-	},
-	setOut:function(arr){
-
 	},
 	plusOrNot:function(arr){
 		if(arr[0]>=0 && arr[1]>=0){
@@ -425,6 +433,7 @@ var AroundView = Backbone.View.extend({
 			}
 		return false;	
 	},
+	//arr1+arr2 
 	arr_plus:function(arr1,arr2){
 		var arr3 = [arr1[0]+arr2[0],arr1[1]+arr2[1]];
 		return arr3;

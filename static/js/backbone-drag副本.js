@@ -306,42 +306,102 @@ var AroundView = Backbone.View.extend({
 		alert('test');
 	},
 	aroundFun:function(e){
+
 		var args = {
-				width : Math.floor(get_wh().w/101), //num of width
-				height : Math.floor(get_wh().h/101), //num of height
-				left : parseInt($(e.currentTarget).attr('x')), // left coor
-				top : parseInt($(e.currentTarget).attr('y')), // top coor
-				num : ''
+				w : Math.floor(get_wh().w/101), //w_count
+				h : Math.floor(get_wh().h/101), //h_count
+				numLeft : parseInt($(e.currentTarget).attr('x')),
+				numTop : parseInt($(e.currentTarget).attr('y')),
+				numOf : ''
 			},
 			t=this;
 			links.fetch({
 				success:function(collection,response){
 					collection.each(function(links){
+						// console.log(links.get('name'));
 						t.render(links.attributes);
 					});
-					args.num = collection.length;
-
-					t.less9(args);
-
+					args.numOf = collection.length;
+					t.spec(args);
 					return collection;
 				},
 				error:function(collection, response){
 					console.log(collection);
 					console.log(response);
-					console.log('aroung view get json error,please check the json file');
+					alert('aroung view get json error,please check the json file');
 				}
 			});
 		
 	},
-	less9:function(args){
-		var arr = [],
-			arr_spec = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]],
-			start = [args.left,args.top];
-			for(var j=0;j<args.num;j++){
-				var tem = this.overOrNot(this.plusOrNot(this.arr_plus(arr_spec[j],start)),args);
-				arr.push(tem);
+	spec:function(args){ // when num less than 
+		var i = 0,
+			j = 0,
+			k = 0,
+			target_arr = [],
+			arr = [],
+			arr_spec = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
+			arr_normal = this.simpleArr(args);
+			// two situations
+			args.numOf<9 ? arr = arr_spec : arr = arr_normal;
+
+			start = [args.numLeft,args.numTop];
+			
+			for(j;j<arr.length;j++){
+				var tem = this.arr_plus(arr[j],start);
+				// console.log(tem);
+				if(i>=args.numOf) break;
+				if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
+					target_arr.push(tem);
+					i++;
+					}
+				}
+			//here	
+			//	
+			if(args.numOf > target_arr.length){
+				var arr_add = this.minus(args),
+					numOfadd = args.numOf - target_arr.length;
+
+				for(k;k<numOfadd;k++){
+					var tem = arr_add[k];
+					// if(target_arr.length>=args.numOf) break;
+					// if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
+						target_arr.push(tem);
+					// }
+				}
+				console.log('append arr');		
+			}else{
+				console.log('no append arr');
 			}
-			this.set(arr);
+			this.set(target_arr);
+	},
+	minus:function(args){ // out - in = append
+		var arr_lt = this.simpleArr(args),
+			args2 = args;
+
+			args2.numOf = args.numOf + 1;
+		var arr_gt = this.simpleArr(args2);	
+
+		var append_arr =  _.difference(arr_lt,arr_gt); //underscore
+		console.log(append_arr);
+		return append_arr;
+	},
+	simpleArr:function(args){
+		var n = Math.ceil(Math.sqrt(args.numOf));
+			n<3 ? n=3:n=n;
+		var	arr = [],
+			offset = n-2,
+			y = args.numTop-offset; //start
+		// 3x3	
+		for(var i=0;i<n;i++){
+			var x = args.numLeft-offset; //start
+			for(var j=0;j<n;j++){
+				arr.push([x,y]);
+				x++;
+			}
+			y++;
+		}
+		// console.log(arr);
+		return arr;
 	},
 	set:function(arr){
 		var i = 0;
@@ -352,17 +412,18 @@ var AroundView = Backbone.View.extend({
 		});
 	},
 	plusOrNot:function(arr){
-		var tem = [];
-		arr[0]<0? tem[0]=Math.abs(arr[0])+1 : tem[0]=arr[0];
-		arr[1]<0? tem[1]=Math.abs(arr[1])+1 : tem[1]=arr[1];
-		return tem;
+		if(arr[0]>=0 && arr[1]>=0){
+			return true;
+		}else{
+			return false;
+		}
 	},
 	overOrNot:function(arr,args){
-		var tem = [];
-		arr[0]>=args.width? tem[0]=arr[0]-3 : tem[0]=arr[0];
-		arr[1]>=args.height? tem[1]=arr[1]-3 : tem[1]=arr[1];
-		console.log('over');
-		return tem;
+		if(args.w>=arr[0]&&args.h>=arr[1]){
+			return true;
+		}else{
+			return false;
+		}
 	},
 	inOrNot:function(obj,arr){
 		for(var i=0;i<arr.length;i++){

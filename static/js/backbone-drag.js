@@ -278,32 +278,39 @@ var AroundView = Backbone.View.extend({
 	},
 	initialize:function(){
 		var t = this;
-		// console.log(t.events);
-		// links.fetch({
-		// 	success:function(collection,response){
-		// 		collection.each(function(links){
-		// 			// console.log(links.get('name'));
-		// 			t.render(links.attributes);
-		// 		});
-		// 		// console.log(this.co);
-		// 		return collection;
-		// 	},
-		// 	error:function(collection, response){
-		// 			console.log(collection);
-		// 			console.log(response);
-		// 			alert('aroung view get json error,please check the json file');
-		// 		}
-		// });
-
 		this.list = new AroundModelList();
 		//event listen on
 		// $('#links').on("click",this.aroundFun);
+		this.fetch_fun();
 	},
 	render:function(args){
 		this.id.append(this.template(args));
 	},
 	test:function(){
 		alert('test');
+	},
+	fetch_fun:function(){
+		links.fetch({
+			add:'true',
+			data:{
+				skip:3
+			},
+			success:function(collection,res){
+				var i =0
+				// collection.each(function(links){
+				for(var j=0;j<collection.length;j++){	
+					if(i<3){
+						i++;
+						break;
+					}
+					console.log(collection);
+				};
+				return collection;
+			},
+			error:function(collection,res){
+				console.log('aroung view get json error,please check the json file');
+			}
+		})
 	},
 	aroundFun:function(e){
 		var args = {
@@ -320,9 +327,9 @@ var AroundView = Backbone.View.extend({
 						t.render(links.attributes);
 					});
 					args.num = collection.length;
-
+					// 
 					t.less9(args);
-
+					// 
 					return collection;
 				},
 				error:function(collection, response){
@@ -335,33 +342,90 @@ var AroundView = Backbone.View.extend({
 	},
 	less9:function(args){
 		var arr = [],
+			arrs, 
 			arr_spec = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]],
-			start = [args.left,args.top];
+			arr_simple = this.createSimpleArr(args),
+			n = Math.ceil(Math.sqrt(args.num)),
+			offset,
+			start;
+
+			n<5 ? n=3:n=n;
+			offset = n-2;
+
+			start = [args.left-offset,args.top-offset];
+
+			// 
+			args.num<9? arr_s=arr_spec : arr_s=arr_simple;
+
 			for(var j=0;j<args.num;j++){
-				var tem = this.overOrNot(this.plusOrNot(this.arr_plus(arr_spec[j],start)),args);
+				var real_arr = this.arr_plus(arr_s[j],start);
+				var plus_or_not = this.plusOrNot(real_arr,arr);
+				var tem = this.overOrNot(plus_or_not,args,arr);
 				arr.push(tem);
 			}
+			console.log(arr);
 			this.set(arr);
+	},
+	createSimpleArr:function(args){
+		var arr = [],
+			i = 0,
+			n = Math.ceil(Math.sqrt(args.num));
+			m = Math.ceil(args.num/n);
+			console.log(args.num);
+		for(var i=0;i<m;i++){
+			for(var j=0;j<n;j++){
+				arr.push([j,i]);
+			}
+		}
+		//random
+		// arr.sort(function(){return 0.5 - Math.random()});
+		return(arr);
 	},
 	set:function(arr){
 		var i = 0;
-		console.log(arr);
+		// console.log(arr);
 		$('.around-box').each(function(){
 			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'});
 			i++;
 		});
 	},
-	plusOrNot:function(arr){
-		var tem = [];
+	plusOrNot:function(arr,arr2){
+		var tem = [],
+			i = 1,
+			j = 0;
 		arr[0]<0? tem[0]=Math.abs(arr[0])+1 : tem[0]=arr[0];
 		arr[1]<0? tem[1]=Math.abs(arr[1])+1 : tem[1]=arr[1];
+		while(this.inOrNot(tem,arr2)){
+			if(j%2==0){
+				tem[0] = tem[0]+i;
+			}else{
+				tem[1] = tem[1]+i;
+			}
+			if(i%2==0){
+				j++;
+			}
+			i++;
+		}
 		return tem;
 	},
-	overOrNot:function(arr,args){
-		var tem = [];
+	overOrNot:function(arr,args,arr2){
+		var tem = [],
+			i = 1,
+			j = 0; 
+
 		arr[0]>=args.width? tem[0]=arr[0]-3 : tem[0]=arr[0];
 		arr[1]>=args.height? tem[1]=arr[1]-3 : tem[1]=arr[1];
-		console.log('over');
+		while(this.inOrNot(tem,arr2)){
+			if(j%2==0){
+				tem[0] = tem[0]-i;
+			}else{
+				tem[1] = tem[1]-i;
+			}
+			if(i%2==0){
+				j++;
+			}
+			i++;
+		}
 		return tem;
 	},
 	inOrNot:function(obj,arr){

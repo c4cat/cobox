@@ -95,7 +95,6 @@ $(function(){
 			$(this).removeClass('animated').addClass('revise').css("zIndex",2);
 
 			revise(arg);
-			//============================================================================//
 			console.log('drag stop');
 		}
 	});
@@ -111,6 +110,8 @@ $(function(){
 			x_distance,
 			y_distance,
 			i,
+			window_width = Math.floor($(window).width()/101)*101,
+			window_height = Math.floor($(window).height()/101)*101,
 			angle = arg.angle;
 
 			console.log(arg.translateX+arg.left);
@@ -127,8 +128,12 @@ $(function(){
 			}else{
 				y_distance =  (numOfBoxFromTop + 1) * 101;
 				numOfBoxFromTop = numOfBoxFromTop + 1;
-
 			}
+
+			x_distance<0? x_distance=0:x_distance=x_distance;
+			y_distance<0? y_distance=0:y_distance=y_distance;
+			x_distance>window_width? x_distance=window_width:x_distance=x_distance;
+			y_distance>window_height? y_distance=window_height:y_distance=y_distance;
 
 			//animate css 4 append
 		var css = '';

@@ -278,10 +278,26 @@ var AroundView = Backbone.View.extend({
 	},
 	initialize:function(){
 		var t = this;
+		// console.log(t.events);
+		// links.fetch({
+		// 	success:function(collection,response){
+		// 		collection.each(function(links){
+		// 			// console.log(links.get('name'));
+		// 			t.render(links.attributes);
+		// 		});
+		// 		// console.log(this.co);
+		// 		return collection;
+		// 	},
+		// 	error:function(collection, response){
+		// 			console.log(collection);
+		// 			console.log(response);
+		// 			alert('aroung view get json error,please check the json file');
+		// 		}
+		// });
+
 		this.list = new AroundModelList();
 		//event listen on
 		// $('#links').on("click",this.aroundFun);
-		this.fetch_fun();
 	},
 	render:function(args){
 		this.id.append(this.template(args));
@@ -289,144 +305,125 @@ var AroundView = Backbone.View.extend({
 	test:function(){
 		alert('test');
 	},
-	fetch_fun:function(){
-		links.fetch({
-			add:'true',
-			data:{
-				skip:3
-			},
-			success:function(collection,res){
-				var i =0
-				// collection.each(function(links){
-				for(var j=0;j<collection.length;j++){	
-					if(i<3){
-						i++;
-						break;
-					}
-					console.log(collection);
-				};
-				return collection;
-			},
-			error:function(collection,res){
-				console.log('aroung view get json error,please check the json file');
-			}
-		})
-	},
 	aroundFun:function(e){
+
 		var args = {
-				width : Math.floor(get_wh().w/101), //num of width
-				height : Math.floor(get_wh().h/101), //num of height
-				left : parseInt($(e.currentTarget).attr('x')), // left coor
-				top : parseInt($(e.currentTarget).attr('y')), // top coor
-				num : ''
+				w : Math.floor(get_wh().w/101), //w_count
+				h : Math.floor(get_wh().h/101), //h_count
+				numLeft : parseInt($(e.currentTarget).attr('x')),
+				numTop : parseInt($(e.currentTarget).attr('y')),
+				numOf : ''
 			},
 			t=this;
 			links.fetch({
 				success:function(collection,response){
 					collection.each(function(links){
+						// console.log(links.get('name'));
 						t.render(links.attributes);
 					});
-					args.num = collection.length;
-					// 
-					t.less9(args);
-					// 
+					args.numOf = collection.length;
+					t.spec(args);
 					return collection;
 				},
 				error:function(collection, response){
 					console.log(collection);
 					console.log(response);
-					console.log('aroung view get json error,please check the json file');
+					alert('aroung view get json error,please check the json file');
 				}
 			});
 		
 	},
-	less9:function(args){
-		var arr = [],
-			arrs, 
-			arr_spec = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]],
-			arr_simple = this.createSimpleArr(args),
-			n = Math.ceil(Math.sqrt(args.num)),
-			offset,
-			start;
+	spec:function(args){ // when num less than 
+		var i = 0,
+			j = 0,
+			k = 0,
+			target_arr = [],
+			arr = [],
+			arr_spec = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
+			arr_normal = this.simpleArr(args);
+			// two situations
+			args.numOf<9 ? arr = arr_spec : arr = arr_normal;
 
-			n<5 ? n=3:n=n;
-			offset = n-2;
+			start = [args.numLeft,args.numTop];
+			
+			for(j;j<arr.length;j++){
+				var tem = this.arr_plus(arr[j],start);
+				// console.log(tem);
+				if(i>=args.numOf) break;
+				if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
+					target_arr.push(tem);
+					i++;
+					}
+				}
+			//here	
+			//	
+			if(args.numOf > target_arr.length){
+				var arr_add = this.minus(args),
+					numOfadd = args.numOf - target_arr.length;
 
-			start = [args.left-offset,args.top-offset];
-
-			// 
-			args.num<9? arr_s=arr_spec : arr_s=arr_simple;
-
-			for(var j=0;j<args.num;j++){
-				var real_arr = this.arr_plus(arr_s[j],start);
-				var plus_or_not = this.plusOrNot(real_arr,arr);
-				var tem = this.overOrNot(plus_or_not,args,arr);
-				arr.push(tem);
+				for(k;k<numOfadd;k++){
+					var tem = arr_add[k];
+					// if(target_arr.length>=args.numOf) break;
+					// if(this.plusOrNot(tem) && this.overOrNot(tem,args)){
+						target_arr.push(tem);
+					// }
+				}
+				console.log('append arr');		
+			}else{
+				console.log('no append arr');
 			}
-			console.log(arr);
-			this.set(arr);
+			this.set(target_arr);
 	},
-	createSimpleArr:function(args){
-		var arr = [],
-			i = 0,
-			n = Math.ceil(Math.sqrt(args.num));
-			m = Math.ceil(args.num/n);
-			console.log(args.num);
-		for(var i=0;i<m;i++){
+	minus:function(args){ // out - in = append
+		var arr_lt = this.simpleArr(args),
+			args2 = args;
+
+			args2.numOf = args.numOf + 1;
+		var arr_gt = this.simpleArr(args2);	
+
+		var append_arr =  _.difference(arr_lt,arr_gt); //underscore
+		console.log(append_arr);
+		return append_arr;
+	},
+	simpleArr:function(args){
+		var n = Math.ceil(Math.sqrt(args.numOf));
+			n<3 ? n=3:n=n;
+		var	arr = [],
+			offset = n-2,
+			y = args.numTop-offset; //start
+		// 3x3	
+		for(var i=0;i<n;i++){
+			var x = args.numLeft-offset; //start
 			for(var j=0;j<n;j++){
-				arr.push([j,i]);
+				arr.push([x,y]);
+				x++;
 			}
+			y++;
 		}
-		//random
-		// arr.sort(function(){return 0.5 - Math.random()});
-		return(arr);
+		// console.log(arr);
+		return arr;
 	},
 	set:function(arr){
 		var i = 0;
-		// console.log(arr);
+		console.log(arr);
 		$('.around-box').each(function(){
 			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'});
 			i++;
 		});
 	},
-	plusOrNot:function(arr,arr2){
-		var tem = [],
-			i = 1,
-			j = 0;
-		arr[0]<0? tem[0]=Math.abs(arr[0])+1 : tem[0]=arr[0];
-		arr[1]<0? tem[1]=Math.abs(arr[1])+1 : tem[1]=arr[1];
-		while(this.inOrNot(tem,arr2)){
-			if(j%2==0){
-				tem[0] = tem[0]+i;
-			}else{
-				tem[1] = tem[1]+i;
-			}
-			if(i%2==0){
-				j++;
-			}
-			i++;
+	plusOrNot:function(arr){
+		if(arr[0]>=0 && arr[1]>=0){
+			return true;
+		}else{
+			return false;
 		}
-		return tem;
 	},
-	overOrNot:function(arr,args,arr2){
-		var tem = [],
-			i = 1,
-			j = 0; 
-
-		arr[0]>=args.width? tem[0]=arr[0]-3 : tem[0]=arr[0];
-		arr[1]>=args.height? tem[1]=arr[1]-3 : tem[1]=arr[1];
-		while(this.inOrNot(tem,arr2)){
-			if(j%2==0){
-				tem[0] = tem[0]-i;
-			}else{
-				tem[1] = tem[1]-i;
-			}
-			if(i%2==0){
-				j++;
-			}
-			i++;
+	overOrNot:function(arr,args){
+		if(args.w>=arr[0]&&args.h>=arr[1]){
+			return true;
+		}else{
+			return false;
 		}
-		return tem;
 	},
 	inOrNot:function(obj,arr){
 		for(var i=0;i<arr.length;i++){

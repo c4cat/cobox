@@ -279,9 +279,7 @@ var AroundView = Backbone.View.extend({
 	initialize:function(){
 		var t = this;
 		this.list = new AroundModelList();
-		//event listen on
-		// $('#links').on("click",this.aroundFun);
-		this.fetch_fun();
+		$('#links').trigger('click');
 	},
 	render:function(args){
 		this.id.append(this.template(args));
@@ -289,29 +287,29 @@ var AroundView = Backbone.View.extend({
 	test:function(){
 		alert('test');
 	},
-	fetch_fun:function(){
-		links.fetch({
-			add:'true',
-			data:{
-				skip:3
-			},
-			success:function(collection,res){
-				var i =0
-				// collection.each(function(links){
-				for(var j=0;j<collection.length;j++){	
-					if(i<3){
-						i++;
-						break;
-					}
-					console.log(collection);
-				};
-				return collection;
-			},
-			error:function(collection,res){
-				console.log('aroung view get json error,please check the json file');
-			}
-		})
-	},
+	// fetch_fun:function(){
+	// 	links.fetch({
+	// 		add:'true',
+	// 		data:{
+	// 			skip:3
+	// 		},
+	// 		success:function(collection,res){
+	// 			var i =0
+	// 			// collection.each(function(links){
+	// 			for(var j=0;j<collection.length;j++){	
+	// 				if(i<3){
+	// 					i++;
+	// 					break;
+	// 				}
+	// 				console.log(collection);
+	// 			};
+	// 			return collection;
+	// 		},
+	// 		error:function(collection,res){
+	// 			console.log('aroung view get json error,please check the json file');
+	// 		}
+	// 	})
+	// },
 	aroundFun:function(e){
 		var args = {
 				width : Math.floor(get_wh().w/101), //num of width
@@ -328,8 +326,9 @@ var AroundView = Backbone.View.extend({
 					});
 					args.num = collection.length;
 					// 
-					t.less9(args);
+					// t.less9(args);
 					// 
+					t.more9(args);
 					return collection;
 				},
 				error:function(collection, response){
@@ -353,7 +352,6 @@ var AroundView = Backbone.View.extend({
 			offset = n-2;
 
 			start = [args.left-offset,args.top-offset];
-
 			// 
 			args.num<9? arr_s=arr_spec : arr_s=arr_simple;
 
@@ -366,81 +364,131 @@ var AroundView = Backbone.View.extend({
 			console.log(arr);
 			this.set(arr);
 	},
-	createSimpleArr:function(args){
+	more9:function(args){
 		var arr = [],
-			i = 0,
-			n = Math.ceil(Math.sqrt(args.num));
-			m = Math.ceil(args.num/n);
-			console.log(args.num);
-		for(var i=0;i<m;i++){
-			for(var j=0;j<n;j++){
-				arr.push([j,i]);
+			offset,
+			start = [args.left,args.top],
+			n = Math.ceil(Math.sqrt(args.num)),
+			nine = this.createSimpleArr(3); // arr less than nine
+			//front 9
+			for(var j=0;j<nine.length;j++){
+				var simple_arr = this.arr_plus(nine[j],start);
+				this.more9Push(arr,simple_arr,args);
+			}
+			//after 9
+			while(arr.length<args.num){
+				var append_arr = this.createSimpleArr(4);
+				console.log(append_arr);
+				for(var k=0;k<append_arr.length;k++){
+					var simple_arr2 = this.arr_plus(append_arr[k],start);
+					this.more9Push2(arr,simple_arr2,args);
+				}	
+				n++;
+				console.log(arr.length);
+			}
+
+			this.set(arr);
+	},
+	more9Push:function(arr,simple_arr,args){
+		if(this.plusOrNot(simple_arr) && this.overOrNot(simple_arr,args) && this.inOrNot(simple_arr,arr)){
+			arr.push(simple_arr);
+		}
+	},
+	more9Push2:function(arr,simple_arr,args){
+		if(this.plusOrNot(simple_arr) && this.overOrNot(simple_arr,args) && this.inOrNot(simple_arr,arr)){
+			arr.push(simple_arr);
+		}
+	},
+	createSimpleArr:function(n){
+		var arr = [],
+			offset= Math.floor(n/2)*-1;
+		for(var i=offset;i<n+offset;i++){
+			for(var j=offset;j<n+offset;j++){
+				if(i==0 && j==0){
+					// leave the self postition
+				}else{
+					arr.push([j,i]);
+				}
 			}
 		}
-		//random
-		// arr.sort(function(){return 0.5 - Math.random()});
-		return(arr);
+		// arr.sort(function(){return 0.5 - Math.random()});// random arr 
+		return arr;
 	},
 	set:function(arr){
 		var i = 0;
 		// console.log(arr);
 		$('.around-box').each(function(){
-			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'});
+			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'}).attr({'x':arr[i][0],'y':arr[i][1]});
 			i++;
 		});
 	},
-	plusOrNot:function(arr,arr2){
-		var tem = [],
-			i = 1,
-			j = 0;
-		arr[0]<0? tem[0]=Math.abs(arr[0])+1 : tem[0]=arr[0];
-		arr[1]<0? tem[1]=Math.abs(arr[1])+1 : tem[1]=arr[1];
-		while(this.inOrNot(tem,arr2)){
-			if(j%2==0){
-				tem[0] = tem[0]+i;
-			}else{
-				tem[1] = tem[1]+i;
-			}
-			if(i%2==0){
-				j++;
-			}
-			i++;
+	plusOrNot:function(arr){
+		if(arr[0]>=0 && arr[1]>=0){
+			return true;
+		}else{
+			return false;
 		}
-		return tem;
 	},
-	overOrNot:function(arr,args,arr2){
-		var tem = [],
-			i = 1,
-			j = 0; 
-
-		arr[0]>=args.width? tem[0]=arr[0]-3 : tem[0]=arr[0];
-		arr[1]>=args.height? tem[1]=arr[1]-3 : tem[1]=arr[1];
-		while(this.inOrNot(tem,arr2)){
-			if(j%2==0){
-				tem[0] = tem[0]-i;
-			}else{
-				tem[1] = tem[1]-i;
-			}
-			if(i%2==0){
-				j++;
-			}
-			i++;
+	overOrNot:function(arr,args){
+		if(args.width>=arr[0]&&args.height>=arr[1]){
+			return true;
+		}else{
+			return false;
 		}
-		return tem;
 	},
 	inOrNot:function(obj,arr){
 		for(var i=0;i<arr.length;i++){
  			if(obj.toString() == arr[i].toString()){
- 					return true;
+ 					return false;
  				}
 			}
-		return false;	
-	},
+		console.log('not in');	
+		return true;	
+	},	
 	//arr1+arr2 
 	arr_plus:function(arr1,arr2){
 		var arr3 = [arr1[0]+arr2[0],arr1[1]+arr2[1]];
 		return arr3;
-	}
+	},
+	// plusOrNot:function(arr,arr2){
+	// 	var tem = [],
+	// 		i = 1,
+	// 		j = 0;
+	// 	arr[0]<0? tem[0]=Math.abs(arr[0])+1 : tem[0]=arr[0];
+	// 	arr[1]<0? tem[1]=Math.abs(arr[1])+1 : tem[1]=arr[1];
+	// 	while(this.inOrNot(tem,arr2)){
+	// 		if(j%2==0){
+	// 			tem[0] = tem[0]+i;
+	// 		}else{
+	// 			tem[1] = tem[1]+i;
+	// 		}
+	// 		if(i%2==0){
+	// 			j++;
+	// 		}
+	// 		i++;
+	// 	}
+	// 	return tem;
+	// },
+	// overOrNot:function(arr,args,arr2){
+	// 	var tem = [],
+	// 		i = 1,
+	// 		j = 0; 
+
+	// 	arr[0]>=args.width? tem[0]=arr[0]-3 : tem[0]=arr[0];
+	// 	arr[1]>=args.height? tem[1]=arr[1]-3 : tem[1]=arr[1];
+	// 	while(this.inOrNot(tem,arr2)){
+	// 		if(j%2==0){
+	// 			tem[0] = tem[0]-i;
+	// 		}else{
+	// 			tem[1] = tem[1]-i;
+	// 		}
+	// 		if(i%2==0){
+	// 			j++;
+	// 		}
+	// 		i++;
+	// 	}
+	// 	return tem;
+	// },
 });
 // links.bind('reset', function () { console.log(123); });
 

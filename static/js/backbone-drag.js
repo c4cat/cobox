@@ -339,7 +339,7 @@ var AroundView = Backbone.View.extend({
 		$('#region .drag').each(function(){
 			if(!$(this).hasClass('arounding')){
 				$(this).show();
-				$(this).addClass('animated bounceInDown');
+				$(this).addClass('animation-target');
 			}
 		});
 		

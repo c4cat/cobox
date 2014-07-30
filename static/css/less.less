@@ -83,16 +83,17 @@ body{
 	overflow: hidden;	
 }
 
-#drag,.drag,.testBox{
+#drag,.drag,.testBox,#region .ui-draggable{
 	position: absolute;
-	width: 101px;
-	height: 101px;
+	width: 100px;
+	height: 100px;
 	background: #000;
 	color: #fff;
 	font-size: 12px;
 	border-radius: 5px;
 	z-index: 2;
-	// cursor:pointer;
+	// margin: 1px;
+	cursor:pointer;
 }
 
 .drag.ui-draggable-dragging{
@@ -131,13 +132,25 @@ body{
 }
 .around-box{
 	position: absolute;
-	width: 101px;
-	height: 101px;
+	width: 100px;
+	height: 100px;
+	// padding: 1px;
 	background: #bababa;
 	overflow: hidden;
 	font-size: 12px;
 	z-index: 2;
 	border-radius: 5px;
 }
+.around-close{
+	position: absolute;
+	display: none;
+	width: 100px;
+	height: 100px;
+	top:0;
+	left: 0;
+	background: #000 url(../img/close.png);
+}
 
-
+#region>div:hover .around-close{
+	display: block;
+}

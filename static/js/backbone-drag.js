@@ -275,11 +275,14 @@ var AroundView = Backbone.View.extend({
 	template: _.template($('#around-template').html()),
 	events:{
 		'click #links' : 'aroundFun',
+		'click .around-close' : 'aroundClr',
+		'mouseover .around-close' : 'mouseoverClose',
+		'mouseout .around-close' : 'mouseoutClose'
+
 	},
 	initialize:function(){
 		var t = this;
 		this.list = new AroundModelList();
-		$('#links').trigger('click');
 	},
 	render:function(args){
 		this.id.append(this.template(args));
@@ -310,25 +313,58 @@ var AroundView = Backbone.View.extend({
 	// 		}
 	// 	})
 	// },
+	mouseoverClose:function(e){
+		var el = $(e.currentTarget);
+	},
+	mouseOutClose:function(e){
+		var el = $(e.currentTarget);
+	},
+	aroundClr:function(e){
+		e.stopPropagation();
+		var el = $(e.currentTarget);
+		$('.around-close').hide();
+		$('.around-box').each(function(){
+			var random = Math.random()*10;
+			// $(this).delay(random*1000).addClass('hinge animated');
+			$(this).delay(random*10).animate({'opacity':1},function(){
+				if(parseInt(random) % 2 == 0){
+					// console.log('left');
+					$(this).addClass('dragDownLeft animated');
+				}else{
+					// console.log('right');
+					$(this).addClass('dragDownRight animated');
+				}
+			});
+		});
+		$('#region .drag').each(function(){
+			if(!$(this).hasClass('arounding')){
+				$(this).show();
+				$(this).addClass('animated bounceInDown');
+			}
+		});
+		
+	},
 	aroundFun:function(e){
 		var args = {
 				width : Math.floor(get_wh().w/101), //num of width
 				height : Math.floor(get_wh().h/101), //num of height
 				left : parseInt($(e.currentTarget).attr('x')), // left coor
-				top : parseInt($(e.currentTarget).attr('y')), // top coor
+				top : parseInt($(e.currentTarget).attr('y')),
 				num : ''
 			},
 			t=this;
+			this.eee = $(e.currentTarget);
+
+			$('#around-container').empty();
+
 			links.fetch({
 				success:function(collection,response){
 					collection.each(function(links){
 						t.render(links.attributes);
 					});
 					args.num = collection.length;
-					// 
-					// t.less9(args);
-					// 
-					t.more9(args);
+					// two situations
+					args.num<9? t.less9(args):t.more9(args);
 					return collection;
 				},
 				error:function(collection, response){
@@ -337,7 +373,7 @@ var AroundView = Backbone.View.extend({
 					console.log('aroung view get json error,please check the json file');
 				}
 			});
-		
+
 	},
 	less9:function(args){
 		var arr = [],
@@ -412,14 +448,23 @@ var AroundView = Backbone.View.extend({
 	},
 	set:function(arr){
 		var i = 0;
-		// console.log(arr);
+		//eee is form aroundFun 
+		var el = this.eee;
+		el.addClass('arounding').removeClass('drag');
+		// hide other
+		$('#region .drag').each(function(){
+			if(!$(this).hasClass('arounding')){
+				$(this).hide();
+				// $(this).addClass('animated bounceInDown');
+			}
+		});
+		// append close button
+		el.append('<div class="around-close"></div>');
+
 		$('.around-box').each(function(){
 			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'}).attr({'x':arr[i][0],'y':arr[i][1]});
 			i++;
 		});
-	},
-	clear:function(arr){
-		
 	},
 	plusOrNot:function(arr){
 		if(arr[0]>=0 && arr[1]>=0){
@@ -429,7 +474,7 @@ var AroundView = Backbone.View.extend({
 		}
 	},
 	overOrNot:function(arr,args){
-		if(args.width>=arr[0]&&args.height>=arr[1]){
+		if(args.width>arr[0]&&args.height>arr[1]){
 			return true;
 		}else{
 			return false;

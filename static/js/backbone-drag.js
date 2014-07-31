@@ -322,7 +322,7 @@ var AroundView = Backbone.View.extend({
 	aroundClr:function(e){
 		e.stopPropagation();
 		var el = $(e.currentTarget);
-		$('.around-close').hide();
+		$('.around-close').hide().remove();
 		$('.around-box').each(function(){
 			var random = Math.random()*10;
 			// $(this).delay(random*1000).addClass('hinge animated');
@@ -450,6 +450,8 @@ var AroundView = Backbone.View.extend({
 		var i = 0;
 		//eee is form aroundFun 
 		var el = this.eee;
+		var center = [,el.attr('y')];
+
 		el.addClass('arounding').removeClass('drag');
 		// hide other
 		$('#region .drag').each(function(){
@@ -462,7 +464,19 @@ var AroundView = Backbone.View.extend({
 		el.append('<div class="around-close"></div>');
 
 		$('.around-box').each(function(){
-			$(this).css({'left':arr[i][0]*101+'px','top':arr[i][1]*101+'px'}).attr({'x':arr[i][0],'y':arr[i][1]});
+			$(this).css({
+				'left': el.attr('x')*101+'px',
+				'top' : el.attr('y')*101+'px',
+				'transform' :'rotate(90deg)'
+			});
+			$(this).animate({
+				'left':arr[i][0]*101+'px',
+				'top':arr[i][1]*101+'px',
+				transform:'rotate(0)'
+				// 'rotate':'30deg'
+			},200).attr({'x':arr[i][0],'y':arr[i][1]});
+
+
 			i++;
 		});
 	},
@@ -499,5 +513,4 @@ var AroundView = Backbone.View.extend({
 var app = new BgView();
 var app2 = new DragBoxView();
 var app3 = new AroundView();
-
 });

@@ -3,8 +3,14 @@
 	<meta charset="UTF-8">
 	<title>demo</title>
 </head>
-<script type='text/javascript' src='static/js/jquery.js'></script>
-<script type='text/javascript' src='static/js/map.js'></script>
+	<script type='text/javascript' src='static/js/jquery.js'></script>
+	<!-- <script type='text/javascript' src='static/js/jquery.transform.js'></script> -->
+	<script type='text/javascript' src='static/js/jquery.transform2d.js'></script>
+	<script>
+	$(function(){
+		$('h1').animate({transform: 'rotate(50deg)'},1000);
+	});
+	</script>
 <body>
 		
 <h1>hello world!</h1>

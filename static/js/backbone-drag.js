@@ -322,24 +322,42 @@ var AroundView = Backbone.View.extend({
 	aroundClr:function(e){
 		e.stopPropagation();
 		var el = $(e.currentTarget);
+
 		$('.around-close').hide().remove();
+		//each
 		$('.around-box').each(function(){
-			var random = Math.random()*10;
+			var random = Math.random(),
+				time = random * 400,
+				plus;
+			// random the direction
+			Math.ceil(random*10)%2==0? plus=1:plus=-1;
+			var	transform = 'rotate(' + 20*random*plus + 'deg)';
 			// $(this).delay(random*1000).addClass('hinge animated');
-			$(this).delay(random*10).animate({'opacity':1},function(){
-				if(parseInt(random) % 2 == 0){
-					// console.log('left');
-					$(this).addClass('dragDownLeft animated');
-				}else{
-					// console.log('right');
-					$(this).addClass('dragDownRight animated');
-				}
+			
+			$(this).removeClass('animation-aroundCreate').animate({
+					
+					'transform':transform
+
+				},200,function(){
+				// if(parseInt(random) % 2 == 0){
+				// 	// console.log('left');
+				// 	$(this).addClass('dragDownLeft animated');
+				// }else{
+				// 	// console.log('right');
+				// 	$(this).addClass('dragDownRight animated');
+				// }
+				$(this).addClass('animation-target');
 			});
+			// .animate({
+			// 	transform:'rotate(90deg)'
+			// },1000,function(){
+			// 	$(this).addClass('animation-target');
+			// });
 		});
 		$('#region .drag').each(function(){
 			if(!$(this).hasClass('arounding')){
 				$(this).show();
-				$(this).addClass('animation-target');
+				$(this).addClass('animation-drag');
 			}
 		});
 		
@@ -464,17 +482,27 @@ var AroundView = Backbone.View.extend({
 		el.append('<div class="around-close"></div>');
 
 		$('.around-box').each(function(){
+			var random = Math.random(),
+				time = random * 400,
+				plus;
+				// random the direction
+				Math.ceil(random*10)%2==0? plus=1:plus=-1;
+
+			var	transform = 'rotate(' + 90*random*plus + 'deg)';
+
 			$(this).css({
 				'left': el.attr('x')*101+'px',
 				'top' : el.attr('y')*101+'px',
-				'transform' :'rotate(90deg)'
+				'transform' : transform
 			});
 			$(this).animate({
 				'left':arr[i][0]*101+'px',
 				'top':arr[i][1]*101+'px',
 				transform:'rotate(0)'
 				// 'rotate':'30deg'
-			},200).attr({'x':arr[i][0],'y':arr[i][1]});
+			},time,function(){
+				$(this).addClass('animation-whenDrop');
+			}).attr({'x':arr[i][0],'y':arr[i][1]});
 
 
 			i++;
@@ -513,4 +541,5 @@ var AroundView = Backbone.View.extend({
 var app = new BgView();
 var app2 = new DragBoxView();
 var app3 = new AroundView();
+$('#links').addClass('animation-aroundCreate');
 });

@@ -277,8 +277,9 @@ var AroundView = Backbone.View.extend({
 		'click #links' : 'aroundFun',
 		'click .around-close' : 'aroundClr',
 		'mouseover .around-close' : 'mouseoverClose',
-		'mouseout .around-close' : 'mouseoutClose'
-
+		'mouseout .around-close' : 'mouseoutClose',
+		'mouseover .around-box' : 'mouseroverScale80p',
+		'mouseout .around-box' : 'mouseroverScale100p'
 	},
 	initialize:function(){
 		var t = this;
@@ -319,6 +320,14 @@ var AroundView = Backbone.View.extend({
 	mouseOutClose:function(e){
 		var el = $(e.currentTarget);
 	},
+	mouseroverScale80p:function(e){
+		var el = $(e.currentTarget);
+		el.find('img').removeClass().addClass('animation-scale80p');
+	},
+	mouseroverScale100p:function(e){
+		var el = $(e.currentTarget);
+		el.find('img').removeClass().addClass('animation-scale100p');
+	},
 	aroundClr:function(e){
 		e.stopPropagation();
 		var el = $(e.currentTarget);
@@ -327,26 +336,19 @@ var AroundView = Backbone.View.extend({
 		//each
 		$('.around-box').each(function(){
 			var random = Math.random(),
+				random2 = Math.random(),
 				time = random * 400,
 				plus;
 			// random the direction
 			Math.ceil(random*10)%2==0? plus=1:plus=-1;
 			var	transform = 'rotate(' + 20*random*plus + 'deg)';
+			var transformOrigin =  Math.round(random)*50+'px '+ Math.round(random2)*50+'px'
 			// $(this).delay(random*1000).addClass('hinge animated');
 			
-			$(this).removeClass('animation-aroundCreate').animate({
-					
-					'transform':transform
-
-				},200,function(){
-				// if(parseInt(random) % 2 == 0){
-				// 	// console.log('left');
-				// 	$(this).addClass('dragDownLeft animated');
-				// }else{
-				// 	// console.log('right');
-				// 	$(this).addClass('dragDownRight animated');
-				// }
-				$(this).addClass('animation-target');
+			$(this).removeClass('animation-aroundCreate').css({'transformOrigin':transformOrigin}).animate({
+					'transform':transform,
+				},150,function(){
+					$(this).addClass('animation-whenDrop');
 			});
 			// .animate({
 			// 	transform:'rotate(90deg)'
@@ -483,7 +485,8 @@ var AroundView = Backbone.View.extend({
 
 		$('.around-box').each(function(){
 			var random = Math.random(),
-				time = random * 400,
+				random2 = Math.random(),
+				time = random * 700,
 				plus;
 				// random the direction
 				Math.ceil(random*10)%2==0? plus=1:plus=-1;
@@ -500,10 +503,9 @@ var AroundView = Backbone.View.extend({
 				'top':arr[i][1]*101+'px',
 				transform:'rotate(0)'
 				// 'rotate':'30deg'
-			},time,function(){
-				$(this).addClass('animation-whenDrop');
+			},time,'easeOutExpo',function(){
+				// $(this).addClass('animation-aroundCreate');
 			}).attr({'x':arr[i][0],'y':arr[i][1]});
-
 
 			i++;
 		});

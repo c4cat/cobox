@@ -17,6 +17,6 @@ body{margin:0;padding:0;overflow:hidden;}
 .about-hidden{position:relative;width:400px;height:380px;}
 .about-hidden img{width:400px;height:380px;}
 #around-container{position:absolute;top:0;left:0;}
-.around-box{position:absolute;width:100px;height:100px;background:#bababa;overflow:hidden;font-size:12px;z-index:2;border-radius:5px;}
+.around-box{position:absolute;width:100px;height:100px;background:#bababa;font-size:12px;z-index:2;border-radius:5px;overflow:hidden;}.around-box img{width:100px;height:auto;overflow:hidden;border-radius:5px;}
 .around-close{position:absolute;display:none;width:100px;height:100px;top:0;left:0;background:#000000 url(../img/close.png);}
 #region>div:hover .around-close{display:block;}

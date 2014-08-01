@@ -3,7 +3,7 @@
 		"id":"1",
 		"name":"tumblr1",
 		"url":"517xx.tumblr.com",
-		"img":""
+		"img":"http://localhost:5177/static/img/80x80.jpg"
 	},
 	{
 		"id":"2",

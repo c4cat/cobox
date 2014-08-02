@@ -268,18 +268,18 @@ var AroundModelList = Backbone.Collection.extend({
 
 var links = new AroundModelList();
 
-
 var AroundView = Backbone.View.extend({
 	el:$('body'),
 	id:$('#around-container'),
 	template: _.template($('#around-template').html()),
 	events:{
 		'click #links' : 'aroundFun',
-		'click .around-close' : 'aroundClr',
+		'click .around-close' : 'clear',
 		'mouseover .around-close' : 'mouseoverClose',
 		'mouseout .around-close' : 'mouseoutClose',
-		'mouseover .around-box' : 'mouseroverScale80p',
-		'mouseout .around-box' : 'mouseroverScale100p'
+		'mouseenter .around-box' : 'mouseroverScale80p',
+		'mouseout .around-box' : 'mouseroverScale100p',
+
 	},
 	initialize:function(){
 		var t = this;
@@ -327,42 +327,6 @@ var AroundView = Backbone.View.extend({
 	mouseroverScale100p:function(e){
 		var el = $(e.currentTarget);
 		el.find('img').removeClass().addClass('animation-scale100p');
-	},
-	aroundClr:function(e){
-		e.stopPropagation();
-		var el = $(e.currentTarget);
-
-		$('.around-close').hide().remove();
-		//each
-		$('.around-box').each(function(){
-			var random = Math.random(),
-				random2 = Math.random(),
-				time = random * 400,
-				plus;
-			// random the direction
-			Math.ceil(random*10)%2==0? plus=1:plus=-1;
-			var	transform = 'rotate(' + 20*random*plus + 'deg)';
-			var transformOrigin =  Math.round(random)*50+'px '+ Math.round(random2)*50+'px'
-			// $(this).delay(random*1000).addClass('hinge animated');
-			
-			$(this).removeClass('animation-aroundCreate').css({'transformOrigin':transformOrigin}).animate({
-					'transform':transform,
-				},150,function(){
-					$(this).addClass('animation-whenDrop');
-			});
-			// .animate({
-			// 	transform:'rotate(90deg)'
-			// },1000,function(){
-			// 	$(this).addClass('animation-target');
-			// });
-		});
-		$('#region .drag').each(function(){
-			if(!$(this).hasClass('arounding')){
-				$(this).show();
-				$(this).addClass('animation-drag');
-			}
-		});
-		
 	},
 	aroundFun:function(e){
 		var args = {
@@ -491,24 +455,72 @@ var AroundView = Backbone.View.extend({
 				// random the direction
 				Math.ceil(random*10)%2==0? plus=1:plus=-1;
 
-			var	transform = 'rotate(' + 90*random*plus + 'deg)';
+			var	transform = 'rotate(' + 90*random*plus + 'deg) scale(0.8)';
 
 			$(this).css({
 				'left': el.attr('x')*101+'px',
 				'top' : el.attr('y')*101+'px',
 				'transform' : transform
+			// }).addClass('animation-scale100p-noBounce');
 			});
 			$(this).animate({
 				'left':arr[i][0]*101+'px',
 				'top':arr[i][1]*101+'px',
-				transform:'rotate(0)'
+				transform:'rotate(0) scale(1)'
 				// 'rotate':'30deg'
 			},time,'easeOutExpo',function(){
-				// $(this).addClass('animation-aroundCreate');
 			}).attr({'x':arr[i][0],'y':arr[i][1]});
-
+			//img
+			$(this).find('img').css('transform','scale(0.8)');
+			$(this).find('img').animate({
+				transform: 'scale(1)',
+			},time,'easeOutExpo');
 			i++;
 		});
+	},
+	clear:function(e){
+		e.stopPropagation();
+		var el = $(e.currentTarget);
+
+		$('.around-close').hide().remove();
+		//each
+		$('.around-box').each(function(){
+			var random = Math.random(),
+				random2 = Math.random(),
+				time = random * 400,
+				plus;
+			// random the direction
+			Math.ceil(random*10)%2==0? plus=1:plus=-1;
+			var	transform = 'rotate(' + 20*random*plus + 'deg)';
+			var transformOrigin =  Math.round(random)*50+'px '+ Math.round(random2)*50+'px'
+			// $(this).delay(random*1000).addClass('hinge animated');
+			
+			$(this).removeClass('animation-aroundCreate').css({'transformOrigin':transformOrigin}).animate({
+					'transform':transform,
+				},150,function(){
+					$(this).addClass('animation-whenDrop');
+			});
+
+			$(this).find('img').addClass('animation-target');
+			// .animate({
+			// 	transform: 'scale(0.9)',
+			// },time,'easeOutExpo');
+			// .animate({
+			// 	transform:'rotate(90deg)'
+			// },1000,function(){
+			// 	$(this).addClass('animation-target');
+			// });
+		});
+		$('#region .drag').each(function(){
+			if(!$(this).hasClass('arounding')){
+				$(this).show();
+				$(this).addClass('animation-drag');
+			}
+		});
+		
+	},
+	loadImage:function(){
+
 	},
 	plusOrNot:function(arr){
 		if(arr[0]>=0 && arr[1]>=0){

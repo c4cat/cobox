@@ -28,7 +28,7 @@ $(function(){
     		  y: e.offsetY - $(this).height() / 2
     		};
     		this.grabDistance = Math.sqrt(Math.pow(this.grabOffset.x, 2) + Math.pow(this.grabOffset.y, 2));
-    		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px").removeClass('re');
+    		$(this).css("transform-origin", "" + e.offsetX + "px " + e.offsetY + "px").removeClass('re animation-dragDrop');
     		this.dragOffset = null;
 
 			console.log('drag start');
@@ -226,7 +226,52 @@ $(function(){
 				}
 			});
 		});
-	}
+	};
+
+	function moveE(x,y) {
+	    // Check for our initial values if we don't have them.
+	    var matrixArray  = this.matrixToArray( this.matrixString() );
+	    if ( !this.cssX )
+	      this.cssX = this.xTranslation( matrixArray );
+
+	    if ( !this.cssY )
+	      this.cssY = this.yTranslation( matrixArray );
+
+	    // CSS3 transforms are additive from current position
+	    this.cssX = this.cssX + x;
+	    this.cssY = this.cssY + y;
+
+	    this.log({ type: 'delta', x: x, y: y });
+
+	    matrixArray[4]    = this.cssX;
+	    matrixArray[5]    = this.cssY;
+
+	    this.translation  = this.arrayToMatrix( matrixArray );
+	    this.transform( this.translation );
+ 	};
+ 	function matrixToArray(str) {
+      return str.split('(')[1].split(')')[0].split(',');
+  	};
+
+  	function arrayToMatrix(array) {
+      return "matrix(" +  array.join(',')  + ")";
+  	};
+  	function transform = function(value) {
+    	this.$el.css({
+        '-webkit-transform': value,
+           '-moz-transform': value,
+            '-ms-transform': value,
+             '-o-transform': value,
+                'transform': value  });
+  	};
+  	function xTranslation(matrixArray) {
+    	matrixArray  = matrixArray || this.matrixToArray( this.matrixString() );
+    	return parseInt(matrixArray[4], 10);
+  	};
+  	function yTranslation(matrixArray) {
+    	matrixArray  = matrixArray || this.matrixToArray( this.matrixString() );
+    	return parseInt(matrixArray[5], 10);
+  	};
 	// dropDown();
 });
 

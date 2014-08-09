@@ -501,23 +501,15 @@ var AroundView = Backbone.View.extend({
 					$(this).addClass('animation-whenDrop');
 			});
 
-			$(this).find('img').addClass('animation-target');
-			// .animate({
-			// 	transform: 'scale(0.9)',
-			// },time,'easeOutExpo');
-			// .animate({
-			// 	transform:'rotate(90deg)'
-			// },1000,function(){
-			// 	$(this).addClass('animation-target');
-			// });
+			$(this).find('img').addClass('animation-scale80pNobounce');
 		});
 		$('#region .drag').each(function(){
 			if(!$(this).hasClass('arounding')){
 				$(this).show();
-				$(this).addClass('animation-drag');
+				$(this).addClass('animation-dragDrop');
 			}
 		});
-		
+		$('#region .drag').delay(2000);
 	},
 	loadImage:function(){
 
@@ -555,5 +547,5 @@ var AroundView = Backbone.View.extend({
 var app = new BgView();
 var app2 = new DragBoxView();
 var app3 = new AroundView();
-$('#links').addClass('animation-aroundCreate');
+// $('#links').addClass('animation-aroundCreate');
 });

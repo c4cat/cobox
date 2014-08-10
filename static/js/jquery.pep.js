@@ -540,7 +540,6 @@
   //    using jQuery's .css function -- this fxn uses the
   //    .css({top: "+=20", left: "-=30"}) syntax
   Pep.prototype.moveTo = function(x,y, animate) {
-
     this.log({ type: 'delta', x: x, y: y });
     if ( animate ) {
       this.$el.animate({ top: y, left: x }, 0, 'easeOutQuad', {queue: false});
@@ -553,7 +552,6 @@
   //  moveToUsingTransforms();
   //    move the object to an x and/or y value
   Pep.prototype.moveToUsingTransforms = function(x,y) {
-
     // Check for our initial values if we don't have them.
     var matrixArray  = this.matrixToArray( this.matrixString() );
     if ( !this.cssX )
@@ -842,6 +840,7 @@
       if (hash.y === upperYLimit && this.yTranslation() ) hash.y = upperYLimit - this.yTranslation();
     }
 
+    // console.log(hash);
     return hash;
   };
 

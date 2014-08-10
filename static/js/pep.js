@@ -1,26 +1,112 @@
 // mrc
 // i#cornelia.in
 // 2014年6月13日16:33:17
-// drag.js
+// 2014年8月10日21:50:54 rewrite 
+// stop use jqueryui and use jquert.pep.js
 
-// jquery.ui
 $(function(){
 	$('.drag').pep({
-		shouldPreventDefault:false,
-		allowDragEventPropagation:false,
-		// containment: $('#region'),
+		constrainTo:'window',
+		cssEaseDuration:450,
+		useCSSTranslation: false,
 		start:function(e){
-			this.dom_id = $(this.el).attr('id');
+			// mark the id
+			this.the_id = $(this.el).attr('id');
 			$(this.el).attr('id','');
-			console.log(this.dom_id);
+			// args
+			this.dragStartPos = {
+    		  x: e.clientX,
+    		  y: e.clientY
+    		};
+    		this.boxStartPos = {
+    		  x: $(this.el).offset().left + $(this.el).width() / 2,
+    		  y: $(this.el).offset().top + $(this.el).height() / 2
+    		};
+    		this.grabOffset = {
+    		  x: e.offsetX - $(this.el).width() / 2,
+    		  y: e.offsetY - $(this.el).height() / 2
+    		};
+			console.log('start');
 		},
 		drag:function(e){
+			//drag effect
+			this.offsetX = e.offsetX;
+		 	this.offsetY = e.offsetY;
 
+			$('.drag:not(.pep-active)').css('opacity',0.4);
+			var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
+    		delta = {
+      			x: e.clientX - this.dragStartPos.x,
+      			y: e.clientY - this.dragStartPos.y
+    		};
+    		distance = Math.sqrt(Math.pow(delta.x, 2) + Math.pow(delta.y, 2));
+    		dampenedDistance = 500 * (1 - Math.pow(Math.E, -0.002 * distance));
+    		angle = Math.atan2(delta.y, delta.x);
+
+    		centerDelta = {
+    		  x: e.clientX - this.boxStartPos.x,
+    		  y: e.clientY - this.boxStartPos.y
+    		};
+    		centerDistance = Math.sqrt(Math.pow(centerDelta.x, 2) + Math.pow(centerDelta.y, 2));
+    		dotProduct = centerDelta.x * this.grabOffset.x + centerDelta.y * this.grabOffset.y;
+    		determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
+    		this.dragAngle = -Math.atan2(determinant, dotProduct);
+
+    		this.dragOffset = {
+    		  x: Math.round(Math.cos(angle) * dampenedDistance),
+    		  y: Math.round(Math.sin(angle) * dampenedDistance)
+    		};
+
+    		this.translateX = Math.round(this.dragOffset.x);
+    		this.translateY = Math.round(this.dragOffset.y);
+
+    		$(this.el).css({"transform":"rotate(" + (this.dragAngle.toPrecision(2)) + "rad)"});
 		},
 		stop:function(e){
-			$(this.el).attr('id',this.dom_id);
-			console.log('drag stop');
-		}
+			//set the id again for click
+			var the_id = this.the_id,
+				the_el = this.el;
+			setTimeout(function(){$(the_el).attr('id',the_id)},300);
+
+			$('.drag').animate({'opacity':1},200);
+
+			//
+
+
+			console.log('stop');
+		},
+		easing:function(e){
+
+			console.log('easing');
+		},
+		rest:function(e){
+			var offsetX  = e.offsetX - this.offsetX,
+				offsetY  = e.offsetY - this.offsetY,
+
+				x_distance = Math.abs(e.clientX - this.dragStartPos.x),
+				y_distance = Math.abs(e.clientY - this.dragStartPos.y),
+				x_direction = (e.clientX >this.dragStartPos.x)? 'right':'left',
+				y_direction = (e.clientY >this.dragStartPos.y)? 'down':'up';
+				
+				var arg = {
+					dx : x_distance,
+					dy : y_distance,
+					clientX : e.clientX,
+					clientY : e.clientY,
+					left: parseInt($(this.el).css('left')),
+					top : parseInt($(this.el).css('top')),
+					angle : this.dragAngle.toPrecision(2),
+					translateX:parseInt(this.translateX),
+					translateY:parseInt(this.translateY)
+				};
+
+			$(this.el).addClass('revise');
+			// .css("zIndex",2);
+
+			revise(arg);
+			console.log('rest');
+		},
+		debug:true
 	});
 
 	function revise(arg){
@@ -59,39 +145,19 @@ $(function(){
 			x_distance>window_width? x_distance=window_width:x_distance=x_distance;
 			y_distance>window_height? y_distance=window_height:y_distance=y_distance;
 
-			//animate css 4 append
-		var css = '';
-			css += '.re{';
-			css += '-webkit-animation-name: re;';
-			css += '-webkit-animation-duration: 0.2s;';
-			css += '-webkit-animation-iteration-count: 1;'; //infinite
-			css += '-webkit-animation-delay: 0s;';
-			css += '-webkit-animation-timing-function: ease-in-out;';
-			css += '}';
-			css += '@-webkit-keyframes re {';
-			css += '10%, 20%, 60%, 80%, 90%,100% { -webkit-transform-origin: center center; }';
-			css += '10% { -webkit-transform: rotate('+ angle +'); }';
-			css += '20% { -webkit-transform: translate(1px 1px); }';	
-			css += '30% { -webkit-transform: translate(-1px -1px); }';	
-			css += '100% { -webkit-transform: rotate(0); translate(0 0);}';
-			css += '}';
-
-			$('#style').html('').append(css);
-			$('.revise').attr({'x':numOfBoxFromLeft,'y':numOfBoxFromTop}).addClass('re');
-
 			$('.revise').animate({
 				'left' : x_distance+'px',
 				'top' : y_distance+'px',
+				transform : 'rotate('+ angle +')'
 				},
 				100,
 				"easeInQuad",
 				function() {
 					$(this).removeClass("revise");
-					$(this).css('transform','');
+					$(this).attr({'x':numOfBoxFromLeft,'y':numOfBoxFromTop}).css({'transform':''});
 					// overlap or not?
-					overlap($(this),x_distance,y_distance);
+					// overlap($(this.el),x_distance,y_distance);
 			});
-			$('.drag').css('opacity',1);
 	};
 
 	function overlap(_this,x_distance,y_distance){
@@ -117,40 +183,8 @@ $(function(){
 					// overlap($(this),x_distance,y_distance);
 			});
 		}
+		console.log('overlap');
 	}
 
-	function draggingOpacity(){
-		$('.drag:not(.ui-draggable-dragging)').each(function(){
-			$(this).css('opacity',0.4);
-		});
-	}
-
-	//
-	//clone drop about
-	function dropDown(){
-		//clone first
-		$('.about-hidden').clone().prependTo('.drop');
-
-		for(var ii=1;ii<4;ii++){
-			for(var jj=1;jj<4;jj++){
-				$('.drop[data-x='+ii+'][data-y='+jj+']').find('.about-hidden').css({'top': (ii-1)*-101+'px','left':(jj-1)*-101+'px'});
-			}
-		}
-		$('.drop').each(function(){
-			var random = Math.random()*10;
-			// $(this).delay(random*1000).addClass('hinge animated');
-			console.log(random);
-			$(this).delay(random*50).animate({'opacity':1},function(){
-				if(parseInt(random) % 2 == 0){
-					console.log('left');
-					$(this).addClass('dragDownLeft animated');
-				}else{
-					console.log('right');
-					$(this).addClass('dragDownRight animated');
-				}
-			});
-		});
-	}
-	// dropDown();
 });
 

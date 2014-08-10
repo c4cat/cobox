@@ -165,7 +165,7 @@ $(function(){
 					$(this).removeClass("revise");
 					$(this).css('transform','');
 					// overlap or not?
-					overlap($(this),x_distance,y_distance);
+					// overlap($(this),x_distance,y_distance);
 			});
 			$('.drag').css('opacity',1);
 	};

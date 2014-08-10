@@ -356,8 +356,7 @@ var AroundView = Backbone.View.extend({
 					console.log(response);
 					console.log('aroung view get json error,please check the json file');
 				}
-			});
-
+			});	
 	},
 	less9:function(args){
 		var arr = [],
@@ -381,7 +380,7 @@ var AroundView = Backbone.View.extend({
 				var tem = this.overOrNot(plus_or_not,args,arr);
 				arr.push(tem);
 			}
-			console.log(arr);
+			// console.log(arr);
 			this.set(arr);
 	},
 	more9:function(args){
@@ -396,7 +395,6 @@ var AroundView = Backbone.View.extend({
 				this.more9Push(arr,simple_arr,args);
 			}
 			//after 9
-			// n<5? n=5:n=n; 
 			while(arr.length<args.num){
 				var append_arr = this.createSimpleArr(n);
 				append_arr.sort(function(){return 0.5 - Math.random()});
@@ -405,9 +403,8 @@ var AroundView = Backbone.View.extend({
 					this.more9Push(arr,simple_arr2,args);
 				}	
 				n++;
-				console.log(arr.length);
+				// console.log(arr.length);
 			}
-
 			this.set(arr);
 	},
 	more9Push:function(arr,simple_arr,args){
@@ -436,7 +433,8 @@ var AroundView = Backbone.View.extend({
 		var el = this.eee;
 		var center = [,el.attr('y')];
 
-		el.addClass('arounding').removeClass('drag');
+		el.addClass('arounding');
+		// .removeClass('drag');
 		// hide other
 		$('#region .drag').each(function(){
 			if(!$(this).hasClass('arounding')){

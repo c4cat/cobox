@@ -9,10 +9,12 @@ $(function(){
 		constrainTo:'window',
 		cssEaseDuration:450,
 		useCSSTranslation: false,
+		callIfNotStarted:[],
+		// shouldEase:false,
 		start:function(e){
 			// mark the id
 			this.the_id = $(this.el).attr('id');
-			$(this.el).attr('id','');
+			$(this.el).attr('id','').removeClass('animation-dragDrop trans450');
 			// args
 			this.dragStartPos = {
     		  x: e.clientX,
@@ -72,7 +74,6 @@ $(function(){
 
 			//
 
-
 			console.log('stop');
 		},
 		easing:function(e){
@@ -113,10 +114,10 @@ $(function(){
 		var boxWH = 101,
 			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left + arg.translateX )) / boxWH),
 			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top + arg.translateY)) / boxWH),
-			leftOffect =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
-			topOffect =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
-			x_direction = leftOffect<0.5? 'left':'right',
-			y_direction = topOffect<0.5? 'top':'bottom',
+			leftOffset =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
+			topOffset =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
+			x_direction = leftOffset<0.5? 'left':'right',
+			y_direction = topOffset<0.5? 'top':'bottom',
 			x_distance,
 			y_distance,
 			i,
@@ -124,7 +125,6 @@ $(function(){
 			window_height = Math.floor($(window).height()/101)*101,
 			angle = arg.angle;
 
-			console.log(arg.translateX+arg.left);
 
 			if(x_direction == 'left'){
 				x_distance =  numOfBoxFromLeft * 101;
@@ -142,8 +142,8 @@ $(function(){
 
 			x_distance<0? x_distance=0:x_distance=x_distance;
 			y_distance<0? y_distance=0:y_distance=y_distance;
-			x_distance>window_width? x_distance=window_width:x_distance=x_distance;
-			y_distance>window_height? y_distance=window_height:y_distance=y_distance;
+			x_distance>window_width? x_distance=window_width-101:x_distance=x_distance;
+			y_distance>window_height? y_distance=window_height-101:y_distance=y_distance;
 
 			$('.revise').animate({
 				'left' : x_distance+'px',
@@ -154,27 +154,32 @@ $(function(){
 				"easeInQuad",
 				function() {
 					$(this).removeClass("revise");
-					$(this).attr({'x':numOfBoxFromLeft,'y':numOfBoxFromTop}).css({'transform':''});
+					$(this).attr({'x':x_distance/101,'y':y_distance/101}).css({'transform':''});
 					// overlap or not?
-					// overlap($(this.el),x_distance,y_distance);
+					overlap($(this),[x_distance/101,y_distance/101]);
 			});
 	};
 
-	function overlap(_this,x_distance,y_distance){
+	function overlap(_this,obj){
 		var i=0,
 			arr = [];
 			// console.log(x_distance);
 		$('.drag').each(function(){
-			var left = parseInt($(this).css('left')),
-				top = parseInt($(this).css('top'));
-			if(left == x_distance && top == y_distance){
-				i++;
-			}
+			var left = $(this).attr('x'),
+				top = $(this).attr('y');
+				if(left==obj[0]&&top==obj[1]){
+
+				}else{
+					arr.push([left,top]);
+
+				}
 		});
-		if(i == 2){	
+		console.log(obj);
+		console.log(arr);
+		if(inOrNot(obj,arr)){	
 			_this.animate({
-				'left' : x_distance+101,
-				'top' : y_distance},
+				'left' : (obj[0]+1)*101,
+				'top' : obj[1]*101 },
 				100,
 				"easeInQuad",
 				function() {
@@ -182,9 +187,21 @@ $(function(){
 					// overlap or not?
 					// overlap($(this),x_distance,y_distance);
 			});
+			console.log('in');
+		}else{
+			console.log('not-in');
 		}
-		console.log('overlap');
-	}
+	};
+
+	function inOrNot(obj,arr){
+		for(var i=0;i<arr.length;i++){
+ 			if(obj.toString() == arr[i].toString()){
+ 					return true;
+ 				}
+			}
+		// console.log('not in');	
+		return false;	
+	};
 
 });
 

@@ -8,12 +8,45 @@
 	<script type='text/javascript' src='static/js/jquery.transform2d.js'></script>
 	<script>
 	$(function(){
-		$('h1').animate({transform: 'rotate(50deg)'},1000);
+		// $('h1').animate({transform: 'rotate(50deg)'},1000);
 	});
 	</script>
+	<style>
+		#demo{
+			position: absolute;
+			width: 517px;
+			height: 517px;
+			top:0;
+			left:0;
+			background-image: url(http://temp.im/123x234);
+			background-repeat:  no-repeat;
+			background-position:  0px -800px;
+			background-attachment:  fixed;
+			background-clip: rect(100px 20px 20px 20px);
+  			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+		}
+		#demo2{
+			position: absolute;
+			left:517px;
+			top:0;
+			width: 517px;
+			height: 517px;
+			background: url(http://temp.im/123x234) no-repeat 517px -800px fixed; 
+  			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+		}
+	</style>
 <body>
 		
 <h1>hello world!</h1>
+
+<div id="demo"></div>
+<div id="demo2"></div>
 
 </body>
 </html>

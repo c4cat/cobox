@@ -461,18 +461,18 @@ var ImgView = Backbone.View.extend({
 		'click .round-img' : 'imgLoad',
 	},
 	initialize:function(){
-		$('body').append('<div id="img-container"></div>');
-		$('#img-container').css({'width':get_wh().w,'height':get_wh().h});
+		this.el.append('<div id="img-container"></div>');
+		this.id.css({'width':get_wh().w,'height':get_wh().h});
 		$(window).on("resize",function(){
-			$('#img-container').css({'width':get_wh().w,'height':get_wh().h});
+			this.id.css({'width':get_wh().w,'height':get_wh().h});
 		});
-	},
-	render:function(args){
-		this.id.append(this.template(args));
 	},
 	test:function(){
 		alert('test');
 	},
+	imgLoad:function(){
+		
+	}
 });
 
 var app = new BgView();

@@ -132,7 +132,6 @@ var DragBoxView = Backbone.View.extend({
 				arr.push(random);
 			}
 		}
-
 		$('.drag').each(function(){
 			$(this).attr({'x':arr[count][0],'y':arr[count][1]}).css({'left':arr[count][0]*101+'px','top':arr[count][1]*101+'px'}).addClass('trans450');
 			count++;
@@ -185,19 +184,20 @@ var links = new AroundModelList();
 var AroundView = Backbone.View.extend({
 	el:$('body'),
 	id:$('#around-container'),
-	template: _.template($('#around-template').html()),
+	template: _.template($('#around-img-template').html()),
 	events:{
 		'click #links' : 'aroundFun',
 		'click .around-close' : 'clear',
 		'mouseover .around-close' : 'mouseoverClose',
 		'mouseout .around-close' : 'mouseoutClose',
-		'mouseenter .around-box' : 'mouseroverScale80p',
-		'mouseout .around-box' : 'mouseroverScale100p',
+		'mouseenter .around-img' : 'mouseroverScale80p',
+		'mouseout .around-img' : 'mouseroverScale100p',
 
 	},
 	initialize:function(){
 		var t = this;
-		$(window).on('resize',t.clear); //when resize clear
+		$(window).on('resize',t.clear); 
+		//when resize clear
 		this.list = new AroundModelList();
 	},
 	render:function(args){
@@ -206,29 +206,6 @@ var AroundView = Backbone.View.extend({
 	test:function(){
 		alert('test');
 	},
-	// fetch_fun:function(){
-	// 	links.fetch({
-	// 		add:'true',
-	// 		data:{
-	// 			skip:3
-	// 		},
-	// 		success:function(collection,res){
-	// 			var i =0
-	// 			// collection.each(function(links){
-	// 			for(var j=0;j<collection.length;j++){	
-	// 				if(i<3){
-	// 					i++;
-	// 					break;
-	// 				}
-	// 				console.log(collection);
-	// 			};
-	// 			return collection;
-	// 		},
-	// 		error:function(collection,res){
-	// 			console.log('aroung view get json error,please check the json file');
-	// 		}
-	// 	})
-	// },
 	mouseoverClose:function(e){
 		var el = $(e.currentTarget);
 	},
@@ -359,7 +336,7 @@ var AroundView = Backbone.View.extend({
 		// append close button
 		el.append('<div class="around-close"></div>');
 
-		$('.around-box').each(function(){
+		$('.around-img').each(function(){
 			var random = Math.random(),
 				random2 = Math.random(),
 				time = random * 700,
@@ -389,14 +366,17 @@ var AroundView = Backbone.View.extend({
 			},time,'easeOutExpo');
 			i++;
 		});
+		//rounding-mode		
+		$('body').addClass('rounding-mode');
 	},
 	clear:function(e){
+		if($('body').hasClass('rounding-mode')){
 		e.stopPropagation();
 		var el = $(e.currentTarget).parent();
 
 		$('.around-close').hide().remove();
 		//each
-		$('.around-box').each(function(){
+		$('.around-img').each(function(){
 			var random = Math.random(),
 				random2 = Math.random(),
 				time = random * 400,
@@ -406,13 +386,11 @@ var AroundView = Backbone.View.extend({
 			var	transform = 'rotate(' + 20*random*plus + 'deg)';
 			var transformOrigin =  Math.round(random)*50+'px '+ Math.round(random2)*50+'px'
 			// $(this).delay(random*1000).addClass('hinge animated');
-			
 			$(this).removeClass('animation-aroundCreate').css({'transformOrigin':transformOrigin}).animate({
 					'transform':transform,
 				},150,function(){
 					$(this).addClass('animation-whenDrop');
 			});
-
 			$(this).find('img').addClass('animation-scale80pNobounce');
 		});
 		$('#region .drag').each(function(){
@@ -421,7 +399,9 @@ var AroundView = Backbone.View.extend({
 				$(this).addClass('animation-dragDrop');
 			}
 		});
-		console.log(el);
+		$('.arounding').addClass('drag').removeClass('arounding');
+		$('body').removeClass('rounding-mode');
+		}
 	},
 	loadImage:function(){
 
@@ -454,10 +434,50 @@ var AroundView = Backbone.View.extend({
 		return arr3;
 	}
 });
-// links.bind('reset', function () { console.log(123); });
+
+// ================= //
+// ===links model=== //
+// ================= //
+
+var ImgModel = Backbone.Model.extend({
+	defaults: {
+		name: '',
+		title : '',
+		img : ''
+	},
+	initialize: function(){
+		
+	}
+});
+
+var img = new ImgModel();
+
+var ImgView = Backbone.View.extend({
+	el:$('body'),
+	model:img,
+	id:$('#img-container'),
+	template: _.template($('#around-template').html()),
+	events:{
+		'click .round-img' : 'imgLoad',
+	},
+	initialize:function(){
+		$('body').append('<div id="img-container"></div>');
+		$('#img-container').css({'width':get_wh().w,'height':get_wh().h});
+		$(window).on("resize",function(){
+			$('#img-container').css({'width':get_wh().w,'height':get_wh().h});
+		});
+	},
+	render:function(args){
+		this.id.append(this.template(args));
+	},
+	test:function(){
+		alert('test');
+	},
+});
 
 var app = new BgView();
 var app2 = new DragBoxView();
 var app3 = new AroundView();
+
 // $('#links').addClass('animation-aroundCreate');
 });

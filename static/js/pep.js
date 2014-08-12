@@ -15,7 +15,7 @@ $(function(){
 			// mark the id
 			this.the_id = $(this.el).attr('id');
 			$(this.el).attr('id','').removeClass('animation-dragDrop trans450');
-			// args
+
 			this.dragStartPos = {
     		  x: e.clientX,
     		  y: e.clientY
@@ -28,6 +28,10 @@ $(function(){
     		  x: e.offsetX - $(this.el).width() / 2,
     		  y: e.offsetY - $(this.el).height() / 2
     		};
+    		this.original = {
+    		  x:$(this.el).attr('x'),
+    		  y:$(this.el).attr('y')
+    		}
 			console.log('start');
 		},
 		drag:function(e){
@@ -72,33 +76,24 @@ $(function(){
 
 			$('.drag').animate({'opacity':1},200);
 
-			//
-
 			console.log('stop');
 		},
 		easing:function(e){
-
-			console.log('easing');
+			// console.log('easing');
 		},
 		rest:function(e){
 			var offsetX  = e.offsetX - this.offsetX,
-				offsetY  = e.offsetY - this.offsetY,
+				offsetY  = e.offsetY - this.offsetY;
 
-				x_distance = Math.abs(e.clientX - this.dragStartPos.x),
-				y_distance = Math.abs(e.clientY - this.dragStartPos.y),
-				x_direction = (e.clientX >this.dragStartPos.x)? 'right':'left',
-				y_direction = (e.clientY >this.dragStartPos.y)? 'down':'up';
-				
 				var arg = {
-					dx : x_distance,
-					dy : y_distance,
 					clientX : e.clientX,
 					clientY : e.clientY,
 					left: parseInt($(this.el).css('left')),
 					top : parseInt($(this.el).css('top')),
 					angle : this.dragAngle.toPrecision(2),
 					translateX:parseInt(this.translateX),
-					translateY:parseInt(this.translateY)
+					translateY:parseInt(this.translateY),
+					original:this.original
 				};
 
 			$(this.el).addClass('revise');
@@ -116,90 +111,83 @@ $(function(){
 			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top + arg.translateY)) / boxWH),
 			leftOffset =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
 			topOffset =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
-			x_direction = leftOffset<0.5? 'left':'right',
-			y_direction = topOffset<0.5? 'top':'bottom',
-			x_distance,
-			y_distance,
+			directionX = leftOffset<0.5? 'left':'right',
+			directionY = topOffset<0.5? 'top':'bottom',
+			distanceX,
+			distanceY,
 			i,
 			window_width = Math.floor($(window).width()/101)*101,
 			window_height = Math.floor($(window).height()/101)*101,
 			angle = arg.angle;
 
 
-			if(x_direction == 'left'){
-				x_distance =  numOfBoxFromLeft * 101;
+			if(directionX == 'left'){
+				distanceX =  numOfBoxFromLeft * 101;
 			}else{
-				x_distance =  (numOfBoxFromLeft + 1) * 101;
+				distanceX =  (numOfBoxFromLeft + 1) * 101;
 				numOfBoxFromLeft = numOfBoxFromLeft + 1;
 			}
 
-			if(y_direction == 'top'){
-				y_distance =  numOfBoxFromTop * 101;
+			if(directionY == 'top'){
+				distanceY =  numOfBoxFromTop * 101;
 			}else{
-				y_distance =  (numOfBoxFromTop + 1) * 101;
+				distanceY =  (numOfBoxFromTop + 1) * 101;
 				numOfBoxFromTop = numOfBoxFromTop + 1;
 			}
 
-			x_distance<0? x_distance=0:x_distance=x_distance;
-			y_distance<0? y_distance=0:y_distance=y_distance;
-			x_distance>window_width? x_distance=window_width-101:x_distance=x_distance;
-			y_distance>window_height? y_distance=window_height-101:y_distance=y_distance;
+			// the edge
+			distanceX<0? distanceX=0:distanceX=distanceX;
+			distanceY<0? distanceY=0:distanceY=distanceY;
+			distanceX>window_width? distanceX=window_width-101:distanceX=distanceX;
+			distanceY>window_height? distanceY=window_height-101:distanceY=distanceY;
 
 			$('.revise').animate({
-				'left' : x_distance+'px',
-				'top' : y_distance+'px',
+				'left' : distanceX+'px',
+				'top' : distanceY+'px',
 				transform : 'rotate('+ angle +')'
 				},
 				100,
 				"easeInQuad",
 				function() {
+					var attr ={
+						'x':distanceX/101,
+						'y':distanceY/101
+					}
 					$(this).removeClass("revise");
-					$(this).attr({'x':x_distance/101,'y':y_distance/101}).css({'transform':''});
-					// overlap or not?
-					overlap($(this),[x_distance/101,y_distance/101]);
+					$(this).attr({'x':attr.x,'y':attr.y}).css({'transform':''});
+					// overlay or not?
+					overlay($(this),attr,arg.original);
 			});
 	};
-
-	function overlap(_this,obj){
-		var i=0,
-			arr = [];
-			// console.log(x_distance);
+	// after drag  is overlay?
+	function overlay(_this,attr,original){
+		var i=0;
 		$('.drag').each(function(){
 			var left = $(this).attr('x'),
 				top = $(this).attr('y');
-				if(left==obj[0]&&top==obj[1]){
-
-				}else{
-					arr.push([left,top]);
-
+				if(left==attr.x && top==attr.y){
+					i++;
 				}
 		});
-		console.log(obj);
-		console.log(arr);
-		if(inOrNot(obj,arr)){	
+		if(i>1){
 			_this.animate({
-				'left' : (obj[0]+1)*101,
-				'top' : obj[1]*101 },
+				'left' : original.x*101,
+				'top' : original.y*101 },
 				100,
 				"easeInQuad",
 				function() {
-					// $(this).addClass('stopShake');
-					// overlap or not?
-					// overlap($(this),x_distance,y_distance);
+					_this.attr({'x':original.x,'y':original.y});
 			});
-			console.log('in');
-		}else{
-			console.log('not-in');
+			// console.log('in');
 		}
 	};
-
+	// array in 2d array or not
 	function inOrNot(obj,arr){
 		for(var i=0;i<arr.length;i++){
  			if(obj.toString() == arr[i].toString()){
  					return true;
  				}
 			}
-		// console.log('not in');	
 		return false;	
 	};
 

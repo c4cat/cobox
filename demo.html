@@ -2,52 +2,42 @@
 <head>
 	<meta charset="UTF-8">
 	<title>demo</title>
-</head>
 	<script type='text/javascript' src='static/js/jquery.js'></script>
-	<!-- <script type='text/javascript' src='static/js/jquery.transform.js'></script> -->
-	<script type='text/javascript' src='static/js/jquery.transform2d.js'></script>
-	<script>
-	$(function(){
-		// $('h1').animate({transform: 'rotate(50deg)'},1000);
-	});
-	</script>
+	<script type='text/javascript' src='static/js/canvasquery.js'></script>
 	<style>
-		#demo{
-			
-			position: absolute;
-			width: 517px;
-			height: 517px;
-			top:0;
-			left:0;
-			background-image: url(http://temp.im/123x234);
-			background-repeat:  no-repeat;
-			background-position:  0px -800px;
-			background-attachment:  fixed;
-			background-clip: rect(100px 20px 20px 20px);
-  			-webkit-background-size: cover;
-			-moz-background-size: cover;
-			-o-background-size: cover;
-			background-size: cover;
+		*{
+			margin: 0;
+			padding: 0;
 		}
-		#demo2{
-			position: absolute;
-			left:517px;
-			top:0;
-			width: 517px;
-			height: 517px;
-			background: url(http://temp.im/123x234) no-repeat 517px -800px fixed; 
-  			-webkit-background-size: cover;
-			-moz-background-size: cover;
-			-o-background-size: cover;
-			background-size: cover;
+		#demo{
 		}
 	</style>
+</head>
+
 <body>
-		
-<h1>hello world!</h1>
-
-<div id="demo"></div>
-<div id="demo2"></div>
-
+	<canvas id="canvas" width='180' height='180'></canvas>
+	
 </body>
+
+<script>
+	window.onload = function(){
+		var canvas = document.getElementById('canvas');
+		var context2D = canvas.getContext('2d');
+
+		var pic = new Image();
+			pic.src = '1.jpg';
+
+		pic.onload = function(){
+			// context2D.translate(90,90);
+			// context2D.rotate(45*Math.PI/180);
+			context2D.drawImage(pic,-90,-90,180,180);
+			// context2D.rotate(-45*Math.PI/180);
+			// context2D.translate(-90,-90);
+
+		}	
+		function create(){
+
+		}
+	}
+</script>
 </html>

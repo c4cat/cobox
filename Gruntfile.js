@@ -42,6 +42,9 @@ module.exports=function(grunt){
             js:{
                  files:'<%= paths.js %>/**/*.js'
                  // tasks:['uglify']
+            },
+            html:{
+                files:'*.html'
             }
         }
 

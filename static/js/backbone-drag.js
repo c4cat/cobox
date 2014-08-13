@@ -56,6 +56,15 @@ var BgView = Backbone.View.extend({
 				$('#bg-sp').append(tem_sp);
 			}
 		}
+		$('.box').each(function(){
+			var random = _.random(1,10);
+			$(this).css({'position':'absloute'});
+			$(this).animate({
+				left:0,
+				top:0,
+				transform:'rotate('+random*10+'deg)'
+			},500);
+		});
 
 		$('#bg-sp').css('left',offect);
 		$('#bg-img>img').css({'width':get_wh().w,'min-height':get_wh().h});

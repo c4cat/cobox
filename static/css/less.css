@@ -29,3 +29,5 @@ body{margin:0;padding:0;overflow:hidden;}
 #region>div:hover .around-close{display:block;}
 
 /*.trans450{-webkit-transition:all 450ms cubic-bezier(0.19, 1, 0.22, 1); }*/
+
+.rotate45{-webkit-transform:rotate(45deg);}

@@ -1,0 +1,40 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>canvas</title>
+</head>
+<style>
+	*{
+		margin:0;
+	}
+	.n{
+		display: none;
+	}
+</style>
+<script type='text/javascript' src='static/js/jquery.min.js'></script> 
+<script type='text/javascript' src='static/js/canvasquery.min.js'></script> 
+
+<body>
+	<!-- <img src="demo.jpg" id="img" class="img n" alt=""> -->
+	<canvas></canvas>
+	<canvas id="canvas" width='1024' height='517'></canvas>
+</body>
+<script>   
+window.onload = function() {  
+	var canvas =document.getElementById("canvas");  
+         var context2D =canvas.getContext("2d");  
+
+    var pic = new Image();
+        pic.src ="demo.jpg"; 
+
+    context2D.drawImage(pic,0,0);
+    context2D.rotate(20*Math.PI/180);  
+
+	// var x = cq().drawImage(pic,100,100).rotate('90deg').appendTo('body');
+	// $(x.canvas).addClass('demo').css({'opacity':'0.9'});
+	// console.log($('canvas'));
+	// $('canvas').addClass('class_name');
+}
+
+</script>
+</html>

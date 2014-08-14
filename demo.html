@@ -55,7 +55,7 @@ $(document).ready(function(){
 		var _id = $(this).attr('id'); 
 		var x = $(this).attr('x');
 		var y = $(this).attr('y');
-		var i,j,k;
+		var i,j,k=1;
 		var num = 5;
 
 
@@ -75,13 +75,22 @@ $(document).ready(function(){
 				var rect = draw.rect(100,100).fill('2.png').move(i*100,j*100);
 
 				var angle = Math.random();
-				var u = draw.use(rect).animate(1000,SVG.easing.elastic).transform({
+				var u = draw.use(rect).transform({
 						rotation:45,
 						cx:i*100+50,
 						cy:j*100+50,
-						x:i*100,
-						y:j*100
+						x:0,
+						y:0
 					}).x(i*-100).y(j*-100);
+
+				u.animate(1000,SVG.easing.quadIn,k*50).transform({
+					rotation:0,
+					cx:i*100+50,
+					cy:j*100+50,
+					x:i*100,
+					y:j*100,
+				});
+				k++
 			}
 		}
 

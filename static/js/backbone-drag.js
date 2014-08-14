@@ -56,6 +56,15 @@ var BgView = Backbone.View.extend({
 				$('#bg-sp').append(tem_sp);
 			}
 		}
+		$('.box').each(function(){
+			var random = _.random(1,10);
+			$(this).css({'position':'absloute'});
+			$(this).animate({
+				left:0,
+				top:0,
+				transform:'rotate('+random*10+'deg)'
+			},500);
+		});
 
 		$('#bg-sp').css('left',offect);
 		$('#bg-img>img').css({'width':get_wh().w,'min-height':get_wh().h});
@@ -461,18 +470,18 @@ var ImgView = Backbone.View.extend({
 		'click .round-img' : 'imgLoad',
 	},
 	initialize:function(){
-		$('body').append('<div id="img-container"></div>');
-		$('#img-container').css({'width':get_wh().w,'height':get_wh().h});
+		this.el.append('<div id="img-container"></div>');
+		this.id.css({'width':get_wh().w,'height':get_wh().h});
 		$(window).on("resize",function(){
-			$('#img-container').css({'width':get_wh().w,'height':get_wh().h});
+			this.id.css({'width':get_wh().w,'height':get_wh().h});
 		});
-	},
-	render:function(args){
-		this.id.append(this.template(args));
 	},
 	test:function(){
 		alert('test');
 	},
+	imgLoad:function(){
+		
+	}
 });
 
 var app = new BgView();

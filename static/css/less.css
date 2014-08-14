@@ -1,5 +1,12 @@
 *{margin:0;padding:0;font-family:'arial','microsoft yahei','simsun';}
 html{overflow:hidden;}
+html { 
+  background: url(http://temp.im/123x123) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 body{margin:0;padding:0;overflow:hidden;}
 #bg{overflow:hidden;}
 #jb{position:absolute;width:100%;height:100%;top:0;left:0;overflow:hidden;}
@@ -22,3 +29,5 @@ body{margin:0;padding:0;overflow:hidden;}
 #region>div:hover .around-close{display:block;}
 
 /*.trans450{-webkit-transition:all 450ms cubic-bezier(0.19, 1, 0.22, 1); }*/
+
+.rotate45{-webkit-transform:rotate(45deg);}

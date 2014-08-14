@@ -5,6 +5,8 @@
 	<script type='text/javascript' src='static/js/jquery.js'></script>
 	<script type='text/javascript' src='static/js/svg.js'></script>
 	<script type='text/javascript' src='static/js/svg.easing.js'></script>
+	<script type='text/javascript' src='static/js/jquery.transform2d.js'></script>
+	<script type='text/javascript' src='static/js/jquery.easing.1.3.js'></script>
 	<style>
 		*{
 			margin: 0;
@@ -19,28 +21,26 @@
 			overflow: hidden;
 		}
 		.piece{
-			position: relative;
+			position: absolute;
 			width: 100px;
 			height: 100px;
 			border: 1px solid #eee;
 			/*background: #ccc;*/
 			border-radius:3px; 
-			float: left;
 		}
 
 	</style>
 	<script>
 		$(function(){
 			var i,j,k=0;
-			var num = 10;
-			// for(i=0;i<num;i++){
-			// 	for(j=0;j<num;j++){
-			// 		var temp = '<div id="d'+k+'" x="'+i+'" y="'+j+'" class="piece"></div>';
-			// 		$('#demo').append(temp);
-			// 		k++;
-			// 	}
-			// }
-
+			var num = 20;
+			for(i=0;i<num;i++){
+				for(j=0;j<num;j++){
+					var temp = '<div id="d'+k+'" x="'+i+'" y="'+j+'" class="piece"></div>';
+					$('#demo').append(temp);
+					k++;
+				}
+			}
 		});
 	</script>	
 </head>
@@ -51,57 +51,63 @@
 <script>
 $(document).ready(function(){
 
-	// $('.piece').each(function(){
+	$('.piece').each(function(){
 		var _id = $(this).attr('id'); 
 		var x = $(this).attr('x');
 		var y = $(this).attr('y');
 		var i,j,k=1;
-		var num = 5;
+		var num = 20;
+		var random = Math.random();
+		var time = random * 2000;
+		var _this = $(this);
+		$(this).css({'left':0,'top':0,'transform':'rotate('+ random*90 +'deg)'});
 
 
-		// $(this).css({'transform':'rotate(30deg)','opacity':'0.8'});
 
-		var draw = SVG('demo');
+		var draw = SVG(_id);
 
-		// var rect = draw.image('2.png',100,100);
+		var rect = draw.image('demo.jpg').loaded(function(loader){
+			this.move(y*-100,x*-100);
+			_this.animate({
+				transform:'rotate(0deg)',
+				'left':y*100,
+				'top':x*100
+			},time,'easeOutExpo');
+		});
+
+		k++;
+		// var u = draw.use(rect).move(y*-100,x*-100);
 
 		// var rect = draw.rect(100,100).fill('2.png').move(1*100,1*100);
-		// .move(100*y,100*x).fill('#333');
-
 		// var u = draw.use(rect); 
-
-		for(i=0;i<num;i++){
-			for(j=0;j<num;j++){
-				var rect = draw.rect(100,100).fill('2.png').move(i*100,j*100);
-
-				var angle = Math.random();
-				var u = draw.use(rect).transform({
-						rotation:45,
-						cx:i*100+50,
-						cy:j*100+50,
-						x:0,
-						y:0
-					}).x(i*-100).y(j*-100);
-
-				u.animate(1000,SVG.easing.quadIn,k*50).transform({
-					rotation:0,
-					cx:i*100+50,
-					cy:j*100+50,
-					x:i*100,
-					y:j*100,
-				});
-				k++
-			}
-		}
-
+		// for(i=0;i<num;i++){
+		// 	for(j=0;j<num;j++){
+		// 		var rect = draw.rect(100,100).fill('demo.jpg').move(i*100,j*100);
+		// 		var angle = Math.random();
+		// 		var u = draw.use(rect).transform({
+		// 				rotation:45,
+		// 				cx:i*100+50,
+		// 				cy:j*100+50,
+		// 				x:0,
+		// 				y:0
+		// 			}).x(i*-100).y(j*-100);
+		// 		u.animate(1000,SVG.easing.backInOut,k*25).transform({
+		// 			rotation:0,
+		// 			cx:i*100+50,
+		// 			cy:j*100+50,
+		// 			x:i*100,
+		// 			y:j*100,
+		// 		});
+		// 		k--;
+		// 	}
+		// }
 		// var rect = draw.image('1.jpg').move(-100*y,-100*x).fill('#fff');
-
 		// rect.mouseover(function(e) {
 		// 	this.animate(1000,SVG.easing.elastic)
 		// 		.move(10 * Math.random())
 		// 		.rotate(-45 + 90*Math.random())
 		// });
-	// });
+	});
 });
 </script>
 </html>

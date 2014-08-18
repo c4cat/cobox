@@ -56,15 +56,15 @@ var BgView = Backbone.View.extend({
 				$('#bg-sp').append(tem_sp);
 			}
 		}
-		$('.box').each(function(){
-			var random = _.random(1,10);
-			$(this).css({'position':'absloute'});
-			$(this).animate({
-				left:0,
-				top:0,
-				transform:'rotate('+random*10+'deg)'
-			},500);
-		});
+		// $('.box').each(function(){
+		// 	var random = _.random(1,10);
+		// 	$(this).css({'position':'absloute'});
+		// 	$(this).animate({
+		// 		left:0,
+		// 		top:0,
+		// 		transform:'rotate('+random*10+'deg)'
+		// 	},500);
+		// });
 
 		$('#bg-sp').css('left',offect);
 		$('#bg-img>img').css({'width':get_wh().w,'min-height':get_wh().h});
@@ -197,6 +197,7 @@ var AroundView = Backbone.View.extend({
 	events:{
 		'click #links' : 'aroundFun',
 		'click .around-close' : 'clear',
+		'click .around-img' : ' test',
 		'mouseover .around-close' : 'mouseoverClose',
 		'mouseout .around-close' : 'mouseoutClose',
 		'mouseenter .around-img' : 'mouseroverScale80p',
@@ -259,7 +260,7 @@ var AroundView = Backbone.View.extend({
 				}
 			});	
 	},
-	less9:function(args){
+	f:function(args){
 		var arr = [],
 			arrs, 
 			arr_spec = [[0,-1],[-1,0],[1,0],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]],
@@ -467,26 +468,32 @@ var ImgView = Backbone.View.extend({
 	id:$('#img-container'),
 	template: _.template($('#around-template').html()),
 	events:{
-		'click .round-img' : 'imgLoad',
+		'click .around-img' : 'imgLoad',
 	},
 	initialize:function(){
-		this.el.append('<div id="img-container"></div>');
+		var t = this;
+		this.$el.append('<div id="img-container"></div>');
 		this.id.css({'width':get_wh().w,'height':get_wh().h});
 		$(window).on("resize",function(){
 			this.id.css({'width':get_wh().w,'height':get_wh().h});
 		});
+		// $('.round-img').bind('click',function(){
+		// 	t.imgLoad();
+		// });
 	},
 	test:function(){
 		alert('test');
 	},
-	imgLoad:function(){
-		
+	imgLoad:function(e){
+		alert(123);
+		e.preventDefault();
 	}
 });
 
 var app = new BgView();
 var app2 = new DragBoxView();
 var app3 = new AroundView();
+var app4 = new ImgView();
 
 // $('#links').addClass('animation-aroundCreate');
 });

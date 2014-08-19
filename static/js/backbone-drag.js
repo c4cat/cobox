@@ -456,7 +456,7 @@ var ImgModel = Backbone.Model.extend({
 		img : ''
 	},
 	initialize: function(){
-		
+
 	}
 });
 
@@ -485,8 +485,51 @@ var ImgView = Backbone.View.extend({
 		alert('test');
 	},
 	imgLoad:function(e){
-		alert(123);
+		//prevent the default event
 		e.preventDefault();
+
+		console.log(e);
+		var width = get_wh().w,
+			height = get_wh().h,
+
+			url = $(e.currentTarget).find('a').attr('href'),
+			css = '';
+			css += '.img_piece{';
+			css += 'width:' + width + 'px;';
+			css += 'height:' + height + 'px;';
+			css += 'background-image: url(' + url + ');';
+			css += 'background-repeat: no-repeat;';
+			css += 'background-size:cover;';
+		
+		$('#style').html('').append(css);
+
+		this.create();
+
+
+	},
+	create:function(){
+		var w_count = Math.ceil(get_wh().w/101),
+			h_count = Math.ceil(get_wh().h/101),
+			style = 'width:'+ w_count*101 + 'px;height:' + h_count*101 +'px;';
+		
+		//first create the container
+		$('body').append('<div id="img_piece_container" style="'+ style +'"></div>');
+		// for normal box
+		console.log(w_count);
+		for(var j=0;j<h_count;j++){ 
+			for(var i=0;i<w_count;i++){ 
+				var bag_pos = i*-101 +'px ' + j*-101 + 'px';
+				var tem = "<div class='piece-out'><div class='img_piece' style='background-position:"+ bag_pos +"'></div></div>";
+				$('#img_piece_container').append(tem);
+
+			}
+		}	
+
+		$('#img_piece_container').css('background','#a4a4a4');
+		// for sp
+	},
+	clear:function(){
+
 	}
 });
 

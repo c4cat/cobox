@@ -290,6 +290,7 @@ var AroundView = Backbone.View.extend({
 			offset,
 			start = [args.left,args.top],
 			n = Math.ceil(Math.sqrt(args.num)),
+			k=0,
 			nine = this.createSimpleArr(3); // arr less than nine
 			//front 9
 			for(var j=0;j<nine.length;j++){
@@ -298,6 +299,10 @@ var AroundView = Backbone.View.extend({
 			}
 			//after 9
 			while(arr.length<args.num){
+				// must deal with the situation when the offer less than args.num
+				// a very simple solve,i don't agree with it
+				if(k>999) break;
+				//
 				var append_arr = this.createSimpleArr(n);
 				append_arr.sort(function(){return 0.5 - Math.random()});
 				for(var k=0;k<append_arr.length;k++){
@@ -305,6 +310,7 @@ var AroundView = Backbone.View.extend({
 					this.more9Push(arr,simple_arr2,args);
 				}	
 				n++;
+				k++;
 				// console.log(arr.length);
 			}
 			this.set(arr);
@@ -469,6 +475,9 @@ var ImgView = Backbone.View.extend({
 	template: _.template($('#around-template').html()),
 	events:{
 		'click .around-img' : 'imgLoad',
+		'mouseover .arounding' : 'showClose',
+		'mouseout .arounding' : 'hideClose',
+		'click .piece-close' : 'clear'
 	},
 	initialize:function(){
 		var t = this;
@@ -494,43 +503,134 @@ var ImgView = Backbone.View.extend({
 
 			url = $(e.currentTarget).find('a').attr('href'),
 			css = '';
+
 			css += '.img_piece{';
 			css += 'width:' + width + 'px;';
 			css += 'height:' + height + 'px;';
 			css += 'background-image: url(' + url + ');';
 			css += 'background-repeat: no-repeat;';
 			css += 'background-size:cover;';
+
+			css_default = '';
+
+		var args = {
+			targetX : e.clientX,
+			targetY : e.clientY
+
+		}
 		
 		$('#style').html('').append(css);
 
-		this.create();
+		this.create(args);
 
 
 	},
-	create:function(){
+	create:function(args){
 		var w_count = Math.ceil(get_wh().w/101),
 			h_count = Math.ceil(get_wh().h/101),
+			k = 0,
 			style = 'width:'+ w_count*101 + 'px;height:' + h_count*101 +'px;';
 		
 		//first create the container
 		$('body').append('<div id="img_piece_container" style="'+ style +'"></div>');
 		// for normal box
 		console.log(w_count);
-		for(var j=0;j<h_count;j++){ 
-			for(var i=0;i<w_count;i++){ 
-				var bag_pos = i*-101 +'px ' + j*-101 + 'px';
-				var tem = "<div class='piece-out'><div class='img_piece' style='background-position:"+ bag_pos +"'></div></div>";
+		for(var j=0;j<w_count;j++){ 
+			for(var i=0;i<h_count;i++){ 
+				var bag_pos = j*-101 +'px ' + i*-101 + 'px';
+				var tem = "<div class='piece' x='"+ j +"' y='"+ i +"'><div class='img_piece' style='background-position:"+ bag_pos +"'></div></div>";
 				$('#img_piece_container').append(tem);
-
 			}
 		}	
 
-		$('#img_piece_container').css('background','#a4a4a4');
-		// for sp
-	},
-	clear:function(){
+		$('.piece').each(function(){
+			var x = $(this).attr('x'),
+				y = $(this).attr('y'),
+				random = _.random(30,90),
+				angle = random + 'deg';
 
-	}
+			$(this).css({
+				'left' : args.targetX,
+				'top' : args.targetY,
+				'transform':'rotate('+ angle +')'
+			});
+
+			$(this).delay(k*15).animate({
+				'left' : x*101,
+				'top' : y*101,
+				'opacity' : 1,
+				'transform':''
+			},200,function(){
+				$('#img_piece_container').css('background','#a4a4a4');
+			});
+
+			k++;
+		});
+		//
+		this.showTheControll();
+	},
+	showTheControll:function(){
+		var arounding = $('.arounding').clone();
+		// remove 
+		$('#region>.arounding').remove();
+
+		var temp = '<div class="small">small</div><div class="big">big</div><div class="info">info</div>';
+
+		//create small,big,info
+		$('#img_piece_container').append(temp);
+		$('#img_piece_container').append(arounding);
+		$('#img_piece_container>.arounding').find('.around-close').addClass('piece-close');
+
+
+		$('.arounding').css({
+
+		});
+
+		//set the position
+		$('.arounding').animate({
+			'left': 101*3,
+			'top' : 0,
+			'zIndex' : 9999
+		},200);
+	},
+	showClose:function(){
+		$('.around-close').show();
+	},
+	hideClose:function(){
+		$('.around-close').hide();
+	},
+	clear:function(e){
+		console.log('clear');
+		// if($('body').hasClass('rounding-mode')){
+
+		e.stopPropagation();
+
+		var el = $(e.currentTarget).parent();
+
+		$('.around-close').hide().remove();
+		//each
+			console.log($('#img_piece_container'));
+
+		$('.piece').each(function(){
+			var random = Math.random(),
+				random2 = Math.random(),
+				time = random * 400,
+				plus;
+			// random the direction
+			Math.ceil(random*10)%2==0? plus=1:plus=-1;
+			var	transform = 'rotate(' + 20*random*plus + 'deg)';
+			var transformOrigin =  Math.round(random)*50+'px '+ Math.round(random2)*50+'px';
+
+			$(this).css({'transformOrigin':transformOrigin}).animate({
+					'transform':transform,
+				},500,function(){
+					$(this).addClass('animation-whenDrop');
+			});
+			$(this).find('img_piece').addClass('animation-scale80pNobounce');
+		});
+		$('body').removeClass('rounding-mode');
+		// }
+	},
 });
 
 var app = new BgView();

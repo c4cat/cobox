@@ -602,14 +602,12 @@ var ImgView = Backbone.View.extend({
 	clear:function(e){
 		console.log('clear');
 		// if($('body').hasClass('rounding-mode')){
-
 		e.stopPropagation();
 
 		var el = $(e.currentTarget).parent();
 
 		$('.around-close').hide().remove();
 		//each
-			console.log($('#img_piece_container'));
 
 		$('.piece').each(function(){
 			var random = Math.random(),
@@ -623,12 +621,13 @@ var ImgView = Backbone.View.extend({
 
 			$(this).css({'transformOrigin':transformOrigin}).animate({
 					'transform':transform,
-				},500,function(){
+				},250,function(){
 					$(this).addClass('animation-whenDrop');
 			});
 			$(this).find('img_piece').addClass('animation-scale80pNobounce');
 		});
-		$('body').removeClass('rounding-mode');
+
+		// $('body').removeClass('rounding-mode');
 		// }
 	},
 });

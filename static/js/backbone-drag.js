@@ -477,7 +477,13 @@ var ImgView = Backbone.View.extend({
 		'click .around-img' : 'imgLoad',
 		'mouseover .arounding' : 'showClose',
 		'mouseout .arounding' : 'hideClose',
-		'click .piece-close' : 'clear'
+		'click .piece-close' : 'clear',
+		'mouseover .piece_hover' : 'pieceMouseover',
+		'mouseout .piece_hover' : 'pieceMouseout',
+		'click .info': 'showInfo',
+		'click .small': 'showFullScreen',
+		'click .big': 'showImgSize'
+
 	},
 	initialize:function(){
 		var t = this;
@@ -486,9 +492,6 @@ var ImgView = Backbone.View.extend({
 		$(window).on("resize",function(){
 			this.id.css({'width':get_wh().w,'height':get_wh().h});
 		});
-		// $('.round-img').bind('click',function(){
-		// 	t.imgLoad();
-		// });
 	},
 	test:function(){
 		alert('test');
@@ -538,7 +541,7 @@ var ImgView = Backbone.View.extend({
 		for(var j=0;j<w_count;j++){ 
 			for(var i=0;i<h_count;i++){ 
 				var bag_pos = j*-101 +'px ' + i*-101 + 'px';
-				var tem = "<div class='piece' x='"+ j +"' y='"+ i +"'><div class='img_piece' style='background-position:"+ bag_pos +"'></div></div>";
+				var tem = "<div class='piece' x='"+ j +"' y='"+ i +"'><div class='img_piece' style='background-position:"+ bag_pos +"'></div><div class='piece_hover'><div class='piece_other_button'></div></div>";
 				$('#img_piece_container').append(tem);
 			}
 		}	
@@ -574,7 +577,7 @@ var ImgView = Backbone.View.extend({
 		// remove 
 		$('#region>.arounding').remove();
 
-		var temp = '<div class="small">small</div><div class="big">big</div><div class="info">info</div>';
+		var temp = '<div class="big">big</div><div class="small"></div><div class="info">i</div>';
 
 		//create small,big,info
 		$('#img_piece_container').append(temp);
@@ -588,10 +591,32 @@ var ImgView = Backbone.View.extend({
 
 		//set the position
 		$('.arounding').animate({
-			'left': 101*3,
+			'left': 101*2,
 			'top' : 0,
 			'zIndex' : 9999
-		},200);
+		},200,function(){
+			$('.info,.small').delay(1000).fadeIn();
+		});
+	},
+	showInfo:function(){
+
+	},
+	showFullScreen:function(){
+
+	},
+	showImgSize:function(){
+
+	},
+	pieceMouseover:function(e){
+		var target = $(e.currentTarget);
+		target.stop(true,true)
+		target.animate({opacity:0.3},200);
+		target.find('.piece_other_button').css({'display':'block'});
+	},
+	pieceMouseout:function(e){
+		var target = $(e.currentTarget);
+		target.animate({opacity:0},1000);
+		target.find('.piece_other_button').css({'display':'none'});
 	},
 	showClose:function(){
 		$('.around-close').show();

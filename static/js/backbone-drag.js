@@ -481,8 +481,8 @@ var ImgView = Backbone.View.extend({
 		'mouseover .piece_hover' : 'pieceMouseover',
 		'mouseout .piece_hover' : 'pieceMouseout',
 		'click .info': 'showInfo',
-		'click .small': 'showFullScreen',
-		'click .big': 'showImgSize'
+		'click .small': 'showImgSize',
+		'click .big': 'showFullScreen'
 
 	},
 	initialize:function(){
@@ -511,6 +511,7 @@ var ImgView = Backbone.View.extend({
 			css += 'width:' + width + 'px;';
 			css += 'height:' + height + 'px;';
 			css += 'background-image: url(' + url + ');';
+			// css += 'background-image: url(http://localhost:5177/2.png);';
 			css += 'background-repeat: no-repeat;';
 			css += 'background-size:cover;';
 
@@ -577,7 +578,8 @@ var ImgView = Backbone.View.extend({
 		// remove 
 		$('#region>.arounding').remove();
 
-		var temp = '<div class="big">big</div><div class="small"></div><div class="info">i</div>';
+		var temp = '<div class="big"></div><div class="small"></div><div class="info">i</div>';
+		var info4copy = '<div class="info4copy"></div>'
 
 		//create small,big,info
 		$('#img_piece_container').append(temp);
@@ -601,11 +603,15 @@ var ImgView = Backbone.View.extend({
 	showInfo:function(){
 
 	},
-	showFullScreen:function(){
-
-	},
 	showImgSize:function(){
-
+		$('.small').hide();
+		$('.big').show();
+		$('.img_piece').addClass('background-size-normal');
+	},
+	showFullScreen:function(){
+		$('.small').show();
+		$('.big').hide();
+		$('.img_piece').removeClass('background-size-normal');
 	},
 	pieceMouseover:function(e){
 		var target = $(e.currentTarget);

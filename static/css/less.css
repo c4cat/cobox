@@ -250,7 +250,13 @@ body {
 }
 .big{
 	left:0;
-	background: url(../img/iconont-quanping.png);
+	background: url(../img/iconfont-quanping.png);
+}
+.small:hover{
+	background: #000 url(../img/iconfont-suoxiao.png);
+}
+.big:hover{
+	background: #000 url(../img/iconfont-quanping.png);
 }
 .info{
 	left:303px;
@@ -263,6 +269,11 @@ body {
 .info:hover{
 	background: #000;
 }
+
+.background-size-normal{
+	background-size: auto!important;
+}
+
 
 .rotate45 {
 	-webkit-transform: rotate(45deg);

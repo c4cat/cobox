@@ -505,6 +505,9 @@ var ImgView = Backbone.View.extend({
 			height = get_wh().h,
 
 			url = $(e.currentTarget).find('a').attr('href'),
+			title = $(e.currentTarget).find('img').attr('alt'),
+			description = $(e.currentTarget).find('img').attr('description'),
+
 			css = '';
 
 			css += '.img_piece{';
@@ -526,8 +529,7 @@ var ImgView = Backbone.View.extend({
 		$('#style').html('').append(css);
 
 		this.create(args);
-
-
+		this.createDiv4Clone(title,description);
 	},
 	create:function(args){
 		var w_count = Math.ceil(get_wh().w/101),
@@ -573,13 +575,34 @@ var ImgView = Backbone.View.extend({
 		//
 		this.showTheControll();
 	},
+	createDiv4Clone:function(t,d){
+		//t is title,d is description
+		var temp = '<div id="div4clone"><h6>'+t+'</h6><p>'+d+'</p></div>'
+		$('#img_piece_container').append(temp);
+
+		// the intro box size 
+		var str_length = d.length,
+			numOfWidth = 6,
+			numOfHeight,
+			char_num = 12,
+			numOfLine = Math.ceil(str_length/(numOfWidth*char_num)); //every 100px contain 12 char , contain 4 line ,but in the first 3 line there is a title
+
+		numOfLine<4? numOfHeight = 1 : numOfHeight = Math.ceil(numOfLine/4);
+
+		$('#div4clone').css({'width':numOfWidth*101,'height':numOfHeight*101});
+
+		//let's clone
+		this.letSclone();
+	},
+	letSclone:function(){
+
+	},
 	showTheControll:function(){
 		var arounding = $('.arounding').clone();
 		// remove 
 		$('#region>.arounding').remove();
 
 		var temp = '<div class="big"></div><div class="small"></div><div class="info">i</div>';
-		var info4copy = '<div class="info4copy"></div>'
 
 		//create small,big,info
 		$('#img_piece_container').append(temp);

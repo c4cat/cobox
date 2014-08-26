@@ -274,7 +274,39 @@ body {
 	background-size: auto!important;
 }
 
-
 .rotate45 {
 	-webkit-transform: rotate(45deg);
 }
+
+#div4clone{
+	position: absolute;
+	top:0;
+	left:404px;
+	width: 505px;
+	height: 100px;
+	background: #fff;
+}
+
+#div4clone h6{
+	width: 100%;
+	font-size: 16px;
+	line-height: 2;
+	text-indent: 15px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow:ellipsis;
+}
+#div4clone p{
+	font-size: 14px;
+	line-height: 1.5;
+	color: #999;
+	font-family: 'microsoft yahei';
+	padding: 0 15px;
+}
+
+
+
+
+
+
+

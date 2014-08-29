@@ -582,12 +582,18 @@ var ImgView = Backbone.View.extend({
 
 		// the intro box size 
 		var str_length = d.length,
-			numOfWidth = 6,
+			w_count = Math.ceil(get_wh().w/101),
+			h_count = Math.ceil(get_wh().h/101),
+			numOfWidth = w_count - 7, //  left 4 and right 3
 			numOfHeight,
-			char_num = 12,
-			numOfLine = Math.ceil(str_length/(numOfWidth*char_num)); //every 100px contain 12 char , contain 4 line ,but in the first 3 line there is a title
+			every_box_have_the_char_num = 12,
+			numOfLine = Math.ceil(str_length/(numOfWidth*every_box_have_the_char_num));
+			numOfcolumn = str_length/every_box_have_the_char_num;
+			 //every 100px contain 12 char , contain 4 line ,but in the first 3 line there is a title
 
 		numOfLine<4? numOfHeight = 1 : numOfHeight = Math.ceil(numOfLine/4);
+
+
 
 		$('#div4clone').css({'width':numOfWidth*101,'height':numOfHeight*101});
 
@@ -595,6 +601,9 @@ var ImgView = Backbone.View.extend({
 		this.letSclone();
 	},
 	letSclone:function(){
+
+	},
+	clearclone:function(){
 
 	},
 	showTheControll:function(){

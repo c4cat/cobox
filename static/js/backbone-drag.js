@@ -586,16 +586,19 @@ var ImgView = Backbone.View.extend({
 			h_count = Math.ceil(get_wh().h/101),
 			numOfWidth = w_count - 7, //  left 4 and right 3
 			numOfHeight,
-			every_box_have_the_char_num = 12,
-			numOfLine = Math.ceil(str_length/(numOfWidth*every_box_have_the_char_num));
-			numOfcolumn = str_length/every_box_have_the_char_num;
-			 //every 100px contain 12 char , contain 4 line ,but in the first 3 line there is a title
+			originWidth = $('#div4clone').width(),
+			targetWidth;
 
-		numOfLine<4? numOfHeight = 1 : numOfHeight = Math.ceil(numOfLine/4);
+			originWidth>numOfWidth? targetWidth=numOfWidth*101 : targetWidth=Math.ceil(originWidth/101)*101;
 
 
+			// alert(originWidth + ',' + originWidth);
+		$('#div4clone').css({'width':targetWidth});
 
-		$('#div4clone').css({'width':numOfWidth*101,'height':numOfHeight*101});
+		var originHeight = $('#div4clone').height(),
+			targetHeight = Math.ceil(originHeight/101)*101;
+
+		$('#div4clone').css({'height':targetHeight});
 
 		//let's clone
 		this.letSclone();

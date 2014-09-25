@@ -604,7 +604,7 @@ var ImgView = Backbone.View.extend({
 		this.letSclone();
 	},
 	letSclone:function(){
-
+		var clone = $()
 	},
 	clearclone:function(){
 

@@ -577,7 +577,8 @@ var ImgView = Backbone.View.extend({
 	},
 	createDiv4Clone:function(t,d){
 		//t is title,d is description
-		var temp = '<div id="div4clone"><h6>'+t+'</h6><p>'+d+'</p></div>'
+		var temp = '<div id="div4clone" class="n"><h6>'+t+'</h6><p>'+d+'</p></div><div id="clone"></div>';
+
 		$('#img_piece_container').append(temp);
 
 		// the intro box size 
@@ -593,18 +594,29 @@ var ImgView = Backbone.View.extend({
 
 
 			// alert(originWidth + ',' + originWidth);
-		$('#div4clone').css({'width':targetWidth});
+
+		$('#div4clone,#clone').css({'width':targetWidth});
 
 		var originHeight = $('#div4clone').height(),
-			targetHeight = Math.ceil(originHeight/101)*101;
+			numHeight = Math.ceil(originHeight/101),
+			numWidth = originWidth/101;
+			targetHeight = numHeight*101;
 
-		$('#div4clone').css({'height':targetHeight});
+		$('#div4clone,#clone').css({'height':targetHeight});
+		var clone = $('#div4clone').clone().html();
+		console.log(clone);
+		// clone.attr('id','').removeClass('n');
+		// $('#clone').append(clone);
+
+		for(var i=0;i<numWidth;i++){
+			for(var j=0;j<numHeight;j++){
+				// clone
+				var div_temp = '<div class="clone" x="'+i+'" y ="'+j+'"><div class="in">'+clone+'</div></div>';
+				$('#clone').append(div_temp);
+			}
+		}
 
 		//let's clone
-		this.letSclone();
-	},
-	letSclone:function(){
-		var clone = $()
 	},
 	clearclone:function(){
 

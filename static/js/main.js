@@ -1,60 +1,113 @@
-//co2
-//email:i#cornelia.in
-//2014年1月13日11:55:16
-//pikibox 
+//mrc
+//email:i#ili.li
+//2014-10-19 18:04:05
+//re-write
 
-$(function(){
+//common function
 
-function getWH(){
-	var window_width = $(window).width(),
-		window_height = $(window).height(),
-		argv = {
-			w : window_width,
-			h : window_height
-		}
-	return argv;
-};
+function Wh(){ //get window width and height
+	this.w = $(window).width();
+	this.h = $(window).height();
+}
 
-function creartBg(){
-	var width_count = Math.ceil(getWH().w/101), //how many 
-		height_count = Math.ceil(getWH().h/101), 
-		offect = (width_count-1) * 101; //offect form the left
+//common end
 
-	$('#bg,#region,#bg-img>img').css({'height':getWH().h,'width':getWH().w}); //set the width
-	$('#bg-img>img').css({'height':'auto','width':getWH().w}); //set the width
-	$('#bg_sp').css('left',offect); //set the offect
-
-	//loop append the box
-	for(var i=0;i<width_count;i++){ 
-		for(var j=0;j<height_count;j++){ 
-			var el = "<div class='box'></div>";
-			$('#bg').append(el);
-		}
-	}	
-	//speical box on the right
-	for(var j=0;j<height_count;j++){
-		var el_sp = "<div class='box_sp box'></div>";
-		$('#bg_sp').append(el_sp);
+//backbone
+//BG view
+var BgBox = Backbone.Model.extend({
+	template:'<div class="box"></div>',
+	create:function(rowNum,colNum,target){
+		for(var i=0;i<colNum;i++)
+			for(var j=0;j<rowNum;j++)
+				$(target).append(this.template);	
 	}
-
-};
-
-
-
-creartBg();
-
-$(window).resize(function(){
-	$('.box').remove();
-	$('#region').css({'height':getWH().h,'width':getWH().w});
-	$('#bg-img>img').css({'height':'auto','width':getWH().w});
-	creartBg();
 });
 
-$('.box').hover(function(){
-	$(this).stop(true,true)
-	$(this).animate({opacity:0.6},200);
-},function(){
-	$(this).animate({opacity:0.4},1000);
+var BgView = Backbone.View.extend({
+	el: "#background",
+	initialize:function(){
+		var wh = new Wh();
+		this.width = wh.w;
+		this.height = wh.h;
+
+		var	rowNum = Math.ceil(this.width/101),
+			colNum = Math.ceil(this.width/101),
+			offset = (rowNum-1) * 101;
+		//nomarl
+		var bgBox =  new BgBox();
+		bgBox.create(rowNum,colNum,'#bgNormal');
+		//special
+		if(rowNum%101!=0){
+			var bgBoxSpec = new BgBox();
+			bgBoxSpec.create(1,colNum,'#bgSpecial');
+		}
+		//setting
+		$('#bgSpecial').css('left',offset);
+		$('#bgImage>img').css({'width':this.width,'min-height':this.height});
+		this.bgBoxHover();
+	},
+	setBgImage:function(){
+		var arr = ['./static/img/b1.jpg','./static/img/b2.jpg','./static/img/b3.jpg','./static/img/b4.jpg','./static/img/b5.jpg','./static/img/b6.jpg','./static/img/b7.jpg','./static/img/b8.jpg','./static/img/b9.jpg','./static/img/b10.jpg','./static/img/b11.jpg'],
+			random = _.random(0,10);
+		$('#bgImage>img').attr('src',arr[random]);	
+	},
+	bgBoxHover:function(){
+		$('.box').hover(function(){
+			$(this).stop(true,true)
+			$(this).animate({opacity:0.6},200);
+		},function(){
+			$(this).animate({opacity:0.4},1000);
+		});
+	}
+});
+//BG view end 
+
+//DragBox
+var DragBox = Backbone.Model.extend({
+
+	list:['ABOUT','LINKS','IMAGE','WORKS','CONTACT']
+});
+var dragBox = new DragBox();
+var DragBoxView = Backbone.View.extend({
+	el:'',
+	model:dragBox,
+	initialize:function(){
+		var wh = new Wh();
+		this.width = wh.width;
+		this.height = wh.height;
+		this.list = this.model.get('list');
+	},
+	create:function(){
+		var	tmp = '';
+		for(var i=0;i<list.length;i++)
+			tmp+='<div class="drag" id="'+list[i].toLowerCase()+'">'+list[i]+'</div>';
+	},
+	append:function(){
+		this.$el.append(tmp);
+	},
+	setPosition:function(){
+		var count = 0,
+			arr = [];
+		for(var i=0;i<this.list.length;i++)
+			var random = this.createRandomArr();
+			if(true)
+				arr.push(random)	
+	},
+	createRandomArr:function(){
+		var rowCount = Math.floor()
+	}
+});
+//DragBox end
+
+//action
+var app = new BgView();
+	app.setBgImage();
+
+//jquery
+$(document).ready(function(){
+	$(window).on('resize',function(){
+		$('#bgNormal,#bgSpecial').empty();
+		var afterResizeApp = new BgView();
+	});
 });
 
-});

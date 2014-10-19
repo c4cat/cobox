@@ -585,22 +585,20 @@ var ImgView = Backbone.View.extend({
 		var str_length = d.length,
 			w_count = Math.ceil(get_wh().w/101),
 			h_count = Math.ceil(get_wh().h/101),
-			numOfWidth = w_count - 7, //  left 4 and right 3
+			numOfWidth = w_count - 6, //  left 4 and right 2
 			numOfHeight,
 			originWidth = $('#div4clone').width(),
 			targetWidth;
 
 			originWidth>numOfWidth? targetWidth=numOfWidth*101 : targetWidth=Math.ceil(originWidth/101)*101;
 
-
 			// alert(originWidth + ',' + originWidth);
 
 		$('#div4clone,#clone').css({'width':targetWidth});
 
 		var originHeight = $('#div4clone').height(),
-			numHeight = Math.ceil(originHeight/101),
-			numWidth = originWidth/101;
-			targetHeight = numHeight*101;
+			numOfHeight = Math.ceil(originHeight/101),
+			targetHeight = numOfHeight*101;
 
 		$('#div4clone,#clone').css({'height':targetHeight});
 		var clone = $('#div4clone').clone().html();
@@ -608,10 +606,10 @@ var ImgView = Backbone.View.extend({
 		// clone.attr('id','').removeClass('n');
 		// $('#clone').append(clone);
 
-		for(var i=0;i<numWidth;i++){
-			for(var j=0;j<numHeight;j++){
+		for(var i=0;i<numOfWidth;i++){
+			for(var j=0;j<numOfHeight;j++){
 				// clone
-				var div_temp = '<div class="clone" x="'+i+'" y ="'+j+'"><div class="in">'+clone+'</div></div>';
+				var div_temp = '<div class="clone" x="'+i+'" y ="'+j+'" style="top:'+(j*101)+'px;left:'+(i*101+404)+'px"><div class="in"  style="width:'+ targetWidth +'px;height:'+ targetHeight+'px;top:'+(j*-101)+'px;left:'+(i*-101)+'px">'+clone+'</div></div>';
 				$('#clone').append(div_temp);
 			}
 		}
@@ -632,7 +630,6 @@ var ImgView = Backbone.View.extend({
 		$('#img_piece_container').append(temp);
 		$('#img_piece_container').append(arounding);
 		$('#img_piece_container>.arounding').find('.around-close').addClass('piece-close');
-
 
 		$('.arounding').css({
 

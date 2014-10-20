@@ -31,12 +31,12 @@ var BgView = Backbone.View.extend({
 		this.height = wh.h;
 
 		var	rowNum = Math.ceil(this.width/101),
-			colNum = Math.ceil(this.width/101),
+			colNum = Math.ceil(this.height/101),
 			offset = (rowNum-1) * 101;
-		//nomarl
+		// nomarl
 		var bgBox =  new BgBox();
 		bgBox.create(rowNum,colNum,'#bgNormal');
-		//special
+		// special
 		if(rowNum%101!=0){
 			var bgBoxSpec = new BgBox();
 			bgBoxSpec.create(1,colNum,'#bgSpecial');
@@ -44,7 +44,11 @@ var BgView = Backbone.View.extend({
 		//setting
 		$('#bgSpecial').css('left',offset);
 		$('#bgImage>img').css({'width':this.width,'min-height':this.height});
+		// some browser should do this step,because html overflow hidden is not work, 
+		// chrome 38 in win is not work, chrome 38 in os x is work,chrome 27 is work too,so add it. 
+		$('#background').css({'width':this.width,'height':this.height}); 
 		this.bgBoxHover();
+
 	},
 	setBgImage:function(){
 		var arr = ['./static/img/b1.jpg','./static/img/b2.jpg','./static/img/b3.jpg','./static/img/b4.jpg','./static/img/b5.jpg','./static/img/b6.jpg','./static/img/b7.jpg','./static/img/b8.jpg','./static/img/b9.jpg','./static/img/b10.jpg','./static/img/b11.jpg'],
@@ -64,23 +68,60 @@ var BgView = Backbone.View.extend({
 
 //DragBox
 var DragBox = Backbone.Model.extend({
+	// x:0,
+	// y:0,
+	list:['ABOUT','LINKS','IMAGE','WORKS','CONTACT'],
 
-	list:['ABOUT','LINKS','IMAGE','WORKS','CONTACT']
+	ele : '#region',
+	//tmp : '<div class="drag" id="'+list[i].toLowerCase()+'">'+list[i]+'</div>',
+
+	create:function(x,y) {
+		this.ele.append(tmp);
+	},
 });
-var dragBox = new DragBox();
+// var dragBox = new DragBox();
+
+var DragBoxList = Backbone.Collection.extend({
+	model:DragBox,
+	url:'setting.json',
+	parse:function(){
+		
+	}
+});
+
 var DragBoxView = Backbone.View.extend({
 	el:'',
-	model:dragBox,
+	model:DragBox,
 	initialize:function(){
 		var wh = new Wh();
 		this.width = wh.width;
 		this.height = wh.height;
-		this.list = this.model.get('list');
+		
+		//nav
+		this.dragBoxList = new DragBoxList();
+		this.get();
+	},
+	get:function(){ //return an arr 
+		// this.dragBoxList.fetch({
+		// 	success:function(collection,response){
+		// 		// collection.each(function(data){
+		// 			// t.render(data.attributes);
+		// 			// console.log(data.attributes['content']);
+		// 			console.log(collection['models']);
+		// 		// });
+		// 	},
+		// 	error:function(){
+		// 		console.log('Get json error,please check the json file');
+		// 	}
+		// });	
+		var fetch = this.dragBoxList.fetch();
+		console.log(fetch);
 	},
 	create:function(){
-		var	tmp = '';
-		for(var i=0;i<list.length;i++)
-			tmp+='<div class="drag" id="'+list[i].toLowerCase()+'">'+list[i]+'</div>';
+		var	data = this.get;
+		console.log(data);
+		for(var i=0;i<data.length;i++)
+			console.log('message');
 	},
 	append:function(){
 		this.$el.append(tmp);
@@ -95,6 +136,14 @@ var DragBoxView = Backbone.View.extend({
 	},
 	createRandomArr:function(){
 		var rowCount = Math.floor()
+	},
+	inOrNot:function(obj,arr){
+		for(var i=0;i<arr.length;i++){
+ 			if(obj.toString() == arr[i].toString()){
+ 					return true;
+ 				}
+			}
+		return false;	
 	}
 });
 //DragBox end
@@ -102,6 +151,9 @@ var DragBoxView = Backbone.View.extend({
 //action
 var app = new BgView();
 	app.setBgImage();
+
+var app2 = new DragBoxView();
+
 
 //jquery
 $(document).ready(function(){

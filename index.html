@@ -18,28 +18,11 @@
 	</div>
 	<!-- end background -->
 	<div id="around-container"></div>
-</body>
-	<style id="style"></style>
-	<script type='text/javascript' src='static/js/jquery.js'></script>
-	<script type='text/javascript' src='static/js/underscore.js'></script>
-	<script type='text/javascript' src='static/js/backbone.min.js'></script>
-	<script type='text/javascript' src='static/js/jquery.easing.1.3.js'></script>
-	<script type='text/javascript' src='static/js/jquery.pep.js'></script>
-	<script type='text/javascript' src='static/js/jquery.transform2d.js'></script>
-	<script type='text/javascript' src='static/js/jquery.transform3d.js'></script>
-	<script type='text/javascript' src='static/js/main.js'></script>
-	<script type='text/javascript' src='static/js/pep.js'></script>
 
-	<script>
-		$(function(){
-			// $('#links').css({rotate:'30deg'});
-		});
+	<script type="text/template" id="dragbox-template">
+		<div class="drag" id="<%= name %>" num="<%= id %>" ><%= name %></div>
 	</script>
-	<script type="text/template" id="drag-box">
-
-	</script>
-
-	<script type="text/template" id="around-img-template">
+	<script type="text/template" id="aroundimg-template">
 		<div class="around-img">
 			<a href="<%= img %>"><img src="<%= thumbnail %>" alt="<%= title %>" description="<%= description %>"></a>
 		</div>
@@ -57,5 +40,14 @@
 			</div>
 		</div>
 	</script>
-
+</body>
+	<script type='text/javascript' src='static/js/jquery.js'></script>
+	<script type='text/javascript' src='static/js/underscore.js'></script>
+	<script type='text/javascript' src='static/js/backbone.min.js'></script>
+	<script type='text/javascript' src='static/js/jquery.easing.1.3.js'></script>
+	<script type='text/javascript' src='static/js/jquery.pep.js'></script>
+	<script type='text/javascript' src='static/js/jquery.transform2d.js'></script>
+	<script type='text/javascript' src='static/js/jquery.transform3d.js'></script>
+	<script type='text/javascript' src='static/js/main.js'></script>
+	<script type='text/javascript' src='static/js/pep.js'></script>
 </html>

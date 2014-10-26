@@ -6,8 +6,8 @@
 //common function
 
 function Wh(){ //get window width and height
-	this.w = $(window).width();
-	this.h = $(window).height();
+	this.width = $(window).width();
+	this.height = $(window).height();
 }
 
 //common end
@@ -27,8 +27,8 @@ var BgView = Backbone.View.extend({
 	el: "#background",
 	initialize:function(){
 		var wh = new Wh();
-		this.width = wh.w;
-		this.height = wh.h;
+		this.width = wh.width;
+		this.height = wh.height;
 
 		var	rowNum = Math.ceil(this.width/101),
 			colNum = Math.ceil(this.height/101),
@@ -68,28 +68,41 @@ var BgView = Backbone.View.extend({
 
 //DragBox
 var DragBox = Backbone.Model.extend({
-	// x:0,
-	// y:0,
-	list:['ABOUT','LINKS','IMAGE','WORKS','CONTACT'],
-
-	ele : '#region',
-	//tmp : '<div class="drag" id="'+list[i].toLowerCase()+'">'+list[i]+'</div>',
-
-	create:function(x,y) {
-		this.ele.append(tmp);
+	defaults:{
+		x:0,
+		y:0
 	},
+	ele : '#region',
+	initialize:function(){
+		this.setPostion();
+	},
+	setPostion:function(){
+		
+	}
 });
 // var dragBox = new DragBox();
 
 var DragBoxList = Backbone.Collection.extend({
 	model:DragBox,
-	url:'setting.json',
-	parse:function(){
-		
+	url:'nav.json'
+});
+
+var dragBoxs = new DragBoxList;
+
+var DragBoxView = Backbone.View.extend({
+	el: "#region",
+	tagName: "div",
+	template: _.template($("#dragbox-template").html()),
+	initialize:function(){
+		this.render();
+	},
+	render: function(){
+		$(this.el).append(this.template(this.model.toJSON()));
+		return this;
 	}
 });
 
-var DragBoxView = Backbone.View.extend({
+var AppView = Backbone.View.extend({
 	el:'',
 	model:DragBox,
 	initialize:function(){
@@ -97,45 +110,51 @@ var DragBoxView = Backbone.View.extend({
 		this.width = wh.width;
 		this.height = wh.height;
 		
+		var that =this;
 		//nav
-		this.dragBoxList = new DragBoxList();
-		this.get();
+		dragBoxs.fetch({
+			success:function(col,arr){
+				that.createDragBoxs(arr);
+			},
+			error:function(){
+				console.log('Get json error,please check the json file');
+			}
+		});
 	},
-	get:function(){ //return an arr 
-		// this.dragBoxList.fetch({
-		// 	success:function(collection,response){
-		// 		// collection.each(function(data){
-		// 			// t.render(data.attributes);
-		// 			// console.log(data.attributes['content']);
-		// 			console.log(collection['models']);
-		// 		// });
-		// 	},
-		// 	error:function(){
-		// 		console.log('Get json error,please check the json file');
-		// 	}
-		// });	
-		var fetch = this.dragBoxList.fetch();
-		console.log(fetch);
+	createDragBoxs:function(arr){
+		var arr = this.randomArr(dragBoxs.length),
+			i = 0; 
+		dragBoxs.each(function(obj){
+			// console.log(obj.get('id'));
+			obj.set({'x':arr[i][0],'y':arr[i][1]});
+			i++;
+			var view = new DragBoxView({model:obj});
+			console.log(view);
+		});
+
 	},
-	create:function(){
-		var	data = this.get;
-		console.log(data);
-		for(var i=0;i<data.length;i++)
-			console.log('message');
+	div:function(){
+
 	},
-	append:function(){
-		this.$el.append(tmp);
-	},
-	setPosition:function(){
-		var count = 0,
+	randomArr:function(length){
+		var i = 0,
 			arr = [];
-		for(var i=0;i<this.list.length;i++)
-			var random = this.createRandomArr();
-			if(true)
-				arr.push(random)	
+		while(i<length){
+			var random = this.createRandom();
+			if(!this.inOrNot(random,arr)){
+				arr.push(random);
+				i++;
+			}
+		}	
+		return arr;
 	},
-	createRandomArr:function(){
-		var rowCount = Math.floor()
+	createRandom:function(){
+		var rowNum = Math.floor(this.width/101),
+			colNum = Math.floor(this.height/101),
+			rowRandom = _.random(0,rowNum),
+			colRandom = _.random(0,colNum);
+		
+		return([rowRandom,colRandom]);	
 	},
 	inOrNot:function(obj,arr){
 		for(var i=0;i<arr.length;i++){
@@ -149,10 +168,10 @@ var DragBoxView = Backbone.View.extend({
 //DragBox end
 
 //action
-var app = new BgView();
-	app.setBgImage();
+var bg = new BgView();
+	bg.setBgImage();
 
-var app2 = new DragBoxView();
+var app = new AppView();
 
 
 //jquery

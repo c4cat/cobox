@@ -55,12 +55,13 @@ body {
   position: absolute;
   width: 100px;
   height: 100px;
-  background: #000;
+  background: #222;
   color: #fff;
   font-size: 18px;
   border-radius: 5px;
   z-index: 2;
   cursor: pointer;
+  border: 1px solid #333;
 }
 .drag.ui-draggable-dragging {
   z-index: 999;

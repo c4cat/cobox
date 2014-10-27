@@ -69,15 +69,11 @@ var BgView = Backbone.View.extend({
 //DragBox
 var DragBox = Backbone.Model.extend({
 	defaults:{
-		x:0,
-		y:0
+		x:'',
+		y:''
 	},
-	ele : '#region',
 	initialize:function(){
-		this.setPostion();
-	},
-	setPostion:function(){
-		
+		// this.listenTo(this,'change',this.setPosition);
 	}
 });
 // var dragBox = new DragBox();
@@ -90,21 +86,28 @@ var DragBoxList = Backbone.Collection.extend({
 var dragBoxs = new DragBoxList;
 
 var DragBoxView = Backbone.View.extend({
-	el: "#region",
 	tagName: "div",
+	model:DragBox,
 	template: _.template($("#dragbox-template").html()),
 	initialize:function(){
-		this.render();
+		this.listenTo(this.model, 'change', this.render);
+		$(window).on("resize",this.setPosition)
 	},
 	render: function(){
-		$(this.el).append(this.template(this.model.toJSON()));
+		var x = this.model.get('x'),
+			y = this.model.get('y');
+		$('#region').append(this.$el.html(this.template(this.model.toJSON())));
+		$(this.el).addClass('drag').css({'left':x*101+'px','top':y*101+'px'});
 		return this;
+	},
+	setPosition:function(){
+		console.log('set');
 	}
 });
 
 var AppView = Backbone.View.extend({
 	el:'',
-	model:DragBox,
+	// model:DragBox,
 	initialize:function(){
 		var wh = new Wh();
 		this.width = wh.width;
@@ -126,15 +129,15 @@ var AppView = Backbone.View.extend({
 			i = 0; 
 		dragBoxs.each(function(obj){
 			// console.log(obj.get('id'));
+			var view = new DragBoxView({model:obj});
 			obj.set({'x':arr[i][0],'y':arr[i][1]});
 			i++;
-			var view = new DragBoxView({model:obj});
-			console.log(view);
 		});
-
 	},
 	div:function(){
-
+		dragBoxs.each(function(obj){
+			console.log(obj.get('x'));
+		});
 	},
 	randomArr:function(length){
 		var i = 0,
@@ -151,8 +154,8 @@ var AppView = Backbone.View.extend({
 	createRandom:function(){
 		var rowNum = Math.floor(this.width/101),
 			colNum = Math.floor(this.height/101),
-			rowRandom = _.random(0,rowNum),
-			colRandom = _.random(0,colNum);
+			rowRandom = _.random(0,rowNum-1),
+			colRandom = _.random(0,colNum-1);
 		
 		return([rowRandom,colRandom]);	
 	},

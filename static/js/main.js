@@ -91,18 +91,24 @@ var DragBoxView = Backbone.View.extend({
 	template: _.template($("#dragbox-template").html()),
 	initialize:function(){
 		this.listenTo(this.model, 'change', this.render);
-		$(window).on("resize",this.setPosition)
+		// $(window).on("resize",this.setPosition);
+		$(this.el).pep();
 	},
 	render: function(){
 		var x = this.model.get('x'),
 			y = this.model.get('y');
+
 		$('#region').append(this.$el.html(this.template(this.model.toJSON())));
-		$(this.el).addClass('drag').css({'left':x*101+'px','top':y*101+'px'});
+		$(this.el).stop();
+		// $(this.el).addClass('drag').css({'left':x*101+20+'px','top':y*101+20+'px'}).animate({left:x*101+'px',top:y*101+'px'},_.random(300,500));
+		$(this.el).addClass('drag').animate({'left':x*101+'px','top':y*101+'px'},_.random(100,400));
 		return this;
 	},
-	setPosition:function(){
-		console.log('set');
-	}
+	// setPosition:function(){
+	// 	dragBoxs.each(function(obj){
+	// 		console.log(obj);
+	// 	});
+	// }
 });
 
 var AppView = Backbone.View.extend({
@@ -113,30 +119,34 @@ var AppView = Backbone.View.extend({
 		this.width = wh.width;
 		this.height = wh.height;
 		
-		var that =this;
+		that=this;
+
 		//nav
 		dragBoxs.fetch({
 			success:function(col,arr){
-				that.createDragBoxs(arr);
+				that.createDragBoxs();
 			},
 			error:function(){
 				console.log('Get json error,please check the json file');
 			}
 		});
+
+		$(window).on("resize",this.whenResize);
 	},
-	createDragBoxs:function(arr){
+	whenResize:function(){
+		var dragBoxsLength = $('.drag').length;
+		that.createDragBoxs('no need to create view again');
+	},
+	createDragBoxs:function(bool){
 		var arr = this.randomArr(dragBoxs.length),
 			i = 0; 
 		dragBoxs.each(function(obj){
 			// console.log(obj.get('id'));
-			var view = new DragBoxView({model:obj});
+			if(!bool)
+				var view = new DragBoxView({model:obj});
+
 			obj.set({'x':arr[i][0],'y':arr[i][1]});
 			i++;
-		});
-	},
-	div:function(){
-		dragBoxs.each(function(obj){
-			console.log(obj.get('x'));
 		});
 	},
 	randomArr:function(length){

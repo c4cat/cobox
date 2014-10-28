@@ -54,7 +54,7 @@ body {
 	overflow: hidden;
 }
 
-#drag,.drag,.testBox,#region>div {
+.drag{
 	position: absolute;
 	width: 100px;
 	height: 100px;
@@ -65,6 +65,12 @@ body {
 	z-index: 2;
 	cursor: pointer;
 	border:1px solid #333;
+	top:0;
+	left:0;
+	// transition: all .5s;
+	// -moz-transition: all .5s; /* Firefox 4 */
+	// -webkit-transition: all .5s; /* Safari 和 Chrome */
+	// -o-transition: all .5s; /* Opera */
 }
 
 .drag.ui-draggable-dragging {

@@ -1,8 +1,9 @@
 // mrc
 // i#cornelia.in
-// 2014年6月13日16:33:17
-// 2014年8月10日21:50:54 rewrite 
-// stop use jqueryui and use jquert.pep.js
+// 2014-6-13-16:33:17
+// 2014-8-10-21:50:54 rewrite 
+// 2014-10-29-00:42:04 rewrite
+// ver:2.0
 
 $(function(){
 	$('.drag').pep({

@@ -48,10 +48,7 @@ body {
 #region {
   overflow: hidden;
 }
-#drag,
-.drag,
-.testBox,
-#region > div {
+.drag {
   position: absolute;
   width: 100px;
   height: 100px;
@@ -62,6 +59,8 @@ body {
   z-index: 2;
   cursor: pointer;
   border: 1px solid #333;
+  top: 0;
+  left: 0;
 }
 .drag.ui-draggable-dragging {
   z-index: 999;

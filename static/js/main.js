@@ -92,7 +92,7 @@ var DragBoxView = Backbone.View.extend({
 	initialize:function(){
 		this.listenTo(this.model, 'change', this.render);
 		// $(window).on("resize",this.setPosition);
-		$(this.el).pep();
+		// $(this.el).pep();
 	},
 	render: function(){
 		var x = this.model.get('x'),
@@ -100,31 +100,26 @@ var DragBoxView = Backbone.View.extend({
 
 		$('#region').append(this.$el.html(this.template(this.model.toJSON())));
 		$(this.el).stop();
-		// $(this.el).addClass('drag').css({'left':x*101+20+'px','top':y*101+20+'px'}).animate({left:x*101+'px',top:y*101+'px'},_.random(300,500));
-		$(this.el).addClass('drag').animate({'left':x*101+'px','top':y*101+'px'},_.random(100,400));
+		$(this.el).addClass('drag')
+				  .attr({'x':x,'y':y})
+				  .css('transition','none')
+				  .animate({'left':x*101+'px','top':y*101+'px'},_.random(100,400));
+				  
 		return this;
-	},
-	// setPosition:function(){
-	// 	dragBoxs.each(function(obj){
-	// 		console.log(obj);
-	// 	});
-	// }
+	}
 });
 
 var AppView = Backbone.View.extend({
 	el:'',
 	// model:DragBox,
-	initialize:function(){
-		var wh = new Wh();
-		this.width = wh.width;
-		this.height = wh.height;
-		
+	initialize:function(){		
 		that=this;
 
 		//nav
 		dragBoxs.fetch({
 			success:function(col,arr){
 				that.createDragBoxs();
+				pepjs();
 			},
 			error:function(){
 				console.log('Get json error,please check the json file');
@@ -162,8 +157,11 @@ var AppView = Backbone.View.extend({
 		return arr;
 	},
 	createRandom:function(){
-		var rowNum = Math.floor(this.width/101),
-			colNum = Math.floor(this.height/101),
+		var wh = new Wh(),
+			width = wh.width,
+			height = wh.height;
+		var rowNum = Math.floor(width/101),
+			colNum = Math.floor(height/101),
 			rowRandom = _.random(0,rowNum-1),
 			colRandom = _.random(0,colNum-1);
 		

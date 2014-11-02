@@ -5,42 +5,30 @@
 // 2014-10-29-00:42:04 rewrite
 // ver:2.0
 
-$(function(){
+function pepjs(){ 
 	$('.drag').pep({
-		constrainTo:'window',
+		constrainTo:'html',
 		cssEaseDuration:450,
 		useCSSTranslation: false,
-		callIfNotStarted:[],
-		// shouldEase:false,
 		start:function(e){
-			// mark the id
-			this.the_id = $(this.el).attr('id');
-			$(this.el).attr('id','').removeClass('animation-dragDrop trans450');
-
 			this.dragStartPos = {
     		  x: e.clientX,
     		  y: e.clientY
     		};
     		this.boxStartPos = {
-    		  x: $(this.el).offset().left + $(this.el).width() / 2,
-    		  y: $(this.el).offset().top + $(this.el).height() / 2
+    		  x: $(this.el).offset().left + 50,
+    		  y: $(this.el).offset().top + 50
     		};
     		this.grabOffset = {
-    		  x: e.offsetX - $(this.el).width() / 2,
-    		  y: e.offsetY - $(this.el).height() / 2
+    		  x: e.offsetX - 50,
+    		  y: e.offsetY - 50
     		};
     		this.original = {
     		  x:$(this.el).attr('x'),
     		  y:$(this.el).attr('y')
     		}
-			console.log('start');
 		},
 		drag:function(e){
-			//drag effect
-			this.offsetX = e.offsetX;
-		 	this.offsetY = e.offsetY;
-
-			$('.drag:not(.pep-active)').css('opacity',0.4);
 			var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
     		delta = {
       			x: e.clientX - this.dragStartPos.x,
@@ -59,138 +47,72 @@ $(function(){
     		determinant = centerDelta.x * this.grabOffset.y - centerDelta.y * this.grabOffset.x;
     		this.dragAngle = -Math.atan2(determinant, dotProduct);
 
-    		this.dragOffset = {
-    		  x: Math.round(Math.cos(angle) * dampenedDistance),
-    		  y: Math.round(Math.sin(angle) * dampenedDistance)
-    		};
-
-    		this.translateX = Math.round(this.dragOffset.x);
-    		this.translateY = Math.round(this.dragOffset.y);
-
-    		$(this.el).css({"transform":"rotate(" + (this.dragAngle.toPrecision(2)) + "rad)"});
+    		$('.drag:not(.pep-active)').css('opacity',0.4);
+    		$(this.el).css({"transform":"rotate(" + (this.dragAngle.toPrecision(2)) + "rad)","zIndex":3});
 		},
 		stop:function(e){
-			//set the id again for click
-			var the_id = this.the_id,
-				the_el = this.el;
-			setTimeout(function(){$(the_el).attr('id',the_id)},300);
-
 			$('.drag').animate({'opacity':1},200);
-
-			console.log('stop');
-		},
-		easing:function(e){
-			// console.log('easing');
 		},
 		rest:function(e){
-			var offsetX  = e.offsetX - this.offsetX,
-				offsetY  = e.offsetY - this.offsetY;
+			var width = 101,
+				arr = [],
+				_left = parseInt($(this.el).css('left'))/width,
+				_top = parseInt($(this.el).css('top'))/width;
 
-				var arg = {
-					clientX : e.clientX,
-					clientY : e.clientY,
-					left: parseInt($(this.el).css('left')),
-					top : parseInt($(this.el).css('top')),
-					angle : this.dragAngle.toPrecision(2),
-					translateX:parseInt(this.translateX),
-					translateY:parseInt(this.translateY),
-					original:this.original
-				};
+			var direction = {
+				x:'', 
+				y:''
+			}
+			
+			_left - Math.floor(_left) > 0.5? direction.x = Math.ceil(_left) : direction.x = Math.floor(_left);
+			_top - Math.floor(_top) > 0.5? direction.y = Math.ceil(_top) : direction.y = Math.floor(_top);
+				
+			$('.drag').each(function(){
+				arr.push([$(this).attr('x'),$(this).attr('y')]);
+			});
+			direction = target(direction);
 
-			$(this.el).addClass('revise');
-			// .css("zIndex",2);
+			$(this.el).css({"transform":"rotate(0)","left":direction.x*width,"top":direction.y*width,"zIndex":2})
+			.attr({'x':direction.x,'y':direction.y});
+			//in or not
+			function target(obj){
+				var tem = [obj.x,obj.y];
 
-			revise(arg);
-			console.log('rest');
-		},
-		debug:true
+				for(var i=0;i<arr.length;i++){
+		 			if(tem.toString() == arr[i].toString()){
+		 					return moveRandom(obj);
+		 			}
+				}
+				return obj;	
+			};
+			function moveRandom(obj){
+				var x = _.random(-1,1),
+					y = _.random(-1,1),
+					wh = new Wh();
+				
+				var edge={
+					x:Math.floor(wh.width/101),
+					y:Math.floor(wh.height/101)
+				}
+
+				if(x>0)
+					obj.x= x<0&&obj.x-1>0? obj.x-1:obj.x+1;
+				else
+					obj.y= y<0&&obj.y-1>0? obj.y-1:obj.y+1;
+
+				if(obj.x>edge.x-1)
+					obj.x = obj.x-2;
+
+				if(obj.y>edge.y-1)
+					obj.y = obj.y-2;
+
+				return target(obj);
+			};
+		}
 	});
 
-	function revise(arg){
-		var boxWH = 101,
-			numOfBoxFromLeft =  parseInt(Math.ceil(parseInt(arg.left + arg.translateX )) / boxWH),
-			numOfBoxFromTop = parseInt(Math.ceil(parseInt(arg.top + arg.translateY)) / boxWH),
-			leftOffset =  Math.ceil(parseInt(arg.left)) / boxWH - numOfBoxFromLeft,
-			topOffset =  Math.ceil(parseInt(arg.top)) / boxWH - numOfBoxFromTop,
-			directionX = leftOffset<0.5? 'left':'right',
-			directionY = topOffset<0.5? 'top':'bottom',
-			distanceX,
-			distanceY,
-			i,
-			window_width = Math.floor($(window).width()/101)*101,
-			window_height = Math.floor($(window).height()/101)*101,
-			angle = arg.angle;
 
 
-			if(directionX == 'left'){
-				distanceX =  numOfBoxFromLeft * 101;
-			}else{
-				distanceX =  (numOfBoxFromLeft + 1) * 101;
-				numOfBoxFromLeft = numOfBoxFromLeft + 1;
-			}
 
-			if(directionY == 'top'){
-				distanceY =  numOfBoxFromTop * 101;
-			}else{
-				distanceY =  (numOfBoxFromTop + 1) * 101;
-				numOfBoxFromTop = numOfBoxFromTop + 1;
-			}
-
-			// the edge
-			distanceX<0? distanceX=0:distanceX=distanceX;
-			distanceY<0? distanceY=0:distanceY=distanceY;
-			distanceX>window_width? distanceX=window_width-101:distanceX=distanceX;
-			distanceY>window_height? distanceY=window_height-101:distanceY=distanceY;
-
-			$('.revise').animate({
-				'left' : distanceX+'px',
-				'top' : distanceY+'px',
-				transform : 'rotate('+ angle +')'
-				},
-				100,
-				"easeInQuad",
-				function() {
-					var attr ={
-						'x':distanceX/101,
-						'y':distanceY/101
-					}
-					$(this).removeClass("revise");
-					$(this).attr({'x':attr.x,'y':attr.y}).css({'transform':''});
-					// overlay or not?
-					overlay($(this),attr,arg.original);
-			});
-	};
-	// after drag  is overlay?
-	function overlay(_this,attr,original){
-		var i=0;
-		$('.drag').each(function(){
-			var left = $(this).attr('x'),
-				top = $(this).attr('y');
-				if(left==attr.x && top==attr.y){
-					i++;
-				}
-		});
-		if(i>1){
-			_this.animate({
-				'left' : original.x*101,
-				'top' : original.y*101 },
-				100,
-				"easeInQuad",
-				function() {
-					_this.attr({'x':original.x,'y':original.y});
-			});
-			// console.log('in');
-		}
-	};
-	// array in 2d array or not
-	function inOrNot(obj,arr){
-		for(var i=0;i<arr.length;i++){
- 			if(obj.toString() == arr[i].toString()){
- 					return true;
- 				}
-			}
-		return false;	
-	};
-
-});
+};
 

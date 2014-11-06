@@ -71,20 +71,13 @@ var DragBox = Backbone.Model.extend({
 	defaults:{
 		x:'',
 		y:''
-	},
-	initialize:function(){
-		// this.listenTo(this,'change',this.setPosition);
 	}
 });
-// var dragBox = new DragBox();
-
 var DragBoxList = Backbone.Collection.extend({
 	model:DragBox,
 	url:'nav.json'
 });
-
 var dragBoxs = new DragBoxList;
-
 var DragBoxView = Backbone.View.extend({
 	tagName: "div",
 	model:DragBox,
@@ -108,13 +101,56 @@ var DragBoxView = Backbone.View.extend({
 		return this;
 	}
 });
+//end dragbox
+//aroundBox
+var AroundBox = Backbone.Model.extend({
+	defaults:{
+		x:'',
+		y:'',
+		url:'',
+		thumbnail:'',
+		img:''
+	}
+});
+var AroundBoxView = Backbone.View.extend({
+	tagName: "div",
+	model:AroundBox,
+	template: _.template($("#around-img-template").html()),
+	initialize:function(){
+		this.listenTo(this.model, 'change', this.render);
+	},
+	events:{
+		
+	},
+	render: function(){
+		var x = this.model.get('x'),
+			y = this.model.get('y');
+
+		$('#region').append(this.$el.html(this.template(this.model.toJSON())));
+		$(this.el).stop();
+		$(this.el).addClass('drag')
+				  .attr({'x':x,'y':y})
+				  .css('transition','none')
+				  .animate({'left':x*101+'px','top':y*101+'px'},_.random(100,400));
+				  
+		return this;
+	}
+});
+var ImgBoxList = Backbone.Collection.extend({
+	model:AroundBox,
+	url:'image.json'
+});
+var imgBoxs = new ImgBoxList;
+//end image box
 
 var AppView = Backbone.View.extend({
 	el:'',
 	// model:DragBox,
+	events:{
+		// 'click .box':'test'
+	},
 	initialize:function(){		
 		that=this;
-
 		//nav
 		dragBoxs.fetch({
 			success:function(col,arr){
@@ -122,11 +158,31 @@ var AppView = Backbone.View.extend({
 				pepjs();
 			},
 			error:function(){
-				console.log('Get json error,please check the json file');
+				console.log('Get dragboxs json error,please check the json file');
 			}
 		});
-
 		$(window).on("resize",this.whenResize);
+		$(document).delegate('.drag','click',function(e){
+			if($(e.target).hasClass('noclick')){
+				setTimeout(function(){$(e.target).removeClass('noclick');},300);
+			}else{
+				alert('12345');
+			}
+		});
+	},
+	createImgBoxs:function(){
+		// imgBoxs
+		imgBoxs.fetch({
+			sccess:function(col,arr){
+				that.test();
+			},
+			error:function(){
+				console.log('Get dragboxs json error,please check the json file');
+			}
+		});
+	},
+	test:function(){
+		console.log('test');
 	},
 	whenResize:function(){
 		var dragBoxsLength = $('.drag').length;

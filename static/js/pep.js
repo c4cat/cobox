@@ -10,6 +10,8 @@ function pepjs(){
 		constrainTo:'html',
 		cssEaseDuration:450,
 		useCSSTranslation: false,
+		callIfNotStarted:[],
+		allowDragEventPropagation:false,
 		start:function(e){
 			this.dragStartPos = {
     		  x: e.clientX,
@@ -27,6 +29,7 @@ function pepjs(){
     		  x:$(this.el).attr('x'),
     		  y:$(this.el).attr('y')
     		}
+    		$(this.el).addClass('noclick');
 		},
 		drag:function(e){
 			var angle, centerDelta, centerDistance, dampenedDistance, delta, determinant, distance, dotProduct;
@@ -70,14 +73,15 @@ function pepjs(){
 			$('.drag').each(function(){
 				arr.push([$(this).attr('x'),$(this).attr('y')]);
 			});
+			
 			direction = target(direction);
 
-			$(this.el).css({"transform":"rotate(0)","left":direction.x*width,"top":direction.y*width,"zIndex":2})
+			$(this.el) .css({"transform":"rotate(0)","left":direction.x*width,"top":direction.y*width,"zIndex":2})
 			.attr({'x':direction.x,'y':direction.y});
-			//in or not
+
+			// in or not
 			function target(obj){
 				var tem = [obj.x,obj.y];
-
 				for(var i=0;i<arr.length;i++){
 		 			if(tem.toString() == arr[i].toString()){
 		 					return moveRandom(obj);
@@ -89,7 +93,6 @@ function pepjs(){
 				var x = _.random(-1,1),
 					y = _.random(-1,1),
 					wh = new Wh();
-				
 				var edge={
 					x:Math.floor(wh.width/101),
 					y:Math.floor(wh.height/101)
@@ -100,19 +103,12 @@ function pepjs(){
 				else
 					obj.y= y<0&&obj.y-1>0? obj.y-1:obj.y+1;
 
-				if(obj.x>edge.x-1)
-					obj.x = obj.x-2;
-
-				if(obj.y>edge.y-1)
-					obj.y = obj.y-2;
+				if(obj.x>edge.x-1) obj.x = obj.x-2;
+				if(obj.y>edge.y-1) obj.y = obj.y-2;
 
 				return target(obj);
 			};
 		}
 	});
-
-
-
-
 };
 

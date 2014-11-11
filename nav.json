@@ -1,26 +1,34 @@
 [
 	{
 		"id":"1",
-		"name":"about"
+		"name":"about",
+		"type":"about"
 	},
 	{
 		"id":"2",
-		"name":"content"
+		"name":"contact",
+		"type":"contact"
+
 	},
 	{
 		"id":"3",
-		"name":"links"
+		"name":"links",
+		"type":"aroundBox",
+		"json":"links.json"
 	},
 	{
 		"id":"4",
-		"name":"image"
+		"name":"image",
+		"type":"aroundBox"
 	},
 	{
 		"id":"5",
-		"name":"works"
+		"name":"works",
+		"type":"aroundBox"
 	},
 	{
 		"id":"6",
-		"name":"six"
+		"name":"six",
+		"type":"aroundBox"
 	}
 ]

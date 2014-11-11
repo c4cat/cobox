@@ -70,7 +70,9 @@ var BgView = Backbone.View.extend({
 var DragBox = Backbone.Model.extend({
 	defaults:{
 		x:'',
-		y:''
+		y:'',
+		type:'',
+		json:''
 	}
 });
 var DragBoxList = Backbone.Collection.extend({
@@ -84,8 +86,9 @@ var DragBoxView = Backbone.View.extend({
 	template: _.template($("#dragbox-template").html()),
 	initialize:function(){
 		this.listenTo(this.model, 'change', this.render);
-		// $(window).on("resize",this.setPosition);
-		// $(this.el).pep();
+	},
+	events: {
+		'click':'clickFun'
 	},
 	render: function(){
 		var x = this.model.get('x'),
@@ -97,8 +100,67 @@ var DragBoxView = Backbone.View.extend({
 				  .attr({'x':x,'y':y})
 				  .css('transition','none')
 				  .animate({'left':x*101+'px','top':y*101+'px'},_.random(100,400));
-				  
 		return this;
+	},
+	clickFun: function(){
+		var el = $(this.el),
+			type = this.model.get('type'),
+			json; //json file
+
+			this.model.get('json')? json=this.model.get('json'):json=this.model.get('name')+'.json';
+
+		if(el.hasClass('noclick')){
+			setTimeout(function(){el.removeClass('noclick');},300);
+		}else{
+			switch(type){
+				case 'aroundBox':
+					console.log('aroundBox');
+					aroundBoxFun(json);
+					break;
+				case 'about':
+					console.log('about');
+					break;
+				case 'contact':
+					console.log('contact');		
+			}
+		}
+	},
+	aroundBoxFun: function(json){
+		var AroundBoxList = Backbone.Collection.extend({
+			model:AroundBox,
+			url:json
+		});
+		this.aroundBoxs = new AroundBoxList;
+		//end image box
+		var that=this;
+		//nav
+		this.aroundBoxs.fetch({
+			success:function(col,arr){
+				that.createAroundBoxs();
+			},
+			error:function(){
+				console.log('Get dragboxs json error,please check the json file');
+			}
+		});
+	},
+	createAroundBoxs: function(bool){
+		var arr = this.positionArr(this.aroundBoxs.length),
+			i = 0; 
+		this.aroundBoxs.each(function(obj){
+			// console.log(obj.get('id'));
+			if(!bool)
+				var view = new DragBoxView({model:obj});
+
+			obj.set({'x':arr[i][0],'y':arr[i][1]});
+			i++;
+		});
+	},
+	positionArr:function(length){
+		var x = this.model.get('x'),
+			y = this.model.get('y'),
+			arr = [];
+
+			
 	}
 });
 //end dragbox
@@ -109,7 +171,7 @@ var AroundBox = Backbone.Model.extend({
 		y:'',
 		url:'',
 		thumbnail:'',
-		img:''
+		content:''
 	}
 });
 var AroundBoxView = Backbone.View.extend({
@@ -136,19 +198,11 @@ var AroundBoxView = Backbone.View.extend({
 		return this;
 	}
 });
-var ImgBoxList = Backbone.Collection.extend({
-	model:AroundBox,
-	url:'image.json'
-});
-var imgBoxs = new ImgBoxList;
-//end image box
+//end aroungbox
 
 var AppView = Backbone.View.extend({
 	el:'',
 	// model:DragBox,
-	events:{
-		// 'click .box':'test'
-	},
 	initialize:function(){		
 		that=this;
 		//nav
@@ -162,27 +216,6 @@ var AppView = Backbone.View.extend({
 			}
 		});
 		$(window).on("resize",this.whenResize);
-		$(document).delegate('.drag','click',function(e){
-			if($(e.target).hasClass('noclick')){
-				setTimeout(function(){$(e.target).removeClass('noclick');},300);
-			}else{
-				alert('12345');
-			}
-		});
-	},
-	createImgBoxs:function(){
-		// imgBoxs
-		imgBoxs.fetch({
-			sccess:function(col,arr){
-				that.test();
-			},
-			error:function(){
-				console.log('Get dragboxs json error,please check the json file');
-			}
-		});
-	},
-	test:function(){
-		console.log('test');
 	},
 	whenResize:function(){
 		var dragBoxsLength = $('.drag').length;

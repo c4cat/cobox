@@ -3,44 +3,7 @@
 	<meta charset="UTF-8">
 	<title>demo</title>
 	<script type='text/javascript' src='static/js/jquery.js'></script>
-	<script type='text/javascript' src='static/js/svg.js'></script>
-	<script type='text/javascript' src='static/js/svg.easing.js'></script>
-	<script type='text/javascript' src='static/js/jquery.transform2d.js'></script>
-	<script type='text/javascript' src='static/js/jquery.easing.1.3.js'></script>
 	<style>
-		*{
-			margin: 0;
-			padding: 0;
-		}
-		.bg{
-			width: 100px;
-			height :100px;
-			border:1px solid #333;
-			margin:1px;
-			float: left;
-			overflow: hidden;
-		}
-		.in{
-			width: 500px;
-			height: 500px;
-			display: block;
-			background-image: url(2.png);
-			background-repeat: no-repeat;
-			background-size:cover;
-		}
-		#demo{
-			width: 520px;
-			height: 679px;
-			overflow: hidden;
-		}
-		.piece{
-			position: absolute;
-			width: 100px;
-			height: 100px;
-			border: 1px solid #eee;
-			/*background: #ccc;*/
-			border-radius:3px; 
-		}
 
 	</style>
 </head>
@@ -49,16 +12,55 @@
 </body>
 
 <script>
-$(document).ready(function(){
-	var i,j,k;
-	var num = 10;
-	for(i=0;i<num;i++){ 
-		for(j=0;j<num;j++){
-			var bag_pos = j*-100 + 'px ' + i*-100 + 'px';
-			var tmp = '<div class="bg"><a class="in" style="background-position:'+ bag_pos +'"></a></div>'
-			$('#demo').append(tmp);
-		}
+$(function(){
+	var i,j,k,
+		arr = [],
+		num = 17,
+		length = Math.ceil(Math.sqrt(num+1)),
+		floor = 3;
+
+	var local = {
+			x:5,
+			y:5
+		};
+
+
+	// arr.push([local.x,local.y]);
+		
+	function loop(){
+		while(floor<=length){
+			var start = {
+				x: local.x-Math.floor(floor/2),
+				y: local.y-Math.floor(floor/2)
+			};
+			for(i=0;i<floor;i++){
+				for(j=0;j<floor;j++){
+					var item = [start.x+j,start.y+i];
+					if(!inOrNot(item,arr)){
+						arr.push(item);
+						
+						$('#demo').append(item+'<br/>');
+					}
+				}
+			}
+			floor++;
+			$('#demo').append(item+'<hr/>');
+		}	
 	}
+
+	loop();
+	console.log(arr);
+
+	function inOrNot(obj,arr){
+		for(var i=0;i<arr.length;i++){
+ 			if(obj.toString() == arr[i].toString()){
+ 					return true;
+ 				}
+			}
+		return false;	
+	}
+	
+
 });
 </script>
 </html>

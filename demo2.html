@@ -15,6 +15,7 @@
 $(function(){
 	var i,j,k,
 		arr = [],
+		arr2 = [],
 		num = 17,
 		length = Math.ceil(Math.sqrt(num+1)),
 		floor = 3;
@@ -37,8 +38,11 @@ $(function(){
 				for(j=0;j<floor;j++){
 					var item = [start.x+j,start.y+i];
 					if(!inOrNot(item,arr)){
-						arr.push(item);
-						
+						if(floor == length){
+							arr2.push(item);
+						}else{
+							arr.push(item);
+						}
 						$('#demo').append(item+'<br/>');
 					}
 				}
@@ -48,9 +52,6 @@ $(function(){
 		}	
 	}
 
-	loop();
-	console.log(arr);
-
 	function inOrNot(obj,arr){
 		for(var i=0;i<arr.length;i++){
  			if(obj.toString() == arr[i].toString()){
@@ -59,6 +60,10 @@ $(function(){
 			}
 		return false;	
 	}
+
+	loop();
+	console.log(arr);
+	console.log(arr2);
 	
 
 });

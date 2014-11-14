@@ -4,7 +4,16 @@
 	<title>demo</title>
 	<script type='text/javascript' src='static/js/jquery.js'></script>
 	<style>
+		.box{
+			width: 30px;
+			height: 30px;
+			margin: 10px;
+			border: 1px solid #000;
+			position: absolute;
+		}
+		#demo{
 
+		}
 	</style>
 </head>
 <body>
@@ -13,23 +22,36 @@
 
 <script>
 $(function(){
-	var i,j,k,
-		arr = [],
+	var arr = [],
 		arr2 = [],
-		num = 17,
+		num = 18,
 		length = Math.ceil(Math.sqrt(num+1)),
+		count = 0,
 		floor = 3;
 
+	var edge = {
+		x:20,
+		y:20
+	}
+
 	var local = {
-			x:5,
-			y:5
+			x:1,
+			y:2
 		};
 
 
 	// arr.push([local.x,local.y]);
-		
+	function inOrNot(obj,arr){
+		for(var i=0;i<arr.length;i++){
+ 			if(obj.toString() == arr[i].toString()){
+ 					return true;
+ 				}
+			}
+		return false;	
+	}	
 	function loop(){
-		while(floor<=length){
+		while(floor<=length || arr.length<num){
+			if(count>9999) break;
 			var start = {
 				x: local.x-Math.floor(floor/2),
 				y: local.y-Math.floor(floor/2)
@@ -38,33 +60,25 @@ $(function(){
 				for(j=0;j<floor;j++){
 					var item = [start.x+j,start.y+i];
 					if(!inOrNot(item,arr)){
-						if(floor == length){
-							arr2.push(item);
-						}else{
+						if(start.x+j>0&&start.y+i>0&&start.x+j<edge.x&&start.y+i<edge.y)
 							arr.push(item);
-						}
-						$('#demo').append(item+'<br/>');
 					}
+					count++;
+					console.log('hello');
 				}
 			}
 			floor++;
-			$('#demo').append(item+'<hr/>');
 		}	
+		return arr;
 	}
 
-	function inOrNot(obj,arr){
-		for(var i=0;i<arr.length;i++){
- 			if(obj.toString() == arr[i].toString()){
- 					return true;
- 				}
-			}
-		return false;	
-	}
+	var res = loop();
+	console.log(res);
 
-	loop();
-	console.log(arr);
-	console.log(arr2);
-	
+	for(var i=0;i<res.length;i++){
+		$('#demo').append('<div class="box" style="left:'+res[i][0]*50+'px;top:'+res[i][1]*50+'px">'+res[i]+'<div>');
+	}
+		
 
 });
 </script>

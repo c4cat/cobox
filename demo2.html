@@ -23,11 +23,9 @@
 
 <script>
 $(function(){
-	var start = new Date().getTime();
 	var arr = [],
-		num = 36,
+		num = 18,
 		length = Math.ceil(Math.sqrt(num+1))<3? 3:Math.ceil(Math.sqrt(num+1)), // >3
-		count = 0,
 		floor = 3;
 
 	var edge = {
@@ -35,15 +33,11 @@ $(function(){
 		y:10
 	}
 
-	// var local = {
-	// 		x:4,
-	// 		y:4
-	// 	};
 	var local = {
 			x:0,
-			y:5
-	};	
-	// arr.push([local.x,local.y]);
+			y:0
+		};
+
 	function inOrNot(obj,arr){
 		for(var i=0;i<arr.length;i++){
  			if(obj.toString() == arr[i].toString()){
@@ -52,27 +46,30 @@ $(function(){
 			}
 		return false;	
 	}	
-	function loop(){
+	function loop(num,){
+		var arr = [],
+			length = Math.ceil(Math.sqrt(num+1))<3? 3:Math.ceil(Math.sqrt(num+1)),
+			floor = 3;
+
 		while(arr.length<num){
-			if(count>9999) break;
+			if(floor>9999) break;
+
 			var start = {
 				x: local.x-Math.floor(floor/2),
 				y: local.y-Math.floor(floor/2)
 			};
+
 			var local_item = [[local.x,local.y]];
 			for(i=0;i<floor;i++){
 				for(j=0;j<floor;j++){
 					var item = [start.x+j,start.y+i];
 					if(start.x+j+1>0&&start.y+i+1>0&&start.x+j<edge.x&&start.y+i<edge.y) //edge
-						if(!inOrNot(item,arr)){
-							if(!inOrNot(item,local_item)){
+						if(!inOrNot(item,arr))
+							if(!inOrNot(item,local_item))
 								arr.push(item);
-							}
-
-					}
 				}
 			}
-			floor=floor+1;
+			floor++;
 		}	
 		return arr;
 	}
@@ -81,9 +78,7 @@ $(function(){
 		array2 = array.concat();
 
 	// array.reverse();
-
-	var inside = (length-2)*(length-2)-1;
-	var inside_count = 0;
+	var inside = (length-1)*(length-1)-1;
 	//inside
 	for(var i=0;i<inside;i++){
 		$('#demo').append('<div class="box" style="left:'+array[i][0]*50+'px;top:'+array[i][1]*50+'px">'+array[i]+'<div>');
@@ -93,25 +88,15 @@ $(function(){
 	var random_arr = [];
 	//outside
 	//create random arr
-
-	// var offset = Math.ceil(Math.sqrt(num+1)) - Math.sqrt(num+1);
-	// var array3 = _.first(array2,Math.ceil(array2.length*offset));
-
 	while(random_arr.length<(num-inside)){
 		var random = _.random(0,array2.length-1);
 		if(!inOrNot(array2[random],random_arr))
 			random_arr.push(array2[random]);
 	}
 
-	// console.log(random_arr);
-	// console.log(inside);
-
 	for(var j=0;j<random_arr.length;j++){
 		$('#demo').append('<div class="box" style="left:'+random_arr[j][0]*50+'px;top:'+random_arr[j][1]*50+'px">'+random_arr[j]+'<div>');
 	}
-
-	var end = new Date().getTime();
-	// alert("用时 " + (end - start) + " 毫秒");
 });
 </script>
 </html>

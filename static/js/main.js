@@ -144,23 +144,92 @@ var DragBoxView = Backbone.View.extend({
 		});
 	},
 	createAroundBoxs: function(bool){
-		var arr = this.positionArr(this.aroundBoxs.length),
-			i = 0; 
+		var i = 0,
+			j = 0,
+			num = this.aroundBoxs.length,
+			edge = {
+				x: Math.floor(width/101),
+				y: Math.floor(height/101)
+			},
+			local ={
+				x: this.model.get('x'),
+				y: this.model.get('y')
+			}
+			args = this.positionArr(num,edge,local);
+
 		this.aroundBoxs.each(function(obj){
 			// console.log(obj.get('id'));
-			if(!bool)
-				var view = new DragBoxView({model:obj});
-
-			obj.set({'x':arr[i][0],'y':arr[i][1]});
+			if(!bool) var view = new AroundBoxView({model:obj});
+			obj.set({'parentXY':local});
+			if(i<args.inside_num){
+				obj.set({'x':args.inside_arr[i][0],'y':args.inside_arr[i][1]});
+			}else{
+				obj.set({'x':args.outside_arr[j][0],'y':args.outside_arr[j][1]});
+				j++;
+			}
 			i++;
 		});
 	},
-	positionArr:function(length){
-		var x = this.model.get('x'),
-			y = this.model.get('y'),
-			arr = [];
+	positionArr: function(num,edge,local){
+		var arr = [],
+			length = Math.ceil(Math.sqrt(num+1))<3? 3:Math.ceil(Math.sqrt(num+1)),
+			floor = 3;
 
-			
+		while(arr.length<num){
+			if(floor>9999) break;
+
+			var start = {
+				x: local.x-Math.floor(floor/2),
+				y: local.y-Math.floor(floor/2)
+			};
+
+			var local_item = [[local.x,local.y]];
+			for(i=0;i<floor;i++){
+				for(j=0;j<floor;j++){
+					var item = [start.x+j,start.y+i];
+					if(start.x+j+1>0&&start.y+i+1>0&&start.x+j<edge.x&&start.y+i<edge.y) //edge
+						if(!inOrNot(item,arr))
+							if(!inOrNot(item,local_item))
+								arr.push(item);
+				}
+			}
+			floor++;
+		}	
+
+		var arr_clone = arr.concat();
+		var inside = (length-1)*(length-1)-1;
+		var random_arr = [];
+
+		//inside
+		for(var i=0;i<inside;i++){
+			$('#demo').append('<div class="box" style="left:'+arr[i][0]*50+'px;top:'+arr[i][1]*50+'px">'+arr[i]+'<div>');
+			arr_clone.shift();
+		}
+		//outside
+		while(random_arr.length<(num-inside)){
+			var random = _.random(0,arr_clone.length-1);
+			if(!inOrNot(arr_clone[random],random_arr))
+				random_arr.push(arr_clone[random]);
+		}
+
+		for(var j=0;j<random_arr.length;j++){
+			$('#demo').append('<div class="box" style="left:'+random_arr[j][0]*50+'px;top:'+random_arr[j][1]*50+'px">'+random_arr[j]+'<div>');
+		}
+		function inOrNot(obj,arr){
+			for(var i=0;i<arr.length;i++){
+	 			if(obj.toString() == arr[i].toString()){
+	 					return true;
+	 				}
+				}
+			return false;	
+		}	
+
+		var re = {
+			inside_arr:arr,
+			inside_num:inside,
+			outside_arr:random_arr
+		}
+		return re;
 	}
 });
 //end dragbox
@@ -171,7 +240,8 @@ var AroundBox = Backbone.Model.extend({
 		y:'',
 		url:'',
 		thumbnail:'',
-		content:''
+		content:'',
+		parentXY:''
 	}
 });
 var AroundBoxView = Backbone.View.extend({
@@ -186,13 +256,14 @@ var AroundBoxView = Backbone.View.extend({
 	},
 	render: function(){
 		var x = this.model.get('x'),
-			y = this.model.get('y');
+			y = this.model.get('y'),
+			parentXY = this.model.get('parentXY')
 
 		$('#region').append(this.$el.html(this.template(this.model.toJSON())));
 		$(this.el).stop();
 		$(this.el).addClass('drag')
 				  .attr({'x':x,'y':y})
-				  .css('transition','none')
+				  .css({'transition':'none','left':parentXY.x*100+'px','top':parentXY.y*100+'px'})
 				  .animate({'left':x*101+'px','top':y*101+'px'},_.random(100,400));
 				  
 		return this;
@@ -212,7 +283,7 @@ var AppView = Backbone.View.extend({
 				pepjs();
 			},
 			error:function(){
-				console.log('Get dragboxs json error,please check the json file');
+				console.log('Get json error,please check the json file');
 			}
 		});
 		$(window).on("resize",this.whenResize);

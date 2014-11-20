@@ -13,6 +13,12 @@ module.exports=function(grunt){
         //ur name
         archive_name: grunt.option('name') || 'ugly',
         // connect
+        concat: {  
+            dist: {  
+              src: './test/*.js',  
+              dest: './test/3.js' 
+            },
+        }, 
         connect:{
             server:{
                 options:{
@@ -57,8 +63,10 @@ module.exports=function(grunt){
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('default', []);
+    grunt.registerTask('c', ['concat']);
     grunt.registerTask('live', 'Start a custom static web server.',['connect','watch']);
 
 };

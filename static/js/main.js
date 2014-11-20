@@ -119,11 +119,15 @@ var DragBoxView = Backbone.View.extend({
 					break;
 				case 'about':
 					console.log('about');
+					aboutBoxFun();
 					break;
 				case 'contact':
 					console.log('contact');		
 			}
 		}
+	},
+	fun4x5:function(){
+		
 	},
 	aroundBoxFun: function(json){
 		var AroundBoxList = Backbone.Collection.extend({
@@ -271,6 +275,7 @@ var AroundBoxView = Backbone.View.extend({
 });
 //end aroungbox
 
+//
 var AppView = Backbone.View.extend({
 	el:'',
 	// model:DragBox,
@@ -337,6 +342,7 @@ var AppView = Backbone.View.extend({
 	}
 });
 //DragBox end
+
 
 //action
 var bg = new BgView();

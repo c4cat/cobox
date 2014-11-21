@@ -1,0 +1,119 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>demo</title>
+	<script type='text/javascript' src='static/js/kinetic.min.js'></script>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		html{
+			/*background: url(demo.jpg);*/
+		}
+	</style>
+</head>
+<body>
+	<div id="container"></div>
+</body>
+    <script type="text/javascript">
+        var stage=new Kinetic.Stage({
+            width:611,
+            height:193,
+            container:container
+        });
+
+        var Slayer=new Kinetic.Layer();
+
+        var bg=new Kinetic.Rect({
+            x:0,
+            y:0,
+            width:stage.getWidth(),
+            height:stage.getHeight(),
+            fill:"rgba(20, 5, 63,1)"
+        });
+
+        var title=new Kinetic.Text({
+            x:20,
+            y:100,
+            text:"KineticJS中文社区",
+            fill:"black",
+            fontSize:42,
+            fontFamily:"segoe UI ",
+            fill:"white"
+        });
+        var subTitle=new Kinetic.Text({
+            x:20,
+            y:150,
+            text:"一起用最快捷的方式开发绚丽的Web图形",
+            fill:"black",
+            fontSize:20,
+            fontFamily:"segoe UI",
+            fill:"white"
+        });
+
+        var Lgroup=new Kinetic.Group()
+
+  //       var imageObj = new Image();
+		// imageObj.onload = function() {
+		//   var image = new Kinetic.Image({
+		//     x: 200,
+		//     y: 50,
+		//     image: imageObj,
+		//     width: 100,
+		//     height: 100
+		//   });
+		// };
+		// imageObj.src = 'demo2.jpg';
+
+        var Lred=new Kinetic.Image({
+            image:'demo2.jpg',
+            width: 100,
+		    height: 100
+        });
+
+        // var Lgreen=new Kinetic.Line({
+        //     points:[510,0,611,30,240,90],
+        //     fill:"rgba(0, 255,50,0.6)",
+        //     closed:true
+        // });
+
+        // var Lblue=new Kinetic.Line({
+        //     points:[370,0,420,0,420,160,370,100],
+        //     fill:"rgba(50, 100,205,0.6)",
+        //     closed:true
+        // });
+
+
+        Lgroup.add(Lred);
+        Slayer.add(bg).add(title).add(subTitle).add(Lgroup);
+        stage.add(Slayer);
+
+      var imageObj = new Image();
+      imageObj.onload = function() {
+        var stage = new Kinetic.Stage({
+          container: 'container',
+          width: 578,
+          height: 300
+        });
+        var layer = new Kinetic.Layer();
+        darth = new Kinetic.Image({
+          x: 10,
+          y: 10,
+          image: imageObj,
+          draggable: true
+        });
+      
+        layer.add(darth);
+        stage.add(layer);
+        
+        darth.cache();
+        darth.filters([Kinetic.Filters.Invert]);
+        layer.draw(); 
+      };
+      imageObj.src = './demo.jpg';
+
+
+    </script>
+	
+</html>
